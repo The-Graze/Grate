@@ -1,17 +1,19 @@
 # Grate
 
-# Fork for a reason, show love to kyle the og creator
+# Fork for a reason, show love to Kyle the OG creator
 
 *Grate* is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.
 
 [![Mod Showcase Link](https://img.youtube.com/vi/geyMo9pVSEE/0.jpg)](https://www.youtube.com/watch?v=geyMo9pVSEE)
+
+(*Grate* looks slightly different, having a grey menu instead, but it works the same!)
 
 ## Links
 
 * Discord: https://discord.gg/B2MErU9KCp
 * YouTube: https://youtube.com/@graze_?si=a4UvBEjjFuefMG-w
 
-* OG Discord: https://discord.gg/B2MErU9KCp
+* OG Discord: https://discord.gg/xwY8VdxntN (Read-Only)
 * OG YouTube: https://www.youtube.com/@kylethescientist
 
 ## Features
@@ -23,7 +25,7 @@
 * `Fly` - Use the **joysticks** fly around
 * `Grappling Hooks` - **Grab one of the grapple guns** off of your hip holster with **either grip button and then press the trigger to fire**
 * `Platforms (Left/Right)` - **Press the grip button** on your controller to create a floating platform in the air that you can stand on. There's a toggle for each hand so that you can disable one if it clashes with another mod's inputs.
-* `Speed Boost` - Significantly increases the player's movement speed
+* `Speed Boost` - Significantly increases the player's movement speed (Speed reduced to avoid bans)
 * `Nail Gun` - **Press the trigger** to summon the nail gun. **Release the trigger** to fire a nail into surfaces that you can **grip** to climb.
 * `Rockets` - **Press the grip button** to spawn a rocket in each hand that boosts you around.
 * `Wall Run` - Allows you to seamlessly transition between running on floors, walls, and ceilings! Push off to revert to normal movement.
@@ -45,7 +47,7 @@
 * `Telekinesis` - If another player points at you with their grip button pressed, they can
   pick you up and throw you from afar.
 ### Miscellaneous
-* `Join Grate Code` - Allows you to join a private lobby for Grate users.
+* `Join Grate Code` - Allows you to join a private lobby with other Grate users. (This module was changed, formerly being 'Join Bark Code', but it was changed for Grate.)
 
 These modules can be useful for exploring the game world, experimenting with gameplay mechanics, or just having fun with friends. They are **not** meant to be used to harass others, which can result in a ban from the game.
 
@@ -53,11 +55,11 @@ These modules can be useful for exploring the game world, experimenting with gam
 When you join a modded lobby, simply beat on your chest like a gorilla in an alternating fashion with both hands 4 times (LRLR or RLRL). This will summon the interface in front of you. To hide the interface, simply grab it and throw it away.
 
 ## Installation
-
+To install *Grate*, simply download the .dll from releases and put it in your Gorilla Tag plugins folder.
 
 ## Important notes
 
-While *Grate* is designed to be safe to use in modded lobbies, it is important to note that using mods in any form in public lobbies can result in a ban from the game. Use *Grate* at your own risk and only in modded lobbies.
+While *Grate* is designed to be safe to use in modded lobbies, it is important to note that using mods in any form in public lobbies or non-modded privates can result in a ban from the game. Use *Grate* at your own risk and only in modded lobbies.
 
 ## Bugs and issues
 If you encounter any bugs or issues while using *Grate*, please report them on the mod's GitHub page. I will do my best to address them as soon as possible. 
