@@ -48,6 +48,7 @@
   pick you up and throw you from afar.
 ### Miscellaneous
 * `Join Grate Code` - Allows you to join a private lobby with other Grate users. (This module was changed, formerly being 'Join Bark Code', but it was changed for Grate.)
+* `Settings` - At the top of the *Grate* menu on any page, allows you to change settings for most modules.
 
 These modules can be useful for exploring the game world, experimenting with gameplay mechanics, or just having fun with friends. They are **not** meant to be used to harass others, which can result in a ban from the game.
 
