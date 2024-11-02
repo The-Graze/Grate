@@ -8,6 +8,7 @@ using UnityEngine;
 using Grate.Modules.Multiplayer;
 using Grate.Modules.Movement;
 using BepInEx.Configuration;
+using Grate.Extensions;
 
 namespace Grate.Modules.Physics
 {
@@ -19,8 +20,7 @@ namespace Grate.Modules.Physics
         private bool baseHeadIsTrigger, baseBodyIsTrigger;
         public static bool active;
         public static int layer = 29, layerMask = 1 << layer;
-        private Vector3 activationLocation;
-        private Vector3 activationAngle;
+        GameObject acLocationMarker;
         bool flyWasEnabled;
 
         private struct GorillaTriggerInfo
@@ -37,8 +37,9 @@ namespace Grate.Modules.Physics
             {
                 if (!MenuController.Instance.Built) return;
                 base.OnEnable();
-                activationLocation = Player.Instance.bodyCollider.transform.position;
-                activationAngle = Player.Instance.bodyCollider.transform.eulerAngles;
+                acLocationMarker = new GameObject("NoClipAcctivatePoint");
+                acLocationMarker.transform.position = Player.Instance.bodyCollider.transform.position;
+                acLocationMarker.transform.rotation = Player.Instance.turnParent.transform.rotation;
                 if (!Piggyback.mounted)
                 {
                     try
@@ -81,7 +82,7 @@ namespace Grate.Modules.Physics
             Player.Instance.locomotionEnabledLayers = baseMask;
             Player.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
             Player.Instance.headCollider.isTrigger = baseHeadIsTrigger;
-            Player.Instance.TeleportTo(activationLocation, Quaternion.Euler(activationAngle));
+            Player.Instance.TeleportTo(acLocationMarker.transform, true);
             active = false;
             // Wait for the telport to complete
             yield return new WaitForFixedUpdate();
@@ -90,6 +91,7 @@ namespace Grate.Modules.Physics
             TriggerBoxPatches.triggersEnabled = true;
             Plugin.menuController.GetComponent<Fly>().enabled = flyWasEnabled;
             Logging.Debug("Enabling triggers");
+            acLocationMarker?.Obliterate();
         }
 
         public override string GetDisplayName()

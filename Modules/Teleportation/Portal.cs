@@ -165,7 +165,7 @@ namespace Grate.Modules.Teleportation
             }
             if (!outPortal) return;
             float p = Player.Instance.RigidbodyVelocity.magnitude;
-            Player.Instance.TeleportTo(outPortal.transform.position + (outPortal.transform.forward * 1.5f), Quaternion.Euler(outPortal.transform.forward));
+            Player.Instance.TeleportTo(outPortal.transform, true);
             Player.Instance.SetVelocity(p * outPortal.transform.forward);
         }
 

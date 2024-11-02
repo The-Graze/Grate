@@ -4,7 +4,7 @@
 <h3 align="center">*Grate* is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
 
 <p align="center">
-    <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://github.com/wryser/GrateWithPortals/blob/master/Art/GrateArt.png?raw=true">
+    <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://github.com/The-Graze/Grate/blob/master/Art/GrateArt.png?raw=true">
 </p>
 <h4 align="center">(Watch this video by Rylan showing off Grate!)</h1>
 

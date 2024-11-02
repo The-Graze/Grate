@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<PropertyGroup>
-		<OculusPath>E:\SteamLibrary\steamapps\common\Gorilla Tag</OculusPath>
+		<OculusPath>C:\Program Files\Oculus\Software\Software\another-axiom-gorilla-tag</OculusPath>
 		<OculusPluginsPath>$(OculusPath)\BepInEx\plugins</OculusPluginsPath>
 
-    <SteamPath>E:\SteamLibrary\steamapps\common\Gorilla Tag</SteamPath>
+    <SteamPath>C:\Program Files\Oculus\Software\Software\another-axiom-gorilla-tag</SteamPath>
     <SteamPluginsPath>$(SteamPath)\BepInEx\plugins</SteamPluginsPath>
     
 		<GameAssemblyPath>$(SteamPath)\Gorilla Tag_Data\Managed</GameAssemblyPath>

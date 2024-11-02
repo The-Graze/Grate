@@ -107,7 +107,7 @@ namespace Grate.Modules.Teleportation
                 bananaLine.material.mainTextureScale = new Vector2(Player.Instance.scale, 1);
                 if (Vector3.Distance(endPos, checkpointMarker.transform.position) < .01f)
                 {
-                    Player.Instance.TeleportTo(checkpointPosition, Quaternion.Euler(checkpointRotation));
+                    Player.Instance.TeleportTo(checkpointMarker.transform, true);
                     break;
                 }
                 yield return new WaitForFixedUpdate();

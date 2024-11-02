@@ -33,6 +33,7 @@ namespace Grate
         public static ConfigFile configFile;
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
+        public static bool InModded { get ; protected set; }
         GestureTracker gt;
         NetworkPropertyHandler nph;
 

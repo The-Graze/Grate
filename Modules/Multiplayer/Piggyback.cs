@@ -66,7 +66,7 @@ namespace Grate.Modules.Multiplayer
                 else
                 {
                     Vector3 position = mount.TransformPoint(mountOffset);
-                    Player.Instance.TeleportTo(position, Player.Instance.turnParent.transform.rotation);
+                    Player.Instance.TeleportTo(mount, true);
                 }
             }
         }

@@ -63,8 +63,8 @@
     <Reference Include="Mono.Security">
       <HintPath>$(GameAssemblyPath)\Mono.Security.dll</HintPath>
     </Reference>
-    <Reference Include="Utilla">
-      <HintPath>$(SteamPluginsPath)\Utilla\Utilla.dll</HintPath>
+    <Reference Include="Newtilla">
+      <HintPath>$(SteamPluginsPath)\Newtilla\Newtilla.dll</HintPath>
     </Reference>
     <Reference Include="Oculus.Platform">
       <HintPath>$(GameAssemblyPath)\Oculus.Platform.dll</HintPath>

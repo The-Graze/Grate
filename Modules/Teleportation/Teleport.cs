@@ -100,7 +100,7 @@ namespace Grate.Modules
                 teleportMarker.localScale = Vector3.one * Player.Instance.scale * t;
                 if (t >= 1)
                 {
-                    Player.Instance.TeleportTo(teleportMarker.position, player.bodyCollider.transform.rotation);
+                    Player.Instance.TeleportTo(teleportMarker, true);
                     break;
                 }
                 yield return new WaitForFixedUpdate();

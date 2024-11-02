@@ -8,6 +8,7 @@ using GorillaLocomotion;
 using BepInEx.Configuration;
 using Grate.Interaction;
 using Grate.Patches;
+using Oculus.Platform.Models;
 
 namespace Grate.Modules.Teleportation
 {
@@ -181,8 +182,11 @@ namespace Grate.Modules.Teleportation
 
             if (hit.collider != null)
             {
+                Vector3 position = base.transform.position;
+                Vector3 vector = Camera.main.transform.position - position;
                 Vector3 wawa = hit.point + hit.normal * Player.Instance.scale / 2f;
-                Player.Instance.TeleportTo(wawa, Player.Instance.headCollider.transform.rotation);
+                Vector3 position2 = wawa - vector;
+                Player.Instance.TeleportTo(wawa, Quaternion.Euler(Vector3.zero));
                 audioSource.Play();
                 thrown = false;
                 landed = true;
