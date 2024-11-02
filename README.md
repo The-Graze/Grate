@@ -82,4 +82,4 @@ Special thanks to Kyles little brother Asher for helping him test the OG :)
 
 * Orignal Bark Mod by kylethescientist pls show them love!
 
-* Thanks to wryser for helping with some modules!
+* Thanks to @wryser for helping with some modules!
