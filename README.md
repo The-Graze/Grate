@@ -1,7 +1,7 @@
 <h1 align="center">Grate</h1>
 <h3 align="center">Fork for a reason, show love to Kyle the OG creator</h2>
 
-<h3 align="center">*Grate* is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
+<h3 align="center">Grate is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
 
 <p align="center">
     <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://github.com/The-Graze/Grate/blob/master/Art/GrateArt.png?raw=true">
@@ -31,6 +31,9 @@
 * `Rockets` - **Press the grip button** to spawn a rocket in each hand that boosts you around.
 * `Wall Run` - Allows you to seamlessly transition between running on floors, walls, and ceilings! Push off to revert to normal movement.
 * `Zipline` - **Press the grip button** to spawn a zipline launcher. **Press and release the trigger** to fire a zipline.
+* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by **pressing grip to spawn the device in your hand**, then **A/B to place portals**.
+* `Double Jump` - Allows you to double jump. When midair, **press A/B on your right controller** to jump again.
+* `Climb` - By pressing **grip**, you can grab/climb terrain, objects, etc! 
 ### Physics
 * `Low Gravity` - Decreases the strength of gravity
 * `No Collide` - Allows the player to fall through solid objects. Enabling this automatically enables platforms so you don't fall to your death!
@@ -69,17 +72,17 @@ If you encounter any bugs or issues while using *Grate*, please report them on t
 ## Contributing
 If you would like to contribute to *Grate*, feel free to submit a pull request on the mod's GitHub page. I welcome any and all contributions that can help make the mod better for everyone.
 
-or pop a msg in my discord server and I may add it
+Or, you can send a message in my discord server and I may add it.
 
 ## Credits
 *Grate* was created by Graze. 
 *Bark* was created by KyleTheScientist. 
 Thanks to the Gorilla Tag modding community for their support.
 
-Special thanks to Kyles little brother Asher for helping him test the OG :)
+Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
-* Orignal Bark Mod by kylethescientist pls show them love!
+* Orignal Bark Mod by KyleTheScientist, please show them love!
 
-* Thanks to wryser for helping with some modules!
+* Thanks to Wryser for helping with some modules!
