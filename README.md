@@ -1,7 +1,7 @@
 <h1 align="center">Grate</h1>
 <h3 align="center">Fork for a reason, show love to Kyle the OG creator</h2>
 
-<h3 align="center">*Grate* is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
+<h3 align="center">Grate is a mod for the VR game Gorilla Tag. It allows the player to summon a 3D interface into the game that toggles various fun/useful mechanics on and off. Because it is only enabled in modded lobbies, this mod is safe to use online.</h1>
 
 <p align="center">
     <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://github.com/The-Graze/Grate/blob/master/Art/GrateArt.png?raw=true">
@@ -31,6 +31,8 @@
 * `Rockets` - **Press the grip button** to spawn a rocket in each hand that boosts you around.
 * `Wall Run` - Allows you to seamlessly transition between running on floors, walls, and ceilings! Push off to revert to normal movement.
 * `Zipline` - **Press the grip button** to spawn a zipline launcher. **Press and release the trigger** to fire a zipline.
+* `Double Jump` - Allows you to double jump. When midair, **press A/B on your right controller** to jump again.
+* `Climb` - By pressing **grip**, you can grab/climb terrain, objects, etc! 
 ### Physics
 * `Low Gravity` - Decreases the strength of gravity
 * `No Collide` - Allows the player to fall through solid objects. Enabling this automatically enables platforms so you don't fall to your death!
@@ -41,6 +43,7 @@
 * `Checkpoint` - **Grip the left trigger** to start summoning a holographic banana above your hand. Grip the *right trigger* to warp back to it.
 * `Pearl` - Use **grip** to summon a teleport pearl. Throw it and you will warp to wherever it lands.
 * `Teleport` - **Make a triangle with your thumbs and index fingers and peer through it** to initiate a teleport. Use your head to aim more finely.
+* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by **pressing grip to spawn the device in your hand**, then **A/B to place portals**.
 ### Multiplayer
 * `Boxing` - Better known as "punch mod", this allows the player to be punched around by others in the lobby. You can't be punched while touching the ground.
 * `Fireflies` - Press [Trigger] to summon a firefly for each player in the lobby. Release [Trigger] to send them flying to their player.
@@ -69,17 +72,17 @@ If you encounter any bugs or issues while using *Grate*, please report them on t
 ## Contributing
 If you would like to contribute to *Grate*, feel free to submit a pull request on the mod's GitHub page. I welcome any and all contributions that can help make the mod better for everyone.
 
-or pop a msg in my discord server and I may add it
+Or, you can send a message in my Discord server and I may add it.
 
 ## Credits
 *Grate* was created by Graze. 
 *Bark* was created by KyleTheScientist. 
 Thanks to the Gorilla Tag modding community for their support.
 
-Special thanks to Kyles little brother Asher for helping him test the OG :)
+Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
-* Orignal Bark Mod by kylethescientist pls show them love!
+* Original Bark Mod by KyleTheScientist, please show them love!
 
-* Thanks to wryser for helping with some modules!
+* Thanks to Wryser for helping with some modules!

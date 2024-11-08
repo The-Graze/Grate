@@ -25,7 +25,8 @@ namespace Grate.Modules.Movement
         Collider collider;
         Vector3 scale;
         string modelName;
-        GameObject model, HandBlock;
+        GameObject model;
+        GameObject Climbable;
         Transform wings;
         ParticleSystem rain;
 
@@ -46,12 +47,9 @@ namespace Grate.Modules.Movement
 
                 var handObj = isLeft ? Player.Instance.leftControllerTransform : Player.Instance.rightControllerTransform;
                 this.hand = handObj.transform;
-                HandBlock = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                HandBlock.transform.SetParent(transform);
-                HandBlock.transform.localPosition = new Vector3(0.06f ,0, 0);
-                HandBlock.transform.localScale = new Vector3(0.01f, 0.31f, 0.33f);
-                HandBlock.transform.localRotation = Quaternion.Euler(0, 347.5295f, 10.0527f);
-
+                Climbable = CreateClimbable();
+                Climbable.transform.SetParent(transform);
+                Climbable.transform.localPosition = Vector3.zero;
                 rain.loop = true;
             }
             catch (Exception e)
@@ -69,8 +67,8 @@ namespace Grate.Modules.Movement
             this.transform.localScale = scale * Player.Instance.scale;
             collider.gameObject.layer = NoClip.active ? NoClip.layer : 0;
             collider.gameObject.layer = NoClip.active ? NoClip.layer : 0;
-            collider.enabled = true;
-            HandBlock.SetActive(isSticky);
+            collider.enabled = !isSticky;
+            Climbable.SetActive(isSticky);
             this.model.SetActive(true);
             if (modelName == "storm cloud")
             {
@@ -80,11 +78,22 @@ namespace Grate.Modules.Movement
             Player.Instance.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
 
+        public GameObject CreateClimbable()
+        {
+            var climbable = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            climbable.name = "Grate Climb Obj";
+            climbable.AddComponent<GorillaClimbable>();
+            climbable.layer = LayerMask.NameToLayer("GorillaInteractable");
+            climbable.GetComponent<Renderer>().enabled = false;
+            climbable.transform.localScale = Vector3.one * .15f;
+            return climbable;
+        }
+
         public void Deactivate()
         {
             isActive = false;
             collider.enabled = false;
-            HandBlock.SetActive(false);
+            Climbable.SetActive(false);
             if (!this.model.name.Contains("cloud"))
                 this.model.SetActive(false);
         }

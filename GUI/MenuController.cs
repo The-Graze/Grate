@@ -91,7 +91,7 @@ namespace Grate.GUI
                     gameObject.AddComponent<Telekinesis>(),
                     gameObject.AddComponent<Fireflies>(),
                     //gameObject.AddComponent<XRay>(),
-                    gameObject.AddComponent<RatSword>(),
+                    //gameObject.AddComponent<RatSword>(),
                     //gameObject.AddComponent<Kamehameha>(),
 
                     //// Misc
@@ -471,17 +471,16 @@ namespace Grate.GUI
                    "Which Theme Should Grate Use?",
                    new AcceptableValueList<string>("grate", "bark")
                );
-                Theme = Plugin.configFile.Bind("General",
+                Theme = Plugin.configFile.Bind("Theme",
                     "theme",
                     "grate",
                     ThemeDesc
                 );
-
                 ConfigDescription FestiveDesc = new ConfigDescription(
                     "Should the christmas lights be on?",
                     new AcceptableValueList<bool>(true, false)
                 );
-                Festive = Plugin.configFile.Bind("General",
+                Festive = Plugin.configFile.Bind("Theme",
                     "festive",
                     false,
                     FestiveDesc

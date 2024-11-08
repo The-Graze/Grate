@@ -20,7 +20,7 @@ namespace Grate.Modules.Multiplayer
         private VRRig mountedRig;
         private bool latchedWithLeft;
         private const float mountDistance = 1.5f;
-        private Vector3 mountOffset = new Vector3(0, .05f, -.5f);
+        private Vector3 mountOffset = new Vector3(0, 1f, -1f);
         private Vector3 mountPosition;
 
         public static Piggyback Instance;

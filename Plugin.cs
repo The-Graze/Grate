@@ -33,7 +33,6 @@ namespace Grate
         public static ConfigFile configFile;
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
-        public static bool InModded { get ; protected set; }
         GestureTracker gt;
         NetworkPropertyHandler nph;
 
@@ -93,19 +92,7 @@ namespace Grate
         {
             try
             {
-                Logging.Debug("Start");
-                //Utilla.Events.GameInitialized += OnGameInitialized;
-                GorillaTagger.OnPlayerSpawned(delegate
-                {
-                    try
-                    {
-                        OnGameInitialized(null, null);
-                    }
-                    catch
-                    {
-
-                    }
-                });
+                GorillaTagger.OnPlayerSpawned(OnGameInitialized);
                 assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/barkbundle");
                 portalAssetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/portals");
                 monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
@@ -190,7 +177,7 @@ namespace Grate
             }
         }
 
-        void OnGameInitialized(object sender, EventArgs e)
+        void OnGameInitialized()
         {
             try
             {
@@ -199,12 +186,10 @@ namespace Grate
                 string platform = (string)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
                 Logging.Info("Platform: ", platform);
                 IsSteam = platform.ToLower().Contains("steam");
-                //Newtilla.Newtilla.OnJoinModded += RoomJoined;
-                //Newtilla.Newtilla.OnLeaveModded += RoomLeft;
 
-                //Doing this cos it works with both new and old utilla, will remove soon prob
-                Utilla.Events.RoomJoined += RoomJoined;
-                Utilla.Events.RoomLeft += RoomLeft;
+                NetworkSystem.Instance.OnJoinedRoomEvent += roomJoined;
+                NetworkSystem.Instance.OnReturnedToSinglePlayer += roomLeft;
+
                 if (DebugMode)
                     CreateDebugGUI();
             }
@@ -214,24 +199,34 @@ namespace Grate
             }
         }
 
-        void RoomJoined(object sender, Utilla.Events.RoomJoinedArgs e)
+        private void roomLeft()
         {
-            if (e.Gamemode.Contains("MODDED_"))
+            if (inRoom)
             {
-                Logging.Debug("RoomJoined");
-                inRoom = true;
-                Setup();
+                ModdedLeave();
             }
         }
 
-        void RoomLeft(object sender, Utilla.Events.RoomJoinedArgs e)
+        private void roomJoined()
         {
-            if (e.Gamemode.Contains("MODDED_"))
+            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
-                Logging.Debug("RoomLeft");
-                inRoom = false;
-                Cleanup();
+                ModdedJoin();
             }
+        }
+
+        void ModdedJoin()
+        {
+            Logging.Debug("RoomJoined");
+            inRoom = true;
+            Setup();
+        }
+
+        void ModdedLeave()
+        {
+            Logging.Debug("RoomLeft");
+            inRoom = false;
+            Cleanup();
         }
 
         public void JoinLobby(string name, string gamemode)

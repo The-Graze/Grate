@@ -8,6 +8,7 @@ using Grate.GUI;
 using BepInEx.Configuration;
 using UnityEngine.XR;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Grate.Modules.Teleportation
 {
@@ -165,8 +166,16 @@ namespace Grate.Modules.Teleportation
             }
             if (!outPortal) return;
             float p = Player.Instance.RigidbodyVelocity.magnitude;
-            Player.Instance.TeleportTo(outPortal.transform, true);
+            StartCoroutine(PortalTimeout(outPortal));
+            Player.Instance.TeleportTo(outPortal.transform.position, outPortal.transform.rotation);
             Player.Instance.SetVelocity(p * outPortal.transform.forward);
+        }
+
+        IEnumerator PortalTimeout(GameObject portal)
+        {
+            portal.GetComponent<CollisionObserver>().enabled = false;
+            yield return new WaitForSeconds(1);
+            portal.GetComponent<CollisionObserver>().enabled = true;
         }
 
         RaycastHit Raycast(Vector3 origin, Vector3 forward)
