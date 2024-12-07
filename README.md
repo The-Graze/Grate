@@ -83,6 +83,6 @@ Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
-* Original Bark Mod by [KyleTheScientist](https://www.github.com/KyleTheScientist), please show them love!
+* Original Bark Mod by [KyleTheScientist](https://www.github.com/KyleTheScientist). They worked very hard on it so please show them love!
 
 * Thanks to [wryser](https://www.github.com/wryser) for helping with some modules!
