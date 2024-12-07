@@ -18,12 +18,12 @@
 * OG YouTube: https://www.youtube.com/@kylethescientist
 
 ## Features
-*Grate* has various modules that can be toggled on and off, including:
+[*Grate*] (https://github.com/The-Graze/Grate) has various modules that can be toggled on and off, including:
 
 ### Movement
-* `Airplane` - This allows the player to fly around. **Spread your arms out like and airplane** to activate and use your wrists to steer!
+* `Airplane` - This allows the player to fly around. **Spread your arms out like an airplane** to activate and use your wrists to steer!
 * `Bubble` - (Networked!) Creates a bubble around your so you can float around.
-* `Fly` - Use the **joysticks** fly around
+* `Fly` - Use the **joysticks** to fly around
 * `Grappling Hooks` - **Grab one of the grapple guns** off of your hip holster with **either grip button and then press the trigger to fire**
 * `Platforms (Left/Right)` - **Press the grip button** on your controller to create a floating platform in the air that you can stand on. There's a toggle for each hand so that you can disable one if it clashes with another mod's inputs.
 * `Speed Boost` - Significantly increases the player's movement speed (Speed reduced to avoid bans)
@@ -51,8 +51,8 @@
 * `Telekinesis` - If another player points at you with their grip button pressed, they can
   pick you up and throw you from afar.
 ### Miscellaneous
-* `Join Grate Code` - Allows you to join a private lobby with other Grate users. (This module was changed, formerly being 'Join Bark Code', but it was changed for Grate.)
-* `Settings` - At the top of the *Grate* menu on any page, allows you to change settings for most modules.
+* `Join Grate Code` - Allows you to join a private lobby with other [*Grate*] (https://github.com/The-Graze/Grate) users. (This module was changed, formerly being 'Join Bark Code', but it was changed for [*Grate*] (https://github.com/The-Graze/Grate).)
+* `Settings` - At the top of the [*Grate*] (https://github.com/The-Graze/Grate) menu on any page, allows you to change settings for most modules.
 
 These modules can be useful for exploring the game world, experimenting with gameplay mechanics, or just having fun with friends. They are **not** meant to be used to harass others, which can result in a ban from the game.
 
@@ -60,29 +60,29 @@ These modules can be useful for exploring the game world, experimenting with gam
 When you join a modded lobby, simply beat on your chest like a gorilla in an alternating fashion with both hands 4 times (LRLR or RLRL). This will summon the interface in front of you. To hide the interface, simply grab it and throw it away.
 
 ## Installation
-To install *Grate*, simply download the .dll from releases and put it in your Gorilla Tag plugins folder.
+To install [*Grate*] (https://github.com/The-Graze/Grate), simply download the .dll from [releases] (https://github.com/The-Graze/Grate/releases) and put it in your Gorilla Tag plugins folder.
 
 ## Important notes
 
-While *Grate* is designed to be safe to use in modded lobbies, it is important to note that using mods in any form in public lobbies or non-modded privates can result in a ban from the game. Use *Grate* at your own risk and only in modded lobbies.
+While [*Grate*] (https://github.com/The-Graze/Grate) is designed to be safe to use in modded lobbies, it is important to note that using mods in any form in public lobbies or non-modded privates can result in a ban from the game. Use [*Grate*] (https://github.com/The-Graze/Grate) at your own risk and only in modded lobbies.
 
 ## Bugs and issues
-If you encounter any bugs or issues while using *Grate*, please report them on the mod's GitHub page or my discord server linked above. I will do my best to address them as soon as possible. 
+If you encounter any bugs or issues while using [*Grate*] (https://github.com/The-Graze/Grate), please report them on the mod's GitHub page or my discord server linked above. I will do my best to address them as soon as possible. 
 
 ## Contributing
-If you would like to contribute to *Grate*, feel free to submit a pull request on the mod's GitHub page. I welcome any and all contributions that can help make the mod better for everyone.
+If you would like to contribute to [*Grate*] (https://github.com/The-Graze/Grate), feel free to submit a pull request on the mod's GitHub page. I welcome any and all contributions that can help make the mod better for everyone.
 
 Or, you can send a message in my Discord server and I may add it.
 
 ## Credits
-*Grate* was created by Graze. 
-*Bark* was created by KyleTheScientist. 
+[*Grate*] (https://github.com/The-Graze/Grate) was created by [Graze] (https://github.com/The-Graze). 
+[*Bark*] (https://github.com/KyleTheScientist/Bark) was created by [KyleTheScientist] (https://www.github.com/KyleTheScientist). 
 Thanks to the Gorilla Tag modding community for their support.
 
 Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
 
-* Original Bark Mod by KyleTheScientist, please show them love!
+* Original Bark Mod by [KyleTheScientist] (https://www.github.com/KyleTheScientist), please show them love!
 
-* Thanks to @wryser for helping with some modules!
+* Thanks to [wryser] (https://www.github.com/wryser) for helping with some modules!
