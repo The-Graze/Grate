@@ -50,6 +50,7 @@
 * `Piggyback` - Allows you to ride other players! To mount someone, **have them give a thumbs-up**, and then **grip nearby them**. If they **give you a thumbs down** at any point, you'll stop riding them. *Consent is important!*
 * `Telekinesis` - If another player points at you with their grip button pressed, they can
   pick you up and throw you from afar.
+* `ESP` - Similar to Fireflies, allowing you to see players through walls.
 ### Miscellaneous
 * `Join Grate Code` - Allows you to join a private lobby with other Grate users. (This module was changed, formerly being 'Join Bark Code', but it was changed for Grate.)
 * `Settings` - At the top of the *Grate* menu on any page, allows you to change settings for most modules.
@@ -85,4 +86,6 @@ Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * Original Bark Mod by KyleTheScientist, please show them love!
 
-* Thanks to Wryser for helping with some modules!
+* Thanks to wryser for helping with some modules!
+
+* Thanks to Rylan for helping with the README! (Yes, I added this myself, shush.)
