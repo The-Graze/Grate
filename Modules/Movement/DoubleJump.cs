@@ -26,11 +26,11 @@ namespace Grate.Modules.Movement
         Vector3 direction;
         void FixedUpdate()
         {
-            if (_player.wasRightHandTouching || _player.wasLeftHandTouching)
+            if (_player.wasRightHandColliding || _player.wasLeftHandColliding)
             {
                 canDoubleJump = true;
             }
-            if (canDoubleJump && primaryPressed && !(_player.wasRightHandTouching || _player.wasLeftHandTouching))
+            if (canDoubleJump && primaryPressed && !(_player.wasRightHandColliding || _player.wasLeftHandColliding))
             {
                 direction = (_player.headCollider.transform.forward + Vector3.up) / 2;
                 _rigidbody.velocity = new Vector3(direction.x, direction.y, direction.z) * _player.maxJumpSpeed * _player.scale * GetJumpForce(JumpForce.Value);

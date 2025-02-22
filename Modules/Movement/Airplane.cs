@@ -22,7 +22,7 @@ namespace Grate.Modules.Movement
                 tracker.rightGrip.pressed) return;
 
             var player = Player.Instance;
-            if (player.wasLeftHandTouching || player.wasRightHandTouching) return;
+            if (player.wasLeftHandColliding || player.wasRightHandColliding) return;
 
             if (SteerWith.Value == "head")
                 direction = player.headCollider.transform.forward;

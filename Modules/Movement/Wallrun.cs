@@ -27,7 +27,7 @@ namespace Grate.Modules.Movement
         protected void FixedUpdate()
         {
             Player player = Player.Instance;
-            if (player.wasLeftHandTouching || player.wasRightHandTouching)
+            if (player.wasLeftHandColliding || player.wasRightHandColliding)
             {
                 FieldInfo fieldInfo = typeof(Player).GetField("lastHitInfoHand", BindingFlags.NonPublic | BindingFlags.Instance);
                 hit = (RaycastHit)fieldInfo.GetValue(player);
