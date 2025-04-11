@@ -26,7 +26,7 @@
 *Grate* has various modules that can be toggled on and off, including:
 
 ### Movement
-* `Airplane` - This allows the player to fly around. **Spread your arms out like and airplane** to activate and use your wrists to steer!
+* `Airplane` - This allows the player to fly around. **Spread your arms out like an airplane** to activate and use your wrists to steer!
 * `Bubble` - (Networked!) Creates a bubble around your so you can float around.
 * `Fly` - Use the **joysticks** fly around
 * `Grappling Hooks` - **Grab one of the grapple guns** off of your hip holster with **either grip button and then press the trigger to fire**
@@ -67,10 +67,10 @@ These modules can be useful for exploring the game world, experimenting with gam
 ## Usage
 When you join a modded lobby, simply beat on your chest like a gorilla in an alternating fashion with both hands 4 times (LRLR or RLRL). This will summon the interface in front of you. To hide the interface, simply grab it and throw it away.
 
-this can even be changed to button in the settings
+This can even be changed in the settings of *Grate*.
 
 ## Installation
-To install *Grate*, simply download the .dll from releases and put it in your Gorilla Tag plugins folder. Additionally, you can use The-Graze's fork of [Monke Mod Manager](https://github.com/The-Graze/MonkeModManager) to install *Grate*.
+To install *Grate*, simply download the "Grate.dll" from releases and put it in your Gorilla Tag plugins folder. Additionally, you can use The-Graze's fork of [Monke Mod Manager](https://github.com/The-Graze/MonkeModManager) to install *Grate*.
 
 ## Important notes
 
@@ -91,10 +91,10 @@ Thanks to the Gorilla Tag modding community for their support.
 
 Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
-* [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+* [Boxing Gloves model](https://skfb.ly/6XOUS) by Gohar.Munir is licensed under [Creative Commons Attribution](http://creativecommons.org/licenses/by/4.0/).
 
-* Original Bark Mod by KyleTheScientist, please show them love!
+* Original Bark Mod by [KyleTheScientist](https://github.com/KyleTheScientist), please show them love!
 
-* Thanks to wryser for helping with some modules!
+* Thanks to [wryser](https://github.com/wryser) for helping with some modules!
 
-* Thanks to Rylan for helping with the README! (Yes, I added this myself, shush.)
+* Thanks to [Rylan](https://github.com/RylanFoxins) for helping with the README!
