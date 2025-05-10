@@ -58,7 +58,6 @@
   pick you up and throw you from afar.
 * `ESP` - Similar to Fireflies, allowing you to see players through walls.
 ### Miscellaneous
-* `Join Grate Code` - Allows you to join a private lobby with other Grate users. (This module was changed, formerly being 'Join Bark Code', but it was changed for Grate.)
 * `Settings` - At the top of the *Grate* menu on any page, allows you to change settings for most modules.
 * `Kamehameha` - Face your palms together with a small gap to charge, wait a few seconds and then push your hands out to execute it.
 
