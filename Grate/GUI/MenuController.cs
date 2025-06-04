@@ -34,7 +34,7 @@ namespace Grate.GUI
         initialMenuOffset = new Vector3(0, .035f, .65f),
         btnDimensions = new Vector3(.3f, .05f, .05f);
         public Rigidbody _rigidbody;
-        private List<Transform> modPages;
+        public List<Transform> modPages;
         public List<ButtonController> buttons;
         public List<GrateModule> modules = new List<GrateModule>();
         public GameObject modPage, settingsPage;
