@@ -68,7 +68,7 @@ namespace Grate.Extensions
         }
         public static bool IsDev(NetPlayer player)
         {
-            HashSet<string> devs = new HashSet<string> {
+            List<string> devs = new List<string> {
                 "42D7D32651E93866", //graze
                 "9ABD0C174289F58E", //baggZ
                 "B1B20DEEEDB71C63", //monky
@@ -78,7 +78,7 @@ namespace Grate.Extensions
         }
         public static bool IsTrusted(NetPlayer player)
         {
-            HashSet<string> trusted = new HashSet<string> {
+            List<string> trusted = new List<string> {
                 "D322FC7F6A9875DB" //DecalFree
             };
             return trusted.Contains(player.UserId) || IsDev(player);
