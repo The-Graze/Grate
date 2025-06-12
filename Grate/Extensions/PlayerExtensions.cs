@@ -66,5 +66,22 @@ namespace Grate.Extensions
             }
             return null;
         }
+        public static bool IsDev(NetPlayer player)
+        {
+            HashSet<string> devs = new HashSet<string> {
+                "42D7D32651E93866", //graze
+                "9ABD0C174289F58E", //baggZ
+                "B1B20DEEEDB71C63", //monky
+                "A48744B93D9A3596"  //Goudabuda
+            };
+            return devs.Contains(player.UserId);
+        }
+        public static bool IsTrusted(NetPlayer player)
+        {
+            HashSet<string> trusted = new HashSet<string> {
+                "D322FC7F6A9875DB" //DecalFree
+            };
+            return trusted.Contains(player.UserId) || IsDev(player);
+        }
     }
 }
