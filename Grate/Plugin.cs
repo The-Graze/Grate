@@ -30,6 +30,8 @@ namespace Grate
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
+        internal static bool localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
+        internal static bool localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
 
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;

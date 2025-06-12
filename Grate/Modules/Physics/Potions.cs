@@ -26,7 +26,6 @@ namespace Grate.Modules.Physics
         public static Traverse sizeChangerTraverse, minScale, maxScale;
         public static Potions Instance;
         public static bool active;
-        public static bool isTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
 
         // Networking
         public static readonly string playerSizeKey = "GratePlayerSize";
@@ -125,7 +124,7 @@ namespace Grate.Modules.Physics
             bool shrink = potion.gameObject == shrinkPotion;
             if (!shrink && !PositionValidator.Instance.isValidAndStable) return;
             float delta = shrink ? .99f : 1.01f;
-            delta = isTrusted? sizeChanger.MinScale * delta:Mathf.Clamp(sizeChanger.MinScale * delta, .03f, 20f);
+            delta = Plugin.localPlayerTrusted? sizeChanger.MinScale * delta:Mathf.Clamp(sizeChanger.MinScale * delta, .03f, 20f);
             if(delta < 1)
                 potion.gulp.pitch = MathExtensions.Map(GTPlayer.Instance.scale, 0, 1, 1.5f, 1);
             else

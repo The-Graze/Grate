@@ -66,6 +66,8 @@ namespace Grate.Extensions
             }
             return null;
         }
+
+        //use Plugin.localPlayerDev for checking if the local player is a dev
         public static bool IsDev(NetPlayer player)
         {
             List<string> devs = new List<string> {
@@ -76,6 +78,7 @@ namespace Grate.Extensions
             };
             return devs.Contains(player.UserId);
         }
+        //use Plugin.localPlayerTrusted for checking if the local player is trusted
         public static bool IsTrusted(NetPlayer player)
         {
             List<string> trusted = new List<string> {

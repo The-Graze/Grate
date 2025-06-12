@@ -23,7 +23,6 @@ namespace Grate.Modules.Multiplayer
         private const float mountDistance = 1.5f;
         private Vector3 mountOffset = new Vector3(0, 1f, -1f);
         private Vector3 mountPosition;
-        private bool isTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
 
         public static Piggyback Instance;
         void Awake() { Instance = this; }
@@ -119,7 +118,7 @@ namespace Grate.Modules.Multiplayer
         bool GivingConsent(VRRig rig)
         {
             var np = rig.GetComponent<NetworkedPlayer>();
-            if (isTrusted){return true; }
+            if (Plugin.localPlayerTrusted){return true; }
             return
                     np.RightTriggerPressed &&
                     np.RightGripPressed &&
@@ -136,7 +135,7 @@ namespace Grate.Modules.Multiplayer
         bool RevokingConsent(VRRig rig)
         {
             var np = rig.GetComponent<NetworkedPlayer>();
-            if (isTrusted) {return true; }
+            if (Plugin.localPlayerTrusted) {return false; }
             return
                     np.RightTriggerPressed &&
                     np.RightGripPressed &&
