@@ -125,6 +125,10 @@ public class MenuController : GrateGrabbable
                 if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
                 var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
                 if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
+                var trustedMod = gameObject.AddComponent<Trusted>();
+                if (Plugin.localPlayerTrusted) modules.Add(trustedMod);
+                var developerMod = gameObject.AddComponent<Developer>();
+                if (Plugin.localPlayerDev) modules.Add(developerMod);
                 modules.AddRange(TooAddmodules);
                 ReloadConfiguration();
             }
