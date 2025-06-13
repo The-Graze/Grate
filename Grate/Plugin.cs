@@ -30,8 +30,8 @@ namespace Grate
         public static MenuController menuController;
         public static GameObject monkeMenuPrefab;
         public static ConfigFile configFile;
-        internal static bool localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
-        internal static bool localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
+        internal static bool localPlayerTrusted;
+        internal static bool localPlayerDev;
 
         public static bool IsSteam { get; protected set; }
         public static bool DebugMode { get; protected set; } = false;
@@ -44,6 +44,8 @@ namespace Grate
             gt = gameObject.GetOrAddComponent<GestureTracker>();
             nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
             menuController = Instantiate(monkeMenuPrefab).AddComponent<MenuController>();
+            localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
+            localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
         }
 
         public void Cleanup()
