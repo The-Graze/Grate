@@ -2,6 +2,7 @@
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
+using Grate.Modules.Movement;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
@@ -44,6 +45,7 @@ public class Trusted : GrateModule
         {
             Logging.Exception(e);
         }
+        Plugin.menuController.GetComponent<Developer>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
@@ -100,11 +102,13 @@ public class Trusted : GrateModule
         private void OnDisable()
         {
             phone.Obliterate();
+            Plugin.menuController.GetComponent<Developer>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnDestroy()
         {
             phone.Obliterate();
+            Plugin.menuController.GetComponent<Developer>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
     }
 }

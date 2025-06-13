@@ -2,6 +2,7 @@
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
+using Grate.Modules.Movement;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
@@ -51,9 +52,9 @@ public class Developer : GrateModule
         if (mod == DisplayName && Plugin.localPlayerTrusted)
         {
             if (enabled)
-                player.Rig().gameObject.GetOrAddComponent<NetCheese>();
+                player.Rig().gameObject.GetOrAddComponent<NetPhone>();
             else
-                Destroy(player.Rig().gameObject.GetComponent<NetCheese>());
+                Destroy(player.Rig().gameObject.GetComponent<NetPhone>());
         }
     }
 
@@ -64,7 +65,7 @@ public class Developer : GrateModule
 
     private void OnRigCached(NetPlayer player, VRRig rig)
     {
-        rig?.gameObject?.GetComponent<NetCheese>()?.Obliterate();
+        rig?.gameObject?.GetComponent<NetPhone>()?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -77,7 +78,7 @@ public class Developer : GrateModule
         return "Given to the devs";
     }
 
-    private class NetCheese : MonoBehaviour
+    private class NetPhone : MonoBehaviour
     {
         private GameObject phone;
         private NetworkedPlayer networkedPlayer;
@@ -95,16 +96,19 @@ public class Developer : GrateModule
             phone.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             phone.SetActive(true);
+            Plugin.menuController.GetComponent<Trusted>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnDisable()
         {
             phone.Obliterate();
+            Plugin.menuController.GetComponent<Trusted>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnDestroy()
         {
             phone.Obliterate();
+            Plugin.menuController.GetComponent<Trusted>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
     }
 }
