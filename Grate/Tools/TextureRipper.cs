@@ -1,63 +1,63 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+using System.IO;
 using Grate.Extensions;
+using UnityEngine;
 
-namespace Grate.Tools
+namespace Grate.Tools;
+
+public static class TextureRipper
 {
-    public static class TextureRipper
+    public static string folderName = "C:\\Users\\ultra\\Pictures\\Gorilla Tag Textures";
+
+    public static void Rip()
     {
-        public static string folderName = "C:\\Users\\ultra\\Pictures\\Gorilla Tag Textures";
-
-        public static void Rip()
+        var step = "Start";
+        Directory.CreateDirectory(folderName);
+        try
         {
-
-            string step = "Start";
-            Directory.CreateDirectory(folderName);
-            try
+            step = "Locating renderers";
+            var renderers = GameObject.FindObjectsOfType<Renderer>();
+            Logging.Debug("Found", renderers.Length, "renderers");
+            step = "Looping through renderers";
+            var knownTextures = new List<Texture>();
+            foreach (var renderer in renderers)
             {
-                step = "Locating renderers";
-                Renderer[] renderers = GameObject.FindObjectsOfType<Renderer>();
-                Logging.Debug("Found", renderers.Length, "renderers");
-                step = "Looping through renderers";
-                List<Texture> knownTextures = new List<Texture>();
-                foreach (Renderer renderer in renderers)
-                {
-                    step = "Formatting file path";
-                    step = "Storing materials";
-                    Material[] materials = renderer.sharedMaterials;
-                    for (int i = 0; i < materials.Length; i++)
+                step = "Formatting file path";
+                step = "Storing materials";
+                Material[] materials = renderer.sharedMaterials;
+                for (var i = 0; i < materials.Length; i++)
+                    try
                     {
-                        try
+                        step = "Getting main texutre";
+                        var texture = materials[i].mainTexture;
+                        if (texture != null && !knownTextures.Contains(texture))
                         {
-                            step = "Getting main texutre";
-                            Texture texture = materials[i].mainTexture;
-                            if (texture != null && !knownTextures.Contains(texture))
-                            {
-                                knownTextures.Add(texture);
-                                step = "Creating directory";
-                                step = "Encoding to png";
-                                byte[] bytes = (texture as Texture2D).Copy().EncodeToPNG();
-                                step = "Getting material name";
-                                string materialName = materials[i].name;
-                                step = "Getting file name";
-                                string filename = Path.Combine(folderName, renderer.gameObject.name + "--" + materialName + ".png");
-                                step = "Writing bytes";
-                                if (filename.Contains("plastickey")) continue;
-                                Logging.Debug(filename, bytes);
-                                File.WriteAllBytes(filename, bytes);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Logging.Exception(e);
+                            knownTextures.Add(texture);
+                            step = "Creating directory";
+                            step = "Encoding to png";
+                            var bytes = (texture as Texture2D).Copy().EncodeToPNG();
+                            step = "Getting material name";
+                            var materialName = materials[i].name;
+                            step = "Getting file name";
+                            var filename = Path.Combine(folderName,
+                                renderer.gameObject.name + "--" + materialName + ".png");
+                            step = "Writing bytes";
+                            if (filename.Contains("plastickey")) continue;
+                            Logging.Debug(filename, bytes);
+                            File.WriteAllBytes(filename, bytes);
                         }
                     }
-                }
+                    catch (Exception e)
+                    {
+                        Logging.Exception(e);
+                    }
             }
-            catch (Exception e) { Logging.Warning("Failed at step", step); Logging.Exception(e); }
+        }
+        catch (Exception e)
+        {
+            Logging.Warning("Failed at step", step);
+            Logging.Exception(e);
         }
     }
 }

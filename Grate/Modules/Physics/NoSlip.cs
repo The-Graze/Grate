@@ -1,40 +1,38 @@
 ﻿using Grate.GUI;
 using Grate.Patches;
-using BepInEx.Configuration;
-using GorillaLocomotion;
-using UnityEngine;
 
-namespace Grate.Modules.Physics
+namespace Grate.Modules.Physics;
+
+public class NoSlip : GrateModule
 {
-    public class NoSlip: GrateModule
+    public static readonly string DisplayName = "No Slip";
+    public static NoSlip Instance;
+
+    private void Awake()
     {
-        public static readonly string DisplayName = "No Slip";
-        public static NoSlip Instance;
+        Instance = this;
+    }
 
-        void Awake() { Instance = this; }
+    protected override void OnEnable()
+    {
+        if (!MenuController.Instance.Built) return;
+        base.OnEnable();
+        if (SlipperyHands.Instance)
+            SlipperyHands.Instance.enabled = false;
+    }
 
-        protected override void OnEnable()
-        {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-            if (SlipperyHands.Instance)
-                SlipperyHands.Instance.enabled = false;
-        }
+    protected override void Cleanup()
+    {
+        var s = $"The functionality for this module is in {nameof(SlidePatch)}";
+    }
 
-        protected override void Cleanup() 
-        {
-            string s = $"The functionality for this module is in {nameof(SlidePatch) }";
-        }
+    public override string GetDisplayName()
+    {
+        return DisplayName;
+    }
 
-        public override string GetDisplayName()
-        {
-            return DisplayName;
-        }
-
-        public override string Tutorial()
-        {
-            return "Effect: You no longer slide on slippery surfaces.";
-        }
-
+    public override string Tutorial()
+    {
+        return "Effect: You no longer slide on slippery surfaces.";
     }
 }

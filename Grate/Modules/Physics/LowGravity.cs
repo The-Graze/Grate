@@ -1,65 +1,64 @@
-﻿using Grate.GUI;
-using BepInEx.Configuration;
+﻿using BepInEx.Configuration;
+using Grate.GUI;
 using UnityEngine;
 
-namespace Grate.Modules.Physics
+namespace Grate.Modules.Physics;
+
+public class LowGravity : GrateModule
 {
-    public class LowGravity : GrateModule
+    public static readonly string DisplayName = "Gravity";
+    public static LowGravity Instance;
+
+    public static ConfigEntry<int> Multiplier;
+    public float gravityScale = .25f;
+    private Vector3 baseGravity;
+    public bool active { get; private set; }
+
+    private void Awake()
     {
-        public static readonly string DisplayName = "Gravity";
-        public static LowGravity Instance;
-        Vector3 baseGravity;
-        public float gravityScale = .25f;
-        public bool active { get; private set; }
+        Instance = this;
+        baseGravity = UnityEngine.Physics.gravity;
+    }
 
-        void Awake()
-        {
-            Instance = this;
-            baseGravity = UnityEngine.Physics.gravity;
-        }
+    protected override void OnEnable()
+    {
+        if (!MenuController.Instance.Built) return;
+        base.OnEnable();
+        ReloadConfiguration();
+        active = true;
+    }
 
-        protected override void OnEnable()
-        {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-            ReloadConfiguration();
-            active = true;
-        }
+    protected override void Cleanup()
+    {
+        if (!active) return;
+        UnityEngine.Physics.gravity = baseGravity;
+        active = false;
+    }
 
-        protected override void Cleanup()
-        {
-            if (!active) return;
-            UnityEngine.Physics.gravity = baseGravity;
-            active = false;
-        }
+    protected override void ReloadConfiguration()
+    {
+        gravityScale = Multiplier.Value / 5f;
+        gravityScale = Mathf.Pow(gravityScale, 2f);
+        UnityEngine.Physics.gravity = baseGravity * gravityScale;
+    }
 
-        protected override void ReloadConfiguration()
-        {
-            gravityScale = Multiplier.Value / 5f;
-            gravityScale = Mathf.Pow(gravityScale, 2f);
-            UnityEngine.Physics.gravity = baseGravity * gravityScale;
-        }
+    public static void BindConfigEntries()
+    {
+        Multiplier = Plugin.configFile.Bind(
+            DisplayName,
+            "multiplier",
+            2,
+            "How strong gravity will be (0=No gravity, 5=Normal gravity, 10=2x Jupiter Gravity)"
+        );
+    }
 
-        public static ConfigEntry<int> Multiplier;
-        public static void BindConfigEntries()
-        {
-            Multiplier = Plugin.configFile.Bind(
-                section: DisplayName,
-                key: "multiplier",
-                defaultValue: 2,
-                description: "How strong gravity will be (0=No gravity, 5=Normal gravity, 10=2x Jupiter Gravity)"
-            );
-        }
+    public override string GetDisplayName()
+    {
+        return DisplayName;
+    }
 
-        public override string GetDisplayName()
-        {
-            return DisplayName;
-        }
-
-        public override string Tutorial()
-        {
-            return "Effect: Changes the strength of gravity. \n\nYou can modify the strength in the settings menu.";
-        }
-
+    public override string Tutorial()
+    {
+        return "Effect: Changes the strength of gravity. \n\nYou can modify the strength in the settings menu.";
     }
 }

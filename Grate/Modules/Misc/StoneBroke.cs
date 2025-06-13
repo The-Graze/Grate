@@ -1,122 +1,121 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Grate.Extensions;
+﻿using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Networking;
+using Grate.Patches;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.XR;
 
-namespace Grate.Modules.Misc
+namespace Grate.Modules.Misc;
+
+internal class StoneBroke : GrateModule
 {
-    class StoneBroke : GrateModule
+    public static GameObject wawa;
+
+    public static InputTracker inputL, inputR;
+    private Awsomepnix LocalP;
+
+    private void Awake()
     {
-        Awsomepnix LocalP;
-        public static GameObject wawa;
+        NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+        VRRigCachePatches.OnRigCached += OnRigCached;
+    }
 
-       public static InputTracker inputL, inputR;
-        public override string GetDisplayName()
-        {
-            return "StoneBroke :3";
-        }
+    protected override void Start()
+    {
+        base.Start();
+        wawa = Plugin.assetBundle.LoadAsset<GameObject>("bs");
+    }
 
-        public override string Tutorial()
-        {
-            return "MuskEnjoyer";
-        }
-        void Awake()
-        {
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
-        }
+    protected override void OnEnable()
+    {
+        if (!MenuController.Instance.Built) return;
+        base.OnEnable();
+        LocalP = GorillaTagger.Instance.offlineVRRig.AddComponent<Awsomepnix>();
+    }
 
-        protected override void Start()
-        {
-            base.Start();
-            wawa = Plugin.assetBundle.LoadAsset<GameObject>("bs");
-        }
+    public override string GetDisplayName()
+    {
+        return "StoneBroke :3";
+    }
 
-        protected override void OnEnable()
+    public override string Tutorial()
+    {
+        return "MuskEnjoyer";
+    }
+
+    private void OnRigCached(NetPlayer player, VRRig rig)
+    {
+        if (rig?.gameObject?.GetComponent<Awsomepnix>() != null)
         {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-            LocalP = GorillaTagger.Instance.offlineVRRig.AddComponent<Awsomepnix>();
+            rig?.gameObject?.GetComponent<Awsomepnix>()?.ps.Obliterate();
+            rig?.gameObject?.GetComponent<Awsomepnix>()?.Obliterate();
         }
-        private void OnRigCached(NetPlayer player, VRRig rig)
+    }
+
+
+    private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
+    {
+        if (mod == GetDisplayName() && player.UserId == "CA8FDFF42B7A1836")
         {
-            if (rig?.gameObject?.GetComponent<Awsomepnix>() != null)
+            if (enabled)
             {
-                rig?.gameObject?.GetComponent<Awsomepnix>()?.ps.Obliterate();
-                rig?.gameObject?.GetComponent<Awsomepnix>()?.Obliterate();
+                player.Rig().gameObject.GetOrAddComponent<Awsomepnix>();
+            }
+            else
+            {
+                player.Rig().gameObject.GetComponent<Awsomepnix>().ps.gameObject.Obliterate();
+                player.Rig().gameObject.GetComponent<Awsomepnix>().Obliterate();
+            }
+        }
+    }
+
+    protected override void Cleanup()
+    {
+        LocalP?.ps.Obliterate();
+        LocalP?.Obliterate();
+    }
+
+    private class Awsomepnix : MonoBehaviour
+    {
+        public GameObject ps;
+        private NetworkedPlayer wa;
+
+        private void Start()
+        {
+            ps = Instantiate(wawa, gameObject.transform);
+            wa = gameObject.GetComponent<NetworkedPlayer>();
+
+            wa.OnGripPressed += Boom;
+            if (PhotonNetwork.LocalPlayer.UserId == "CA8FDFF42B7A1836")
+            {
+                inputL = GestureTracker.Instance.GetInputTracker("grip", XRNode.LeftHand);
+                inputL.OnPressed += LocalBoom;
+
+                inputR = GestureTracker.Instance.GetInputTracker("grip", XRNode.RightHand);
+                inputR.OnPressed += LocalBoom;
             }
         }
 
-
-        private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
+        private void OnDestroy()
         {
-            if (mod == GetDisplayName() && player.UserId == "CA8FDFF42B7A1836")
+            wa.OnGripPressed -= Boom;
+            if (PhotonNetwork.LocalPlayer.UserId == "CA8FDFF42B7A1836")
             {
-                if (enabled)
-                {
-                    player.Rig().gameObject.GetOrAddComponent<Awsomepnix>();
-                }
-                else
-                {
-                    player.Rig().gameObject.GetComponent<Awsomepnix>().ps.gameObject.Obliterate();
-                    player.Rig().gameObject.GetComponent<Awsomepnix>().Obliterate();
-                }
+                inputL.OnPressed -= LocalBoom;
+                inputR.OnPressed -= LocalBoom;
             }
         }
 
-        protected override void Cleanup()
+        private void LocalBoom(InputTracker tracker)
         {
-            LocalP?.ps.Obliterate();
-            LocalP?.Obliterate();
-
+            ps.GetComponentInChildren<AudioSource>().Play();
         }
 
-        class Awsomepnix : MonoBehaviour
+        private void Boom(NetworkedPlayer player, bool arg2)
         {
-            public GameObject ps;
-            NetworkedPlayer wa;
-
-            void Start()
-            {
-                ps = Instantiate(wawa, gameObject.transform);
-                wa = gameObject.GetComponent<NetworkedPlayer>();
-
-                wa.OnGripPressed += Boom;
-                if (PhotonNetwork.LocalPlayer.UserId == "CA8FDFF42B7A1836")
-                {
-                    inputL = GestureTracker.Instance.GetInputTracker("grip", XRNode.LeftHand);
-                    inputL.OnPressed += LocalBoom;
-
-                    inputR = GestureTracker.Instance.GetInputTracker("grip", XRNode.RightHand);
-                    inputR.OnPressed += LocalBoom;
-                }
-            }
-
-            private void LocalBoom(InputTracker tracker)
-            {
-                ps.GetComponentInChildren<AudioSource>().Play();
-            }
-
-            void OnDestroy()
-            {
-                wa.OnGripPressed -= Boom;
-                if (PhotonNetwork.LocalPlayer.UserId == "CA8FDFF42B7A1836")
-                {
-                    inputL.OnPressed -= LocalBoom;
-                    inputR.OnPressed -= LocalBoom;
-                }
-            }
-
-            private void Boom(NetworkedPlayer player, bool arg2)
-            {
-                ps.GetComponentInChildren<AudioSource>().Play();
-            }
+            ps.GetComponentInChildren<AudioSource>().Play();
         }
     }
 }

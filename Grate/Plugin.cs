@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -18,224 +17,223 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Grate
+namespace Grate;
+
+[BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
+public class Plugin : BaseUnityPlugin
 {
-    [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
-    public class Plugin : BaseUnityPlugin
+    public static Plugin? Instance;
+    public static bool initialized, WaWa_graze_dot_cc;
+    public static AssetBundle? assetBundle;
+    public static MenuController? menuController;
+    private static GameObject? monkeMenuPrefab;
+    public static ConfigFile? configFile;
+    public static bool localPlayerTrusted;
+    public static bool localPlayerDev;
+    public static GameObject? Water;
+
+    public static Text? debugText;
+    private GestureTracker? gt;
+    private NetworkPropertyHandler? nph;
+
+    public static bool IsSteam { get; private set; }
+    public static bool DebugMode { get; protected set; } = false;
+
+    private void Awake()
     {
-        public static Plugin Instance;
-        public static bool initialized, WaWa_graze_dot_cc;
-        bool pluginEnabled = false;
-        public static AssetBundle assetBundle;
-        public static MenuController menuController;
-        public static GameObject monkeMenuPrefab;
-        public static ConfigFile configFile;
-        internal static bool localPlayerTrusted;
-        internal static bool localPlayerDev;
-
-        public static bool IsSteam { get; protected set; }
-        public static bool DebugMode { get; protected set; } = false;
-        GestureTracker gt;
-        NetworkPropertyHandler nph;
-        public static GameObject Water;
-
-        public void Setup()
+        try
         {
-            gt = gameObject.GetOrAddComponent<GestureTracker>();
-            nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
-            menuController = Instantiate(monkeMenuPrefab).AddComponent<MenuController>();
-            localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
-            localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
-        }
-
-        public void Cleanup()
-        {
-            try
+            Instance = this;
+            HarmonyPatches.ApplyHarmonyPatches();
+            Logging.Init();
+            configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
+            Logging.Debug("Found", GrateModule.GetGrateModuleTypes().Count, "modules");
+            foreach (var moduleType in GrateModule.GetGrateModuleTypes())
             {
-                Logging.Debug("Cleaning up");
-                menuController?.gameObject?.Obliterate();
-                gt?.Obliterate();
-                nph?.Obliterate();
+                var bindConfigs = moduleType.GetMethod("BindConfigEntries");
+                if (bindConfigs != null) bindConfigs.Invoke(null, null);
             }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
+
+            MenuController.BindConfigEntries();
         }
-        void Awake()
+        catch (Exception e)
         {
-            try
+            Logging.Exception(e);
+        }
+    }
+
+    private void Start()
+    {
+        try
+        {
+            GorillaTagger.OnPlayerSpawned(OnGameInitialized);
+            assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
+            monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
+            monkeMenuPrefab!.name = "Grate Menu";
+        }
+        catch (Exception e)
+        {
+            Logging.Exception(e);
+        }
+    }
+
+    public void Setup()
+    {
+        gt = gameObject.GetOrAddComponent<GestureTracker>();
+        nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
+        menuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
+        localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
+        localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
+    }
+
+    public void Cleanup()
+    {
+        try
+        {
+            Logging.Debug("Cleaning up");
+            menuController?.Obliterate();
+            gt?.Obliterate();
+            nph?.Obliterate();
+        }
+        catch (Exception e)
+        {
+            Logging.Exception(e);
+        }
+    }
+
+    private void CreateDebugGUI()
+    {
+        try
+        {
+            if (GTPlayer.Instance)
             {
-                Instance = this;
-                HarmonyPatches.ApplyHarmonyPatches();
-                Logging.Init();
-                configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
-                Logging.Debug("Found", GrateModule.GetGrateModuleTypes().Count, "modules");
-                foreach (Type moduleType in GrateModule.GetGrateModuleTypes())
+                var canvas = GTPlayer.Instance.headCollider.transform.GetComponentInChildren<Canvas>();
+                if (!canvas)
                 {
-                    MethodInfo bindConfigs = moduleType.GetMethod("BindConfigEntries");
-                    if (bindConfigs != null)
-                    {
-                        bindConfigs.Invoke(null, null);
-                    }
-                }
-                MenuController.BindConfigEntries();
-            }
-            catch (Exception e) { Logging.Exception(e); }
-        }
-
-        void Start()
-        {
-            try
-            {
-                GorillaTagger.OnPlayerSpawned(OnGameInitialized);
-                assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
-                monkeMenuPrefab = assetBundle.LoadAsset<GameObject>("Bark Menu");
-                monkeMenuPrefab.name = "Grate Menu";
-            }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
-        }
-
-        public static Text debugText;
-        void CreateDebugGUI()
-        {
-            try
-            {
-                if (GTPlayer.Instance)
-                {
-                    var canvas = GTPlayer.Instance.headCollider.transform.GetComponentInChildren<Canvas>();
-                    if (!canvas)
-                    {
-                        canvas = new GameObject("~~~Grate Debug Canvas").AddComponent<Canvas>();
-                        canvas.renderMode = RenderMode.WorldSpace;
-                        canvas.transform.SetParent(GTPlayer.Instance.headCollider.transform);
-                        canvas.transform.localPosition = Vector3.forward * .35f;
-                        canvas.transform.localRotation = Quaternion.identity;
-                        canvas.transform.localScale = Vector3.one;
-                        canvas.gameObject.AddComponent<CanvasScaler>();
-                        canvas.gameObject.AddComponent<GraphicRaycaster>();
-                        canvas.GetComponent<RectTransform>().localScale = Vector3.one * .035f;
-                        var text = new GameObject("~~~Text").AddComponent<Text>();
-                        text.transform.SetParent(canvas.transform);
-                        text.transform.localPosition = Vector3.zero;
-                        text.transform.localRotation = Quaternion.identity;
-                        text.transform.localScale = Vector3.one;
-                        text.color = Color.green;
-                        //text.text = "Hello World";
-                        text.fontSize = 24;
-                        text.font = Font.CreateDynamicFontFromOSFont("Arial", 24);
-                        text.alignment = TextAnchor.MiddleCenter;
-                        text.horizontalOverflow = HorizontalWrapMode.Overflow;
-                        text.verticalOverflow = VerticalWrapMode.Overflow;
-                        text.color = Color.white;
-                        text.GetComponent<RectTransform>().localScale = Vector3.one * .02f;
-                        debugText = text;
-                    }
+                    canvas = new GameObject("~~~Grate Debug Canvas").AddComponent<Canvas>();
+                    canvas.renderMode = RenderMode.WorldSpace;
+                    canvas.transform.SetParent(GTPlayer.Instance.headCollider.transform);
+                    canvas.transform.localPosition = Vector3.forward * .35f;
+                    canvas.transform.localRotation = Quaternion.identity;
+                    canvas.transform.localScale = Vector3.one;
+                    canvas.gameObject.AddComponent<CanvasScaler>();
+                    canvas.gameObject.AddComponent<GraphicRaycaster>();
+                    canvas.GetComponent<RectTransform>().localScale = Vector3.one * .035f;
+                    var text = new GameObject("~~~Text").AddComponent<Text>();
+                    text.transform.SetParent(canvas.transform);
+                    text.transform.localPosition = Vector3.zero;
+                    text.transform.localRotation = Quaternion.identity;
+                    text.transform.localScale = Vector3.one;
+                    text.color = Color.green;
+                    //text.text = "Hello World";
+                    text.fontSize = 24;
+                    text.font = Font.CreateDynamicFontFromOSFont("Arial", 24);
+                    text.alignment = TextAnchor.MiddleCenter;
+                    text.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    text.verticalOverflow = VerticalWrapMode.Overflow;
+                    text.color = Color.white;
+                    text.GetComponent<RectTransform>().localScale = Vector3.one * .02f;
+                    debugText = text;
                 }
             }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
         }
-
-        void OnGameInitialized()
+        catch (Exception e)
         {
-            Invoke("DelayedSetup", 2);
+            Logging.Exception(e);
         }
+    }
 
-        void DelayedSetup()
+    private void OnGameInitialized()
+    {
+        Invoke(nameof(DelayedSetup), 2);
+    }
+
+    private void DelayedSetup()
+    {
+        try
         {
-            try
-            {
-                Logging.Debug("OnGameInitialized");
-                initialized = true;
-                PlatformTagJoin platform = (PlatformTagJoin)Traverse.Create(GorillaNetworking.PlayFabAuthenticator.instance).Field("platform").GetValue();
-                Logging.Info("Platform: ", platform);
-                IsSteam = platform.PlatformTag.Contains("Steam");
+            Logging.Debug("OnGameInitialized");
+            initialized = true;
+            var platform = (PlatformTagJoin)Traverse.Create(PlayFabAuthenticator.instance).Field("platform").GetValue();
+            Logging.Info("Platform: ", platform);
+            IsSteam = platform.PlatformTag.Contains("Steam");
 
-                NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
-                NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
-                Application.wantsToQuit += Quit;
-                Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
-                Water.SetActive(false);
-                MenuController.ShinyRocks = new Material[] 
-                {
-                    GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0],
-                    GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0]
-                };
-                if (DebugMode)
-                    CreateDebugGUI();
-            }
-            catch (Exception ex)
-            {
-                Logging.Exception(ex);
-            }
+            NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
+            NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
+            Application.wantsToQuit += Quit;
+            Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
+            Water.SetActive(false);
+            MenuController.ShinyRocks =
+            [
+                GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0],
+                GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0]
+            ];
+            if (DebugMode)
+                CreateDebugGUI();
         }
-
-        private bool Quit()
+        catch (Exception ex)
         {
-            if (NetworkSystem.Instance.InRoom)
-            {
-                NetworkSystem.Instance.OnReturnedToSinglePlayer += aQuit;
-                NetworkSystem.Instance.ReturnToSinglePlayer();
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            Logging.Exception(ex);
+        }
+    }
+
+    private bool Quit()
+    {
+        if (NetworkSystem.Instance.InRoom)
+        {
+            NetworkSystem.Instance.OnReturnedToSinglePlayer += aQuit;
+            NetworkSystem.Instance.ReturnToSinglePlayer();
+            return false;
         }
 
-        private void aQuit()
+        return true;
+    }
+
+    private void aQuit()
+    {
+        WaWa_graze_dot_cc = false;
+        Cleanup();
+        Invoke(nameof(DelayQuit), 1);
+    }
+
+    private void DelayQuit()
+    {
+        Application.Quit();
+    }
+
+    private void аaа()
+    {
+        StartCoroutine(Jоοin());
+    }
+
+    private IEnumerator Jоοin()
+    {
+        Cleanup();
+        yield return new WaitForSeconds(1);
+        if (NetworkSystem.Instance.InRoom)
+        {
+            if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+            {
+                WaWa_graze_dot_cc = true;
+                Setup();
+            }
+        }
+        else
         {
             WaWa_graze_dot_cc = false;
             Cleanup();
-            Invoke("DelayQuit", 1);
         }
+    }
 
-        void DelayQuit()
-        {
-            Application.Quit();
-        }
+    public void JoinLobby(string LobbyName)
+    {
+        StartCoroutine(JoinLobbyInternal(LobbyName));
+    }
 
-        private void аaа()
-        {
-            StartCoroutine(Jоοin());
-        }
-
-        IEnumerator Jоοin()
-        {
-            Cleanup();
-            yield return new WaitForSeconds(1);
-            if (NetworkSystem.Instance.InRoom)
-            {
-                if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
-                {
-                    WaWa_graze_dot_cc = true;
-                    Setup();
-                }
-            }
-            else
-            {
-                WaWa_graze_dot_cc = false;
-                Cleanup();
-            }
-        }
-
-        public void JoinLobby(string name)
-        {
-            StartCoroutine(JoinLobbyInternal(name));
-        }
-
-        IEnumerator JoinLobbyInternal(string name)
-        {
-            NetworkSystem.Instance.ReturnToSinglePlayer();
-            yield return new WaitForSeconds(1.5f);
-            PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(name, JoinType.Solo);
-        }
+    private IEnumerator JoinLobbyInternal(string LobbyName)
+    {
+        NetworkSystem.Instance.ReturnToSinglePlayer();
+        yield return new WaitForSeconds(1.5f);
+        PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(LobbyName, JoinType.Solo);
     }
 }

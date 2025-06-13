@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Grate;
 
-namespace Grate
+public class RigTools
 {
-    public class RigTools
+    public static void BindMethod()
     {
-        public static void BindMethod()
-        {
+    }
 
-        }
-        public static void UnBindMethod()
-        {
-
-        }
+    public static void UnBindMethod()
+    {
     }
 }

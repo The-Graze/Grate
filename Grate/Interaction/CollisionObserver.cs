@@ -8,51 +8,36 @@ public class CollisionObserver : MonoBehaviour
     public Action<GameObject, Collision> OnCollisionEntered, OnCollisionStayed, OnCollisionExited;
     public Action<GameObject, Collider> OnTriggerEntered, OnTriggerStayed, OnTriggerExited;
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         if (layerMask == (layerMask | (1 << collision.gameObject.layer)))
-        {
-            OnCollisionEntered?.Invoke(this.gameObject, collision);
-        }
+            OnCollisionEntered?.Invoke(gameObject, collision);
     }
 
-    void OnCollisionStay(Collision collision)
+    private void OnCollisionExit(Collision collision)
     {
         if (layerMask == (layerMask | (1 << collision.gameObject.layer)))
-        {
-            OnCollisionStayed?.Invoke(this.gameObject, collision);
-        }
+            OnCollisionExited?.Invoke(gameObject, collision);
     }
 
-    void OnCollisionExit(Collision collision)
+    private void OnCollisionStay(Collision collision)
     {
         if (layerMask == (layerMask | (1 << collision.gameObject.layer)))
-        {
-            OnCollisionExited?.Invoke(this.gameObject, collision);
-        }
+            OnCollisionStayed?.Invoke(gameObject, collision);
     }
 
-    void OnTriggerEnter(Collider collider)  
+    private void OnTriggerEnter(Collider collider)
     {
-        if (layerMask == (layerMask | (1 << collider.gameObject.layer)))
-        {
-            OnTriggerEntered?.Invoke(this.gameObject, collider);
-        }
+        if (layerMask == (layerMask | (1 << collider.gameObject.layer))) OnTriggerEntered?.Invoke(gameObject, collider);
     }
 
-    void OnTriggerStay(Collider collider)
+    private void OnTriggerExit(Collider collider)
     {
-        if (layerMask == (layerMask | (1 << collider.gameObject.layer)))
-        {
-            OnTriggerStayed?.Invoke(this.gameObject, collider);
-        }
+        if (layerMask == (layerMask | (1 << collider.gameObject.layer))) OnTriggerExited?.Invoke(gameObject, collider);
     }
 
-    void OnTriggerExit(Collider collider)
+    private void OnTriggerStay(Collider collider)
     {
-        if (layerMask == (layerMask | (1 << collider.gameObject.layer)))
-        {
-            OnTriggerExited?.Invoke(this.gameObject, collider);
-        }
+        if (layerMask == (layerMask | (1 << collider.gameObject.layer))) OnTriggerStayed?.Invoke(gameObject, collider);
     }
 }

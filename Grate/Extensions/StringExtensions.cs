@@ -3,63 +3,62 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Grate.Extensions
+namespace Grate.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static string Key = "THEULTIMATESUPERSECRETE";
+
+    public static string EncryptString(this string plainText)
     {
-        public static string Key = "THEULTIMATESUPERSECRETE";
-        public static string EncryptString(this string plainText)
+        var iv = new byte[16];
+        byte[] array;
+
+        using (var aes = Aes.Create())
         {
-            byte[] iv = new byte[16];
-            byte[] array;
+            aes.Key = Encoding.UTF8.GetBytes(Key);
+            aes.IV = iv;
 
-            using (Aes aes = Aes.Create())
+            var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+            using (var memoryStream = new MemoryStream())
             {
-                aes.Key = Encoding.UTF8.GetBytes(Key);
-                aes.IV = iv;
-
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-                using (MemoryStream memoryStream = new MemoryStream())
+                using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                    using (var streamWriter = new StreamWriter(cryptoStream))
                     {
-                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
-                        {
-                            streamWriter.Write(plainText);
-                        }
-
-                        array = memoryStream.ToArray();
+                        streamWriter.Write(plainText);
                     }
+
+                    array = memoryStream.ToArray();
                 }
             }
-
-            return Convert.ToBase64String(array);
         }
 
-        public static string DecryptString(this string cipherText)
+        return Convert.ToBase64String(array);
+    }
+
+    public static string DecryptString(this string cipherText)
+    {
+        var buffer = Convert.FromBase64String(cipherText);
+
+        using (var aes = Aes.Create())
         {
-            byte[] buffer = Convert.FromBase64String(cipherText);
+            aes.Key = Encoding.UTF8.GetBytes(Key);
+            var iv = new byte[Key.Length];
+            aes.IV = iv;
+            var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
-            using (Aes aes = Aes.Create())
+            using (var memoryStream = new MemoryStream(buffer))
             {
-                aes.Key = Encoding.UTF8.GetBytes(Key);
-                byte[] iv = new byte[Key.Length];
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    using (var streamReader = new StreamReader(cryptoStream))
                     {
-                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
-                        {
-                            return streamReader.ReadToEnd();
-                        }
+                        return streamReader.ReadToEnd();
                     }
                 }
             }
         }
     }
 }
-

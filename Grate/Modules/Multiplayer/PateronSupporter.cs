@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Grate.Modules.Multiplayer;
 
-namespace Grate.Modules.Multiplayer
+internal class PateronSupporter : GrateModule
 {
-    class PateronSupporter : GrateModule
+    protected override void Start()
     {
-        public override string GetDisplayName()
-        {
-            return "Supporter";
-        }
+        base.Start();
+    }
 
-        public override string Tutorial()
-        {
-            return "Thanks you so much for showing your support";
-        }
+    public override string GetDisplayName()
+    {
+        return "Supporter";
+    }
 
-        protected override void Start()
-        {
-            base.Start();
+    public override string Tutorial()
+    {
+        return "Thanks you so much for showing your support";
+    }
 
-        }
-
-        protected override void Cleanup()
-        {
-
-        }
+    protected override void Cleanup()
+    {
     }
 }

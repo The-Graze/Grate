@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public static class ColorExtensions
 {
     // A static dictionary to map predefined Unity colors to their string names
-    private static readonly Dictionary<Color, string> ColorMap = new Dictionary<Color, string>()
+    private static readonly Dictionary<Color, string> ColorMap = new()
     {
         { Color.red, "Red" },
         { Color.green, "Green" },
@@ -17,6 +17,7 @@ public static class ColorExtensions
         { Color.gray, "Gray" },
         { Color.clear, "Clear" }
     };
+
     public static Color StringToColor(this string input)
     {
         if (input.StartsWith("#"))
@@ -24,25 +25,18 @@ public static class ColorExtensions
             ColorUtility.TryParseHtmlString(input, out var customColor);
             return customColor;
         }
-        else
-        {
-            string colorName = input.ToLower();
-            foreach (var entry in ColorMap)
-            {
-                if (entry.Value.ToLower() == colorName)
-                {
-                    return entry.Key;
-                }
-            }
-        }
+
+        var colorName = input.ToLower();
+        foreach (var entry in ColorMap)
+            if (entry.Value.ToLower() == colorName)
+                return entry.Key;
+
         return Color.white;
     }
+
     public static string ColorName(this Color color)
     {
-        if (ColorMap.TryGetValue(color, out string colorName))
-        {
-            return colorName;
-        }
+        if (ColorMap.TryGetValue(color, out var colorName)) return colorName;
         return $"#{ColorUtility.ToHtmlStringRGBA(color)}";
     }
 }

@@ -1,112 +1,110 @@
 ﻿using System;
 using System.Collections;
+using GorillaLocomotion;
 using Grate.GUI;
+using Grate.Modules.Movement;
+using Grate.Modules.Multiplayer;
 using Grate.Patches;
 using Grate.Tools;
-using GorillaLocomotion;
 using UnityEngine;
-using Grate.Modules.Multiplayer;
-using Grate.Modules.Movement;
-using BepInEx.Configuration;
-using Grate.Extensions;
 
-namespace Grate.Modules.Physics
+namespace Grate.Modules.Physics;
+
+public class NoClip : GrateModule
 {
-    public class NoClip : GrateModule
+    public static readonly string DisplayName = "No Clip";
+    public static NoClip Instance;
+    public static int layer = 29, layerMask = 1 << layer;
+    public static bool active;
+    public LayerMask baseMask;
+    public bool baseHeadIsTrigger, baseBodyIsTrigger;
+    private Vector3 enablePos;
+    private bool FirstTimeworkaround;
+    private bool flyWasEnabled;
+
+    private void Awake()
     {
-        public static readonly string DisplayName = "No Clip";
-        public static NoClip Instance;
-        public LayerMask baseMask;
-        public bool baseHeadIsTrigger, baseBodyIsTrigger;
-        public static int layer = 29, layerMask = 1 << layer;
-        public static bool active;
-        bool FirstTimeworkaround;
-        Vector3 enablePos;
-        bool flyWasEnabled;
+        baseMask = GTPlayer.Instance.locomotionEnabledLayers;
+        Instance = this;
+    }
 
-        private struct GorillaTriggerInfo
+    protected override void OnEnable()
+    {
+        try
         {
-            public Collider collider;
-            public bool wasEnabled;
-        }
-
-        void Awake()
-        {
-            baseMask = GTPlayer.Instance.locomotionEnabledLayers;
-            Instance = this;
-        }
-
-        protected override void OnEnable()
-        {
-            try
-            {
-                if (!MenuController.Instance.Built) return;
-                base.OnEnable();
-                enablePos = GTPlayer.Instance.headCollider.transform.position;
-                if (!Piggyback.mounted)
+            if (!MenuController.Instance.Built) return;
+            base.OnEnable();
+            enablePos = GTPlayer.Instance.headCollider.transform.position;
+            if (!Piggyback.mounted)
+                try
                 {
-                    try
-                    {
-                        var fly = Plugin.menuController.GetComponent<Fly>();
-                        flyWasEnabled = fly.enabled;
-                        fly.enabled = true;
-                        fly.button.AddBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
-                    }
-                    catch
-                    {
-                        Logging.Debug("Failed to enable fly for noclip.");
-                    }
+                    var fly = Plugin.menuController.GetComponent<Fly>();
+                    flyWasEnabled = fly.enabled;
+                    fly.enabled = true;
+                    fly.button.AddBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
+                }
+                catch
+                {
+                    Logging.Debug("Failed to enable fly for noclip.");
                 }
 
-                Logging.Debug("Disabling triggers");
-                TriggerBoxPatches.triggersEnabled = false;
-                GTPlayer.Instance.locomotionEnabledLayers = layerMask;
+            Logging.Debug("Disabling triggers");
+            TriggerBoxPatches.triggersEnabled = false;
+            GTPlayer.Instance.locomotionEnabledLayers = layerMask;
 
-                baseBodyIsTrigger = GTPlayer.Instance.bodyCollider.isTrigger;
-                GTPlayer.Instance.bodyCollider.isTrigger = true;
+            baseBodyIsTrigger = GTPlayer.Instance.bodyCollider.isTrigger;
+            GTPlayer.Instance.bodyCollider.isTrigger = true;
 
-                baseHeadIsTrigger = GTPlayer.Instance.headCollider.isTrigger;
-                GTPlayer.Instance.headCollider.isTrigger = true;
-                active = true;
-            }
-            catch (Exception e) { Logging.Exception(e); }
+            baseHeadIsTrigger = GTPlayer.Instance.headCollider.isTrigger;
+            GTPlayer.Instance.headCollider.isTrigger = true;
+            active = true;
         }
-
-        protected override void Cleanup() 
+        catch (Exception e)
         {
-            if (!FirstTimeworkaround)
-            {
-                FirstTimeworkaround = true;
-                return;
-            }
-            StartCoroutine(CleanupRoutine());
+            Logging.Exception(e);
         }
+    }
 
-        IEnumerator CleanupRoutine()
+    protected override void Cleanup()
+    {
+        if (!FirstTimeworkaround)
         {
-            Plugin.menuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
-            GTPlayer.Instance.locomotionEnabledLayers = baseMask;
-            GTPlayer.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
-            GTPlayer.Instance.headCollider.isTrigger = baseHeadIsTrigger;
-            TeleportPatch.TeleportPlayer(enablePos);
-            yield return new WaitForFixedUpdate();
-            yield return new WaitForFixedUpdate();
-            yield return new WaitForFixedUpdate();
-            TriggerBoxPatches.triggersEnabled = true;
-            Plugin.menuController.GetComponent<Fly>().enabled = flyWasEnabled;
-            Logging.Debug("Enabling triggers");
-            active = false;
+            FirstTimeworkaround = true;
+            return;
         }
 
-        public override string GetDisplayName()
-        {
-            return DisplayName;
-        }
+        StartCoroutine(CleanupRoutine());
+    }
 
-        public override string Tutorial()
-        {
-            return "Effect: Disables collisions. Automatically enables Fly (Use the sticks to move).";
-        }
+    private IEnumerator CleanupRoutine()
+    {
+        Plugin.menuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
+        GTPlayer.Instance.locomotionEnabledLayers = baseMask;
+        GTPlayer.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
+        GTPlayer.Instance.headCollider.isTrigger = baseHeadIsTrigger;
+        TeleportPatch.TeleportPlayer(enablePos);
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        yield return new WaitForFixedUpdate();
+        TriggerBoxPatches.triggersEnabled = true;
+        Plugin.menuController.GetComponent<Fly>().enabled = flyWasEnabled;
+        Logging.Debug("Enabling triggers");
+        active = false;
+    }
 
+    public override string GetDisplayName()
+    {
+        return DisplayName;
+    }
+
+    public override string Tutorial()
+    {
+        return "Effect: Disables collisions. Automatically enables Fly (Use the sticks to move).";
+    }
+
+    private struct GorillaTriggerInfo
+    {
+        public Collider collider;
+        public bool wasEnabled;
     }
 }

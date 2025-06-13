@@ -1,51 +1,45 @@
-﻿using BepInEx.Configuration;
+﻿using System;
+using BepInEx.Configuration;
 using UnityEngine;
-using System;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
-using UnityEngine.Windows;
 
-namespace Grate.Extensions
+namespace Grate.Extensions;
+
+public static class ConfigExtensions
 {
-    public static class ConfigExtensions
+    public static ConfigValueInfo ValuesInfo(this ConfigEntryBase entry)
     {
-        public struct ConfigValueInfo
+        if (entry.SettingType == typeof(bool))
+            return new ConfigValueInfo
+            {
+                AcceptableValues = new object[] { false, true },
+                InitialValue = (bool)entry.BoxedValue ? 1 : 0
+            };
+
+        if (entry.SettingType == typeof(int))
+            return new ConfigValueInfo
+            {
+                AcceptableValues = new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+                InitialValue = Mathf.Clamp((int)entry.BoxedValue, 0, 10)
+            };
+
+        if (entry.SettingType == typeof(string))
         {
-            public object[] AcceptableValues;
-            public int InitialValue;
+            var acceptableValues = ((AcceptableValueList<string>)entry.Description.AcceptableValues).AcceptableValues;
+            for (var i = 0; i < acceptableValues.Length; i++)
+                if (acceptableValues[i] == (string)entry.BoxedValue)
+                    return new ConfigValueInfo
+                    {
+                        AcceptableValues = acceptableValues,
+                        InitialValue = i
+                    };
         }
-        public static ConfigValueInfo ValuesInfo(this ConfigEntryBase entry)
-        {
-            if (entry.SettingType == typeof(bool))
-            {
-                return new ConfigValueInfo
-                {
-                    AcceptableValues = new object[] { false, true },
-                    InitialValue = (bool)entry.BoxedValue ? 1 : 0
-                };
-            }
-            else if (entry.SettingType == typeof(int))
-            {
-                return new ConfigValueInfo
-                {
-                    AcceptableValues = new object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
-                    InitialValue = (int)Mathf.Clamp((int)entry.BoxedValue, 0, 10)
-                };
-            }
-            else if (entry.SettingType == typeof(string))
-            {
-                var acceptableValues = ((AcceptableValueList<string>)entry.Description.AcceptableValues).AcceptableValues;
-                for (int i = 0; i < acceptableValues.Length; i++)
-                {
-                    if (acceptableValues[i] == (string)entry.BoxedValue)
-                        return new ConfigValueInfo
-                        {
-                            AcceptableValues = acceptableValues,
-                            InitialValue = i
-                        };
-                }
-            }
-            throw new Exception($"Unknown config type {entry.SettingType}");
-        }
+
+        throw new Exception($"Unknown config type {entry.SettingType}");
+    }
+
+    public struct ConfigValueInfo
+    {
+        public object[] AcceptableValues;
+        public int InitialValue;
     }
 }

@@ -1,136 +1,133 @@
-﻿using Fusion;
-using GorillaLocomotion;
+﻿using System;
+using System.Collections.Generic;
 using Grate.Extensions;
 using Grate.GUI;
 using Grate.Networking;
+using Grate.Patches;
 using Grate.Tools;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
-namespace Grate.Modules.Misc
+namespace Grate.Modules.Misc;
+
+internal class MusicVis : GrateModule
 {
-    class MusicVis : GrateModule
+    private VisMarker Marker;
+
+    private void Awake()
     {
-        VisMarker Marker;
-        public override string GetDisplayName()
+        NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+        VRRigCachePatches.OnRigCached += OnRigCached;
+    }
+
+    protected override void OnEnable()
+    {
+        if (!MenuController.Instance.Built) return;
+        base.OnEnable();
+        try
         {
-            return "Music Vis";
+            Marker = GorillaTagger.Instance.offlineVRRig.gameObject.AddComponent<VisMarker>();
         }
-
-        public override string Tutorial()
+        catch (Exception e)
         {
-            return "Graze Proof, I love music visualising";
-        }
-
-        protected override void Cleanup()
-        {
-            Marker.Obliterate();
-        }
-
-        protected override void OnDisable()
-        {
-            Destroy(Marker);
-        }
-
-        void Awake()
-        {   
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-            Patches.VRRigCachePatches.OnRigCached += OnRigCached;
-        }
-
-        private void OnRigCached(NetPlayer player, VRRig rig)
-        {
-            rig?.gameObject?.GetComponent<VisMarker>()?.Obliterate();
-        }
-
-        private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
-        {
-            if (mod == GetDisplayName() && player.UserId == "E5F14084F14ED3CE")
-            {
-                if (enabled)
-                {
-                    player.Rig().gameObject.GetOrAddComponent<VisMarker>();
-                }
-                else
-                {
-                    Destroy(player.Rig().gameObject.GetComponent<VisMarker>());
-
-                }
-            }
-        }
-
-        protected override void OnEnable()
-        {
-            if (!MenuController.Instance.Built) return;
-            base.OnEnable();
-            try
-            {
-                Marker = GorillaTagger.Instance.offlineVRRig.gameObject.AddComponent<VisMarker>();
-            }
-            catch (Exception e) { Logging.Exception(e); }
+            Logging.Exception(e);
         }
     }
 
-    class VisMarker : MonoBehaviour
+    protected override void OnDisable()
     {
-        List<Transform> VisParts;
-        Transform anc;
-        GorillaSpeakerLoudness Speakerloudness;
-        VRRig rig;
+        Destroy(Marker);
+    }
 
-        void Start()
-        {
-            rig = GetComponent<VRRig>();
-            anc = new GameObject("Vis").transform;
-            VisParts = new List<Transform>();
-            for (int i = 0; i < 50; i++)
-            {
-                GameObject wawa = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                wawa.GetComponent<Collider>().Obliterate();
-                wawa.GetComponent<Renderer>().material = MenuController.Instance.grate[1];
-                wawa.transform.SetParent(anc, false);
-                wawa.transform.localScale = new Vector3(0.11612f, 0.11612f, 0.11612f);
-                VisParts.Add(wawa.transform);
-                Debug.Log($"{i} shperes made");
-            }
-        }
+    public override string GetDisplayName()
+    {
+        return "Music Vis";
+    }
 
-        void FixedUpdate()
+    public override string Tutorial()
+    {
+        return "Graze Proof, I love music visualising";
+    }
+
+    protected override void Cleanup()
+    {
+        Marker.Obliterate();
+    }
+
+    private void OnRigCached(NetPlayer player, VRRig rig)
+    {
+        rig?.gameObject?.GetComponent<VisMarker>()?.Obliterate();
+    }
+
+    private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
+    {
+        if (mod == GetDisplayName() && player.UserId == "E5F14084F14ED3CE")
         {
-            if (Speakerloudness == null)
+            if (enabled)
+                player.Rig().gameObject.GetOrAddComponent<VisMarker>();
+            else
+                Destroy(player.Rig().gameObject.GetComponent<VisMarker>());
+        }
+    }
+}
+
+internal class VisMarker : MonoBehaviour
+{
+    private Transform anc;
+    private VRRig rig;
+    private GorillaSpeakerLoudness Speakerloudness;
+    private List<Transform> VisParts;
+
+    private void Start()
+    {
+        rig = GetComponent<VRRig>();
+        anc = new GameObject("Vis").transform;
+        VisParts = new List<Transform>();
+        for (var i = 0; i < 50; i++)
+        {
+            var wawa = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            wawa.GetComponent<Collider>().Obliterate();
+            wawa.GetComponent<Renderer>().material = MenuController.Instance.grate[1];
+            wawa.transform.SetParent(anc, false);
+            wawa.transform.localScale = new Vector3(0.11612f, 0.11612f, 0.11612f);
+            VisParts.Add(wawa.transform);
+            Debug.Log($"{i} shperes made");
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (Speakerloudness == null) Speakerloudness = rig.GetComponent<GorillaSpeakerLoudness>();
+        if (anc.parent == null)
+        {
+            anc.SetParent(rig.transform, false);
+        }
+        else if (VisParts.Count == 50)
+        {
+            var count = VisParts.Count;
+            var num = 360f / count;
+            var currentLoudness = Speakerloudness.SmoothedLoudness;
+            var position = anc.transform.position;
+            for (var i = 0; i < count; i++)
             {
-                Speakerloudness = rig.GetComponent<GorillaSpeakerLoudness>();
-            }
-            if (anc.parent == null)
-            { anc.SetParent(rig.transform, false); }
-            else if (VisParts.Count == 50)
-            {
-                int count = VisParts.Count;
-                float num = 360f / count;
-                float currentLoudness = Speakerloudness.SmoothedLoudness;
-                Vector3 position = anc.transform.position;
-                for (int i = 0; i < count; i++)
-                {
-                    float num2 = i * num;
-                    float x = currentLoudness * Mathf.Cos(num2 * 0.017453292f);
-                    float z = currentLoudness * Mathf.Sin(num2 * 0.017453292f);
-                    Vector3 vector = position + new Vector3(x, 0.2f, z);
-                    float y = vector.y + currentLoudness;
-                    Vector3 position2 = new Vector3(vector.x, y, vector.z);
-                    VisParts[i].transform.position = position2;
-                    VisParts[i].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-                }
+                var num2 = i * num;
+                var x = currentLoudness * Mathf.Cos(num2 * 0.017453292f);
+                var z = currentLoudness * Mathf.Sin(num2 * 0.017453292f);
+                var vector = position + new Vector3(x, 0.2f, z);
+                var y = vector.y + currentLoudness;
+                var position2 = new Vector3(vector.x, y, vector.z);
+                VisParts[i].transform.position = position2;
+                VisParts[i].transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
             }
         }
-        void OnDestory()
-        {
-            anc.Obliterate();
-        }
-        void OnDisable()
-        {
-            anc.Obliterate();
-        }
+    }
+
+    private void OnDisable()
+    {
+        anc.Obliterate();
+    }
+
+    private void OnDestory()
+    {
+        anc.Obliterate();
     }
 }

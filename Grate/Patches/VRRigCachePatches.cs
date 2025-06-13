@@ -1,31 +1,25 @@
-﻿using HarmonyLib;
-using GorillaLocomotion;
-using System;
-using Grate.Tools;
-using Grate.Modules.Physics;
-using UnityEngine;
-using Grate.Gestures;
-using Photon.Pun;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Grate.Extensions;
+using HarmonyLib;
 
-namespace Grate.Patches
+namespace Grate.Patches;
+
+[HarmonyPatch]
+public class VRRigCachePatches
 {
-    [HarmonyPatch]
-    public class VRRigCachePatches
-    {
-        public static Action<NetPlayer, VRRig> OnRigCached;
+    public static Action<NetPlayer, VRRig> OnRigCached;
 
-        static IEnumerable<MethodBase> TargetMethods()
+    private static IEnumerable<MethodBase> TargetMethods()
+    {
+        return new MethodBase[]
         {
-            return new MethodBase[] {
-                AccessTools.Method("VRRigCache:RemoveRigFromGorillaParent")
-            };
-        }
-        private static void Postfix(NetPlayer player, VRRig vrrig)
-        {
-            OnRigCached?.Invoke(player, vrrig);
-        }
+            AccessTools.Method("VRRigCache:RemoveRigFromGorillaParent")
+        };
+    }
+
+    private static void Postfix(NetPlayer player, VRRig vrrig)
+    {
+        OnRigCached?.Invoke(player, vrrig);
     }
 }

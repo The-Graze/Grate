@@ -1,41 +1,36 @@
-﻿using HarmonyLib;
-using System;
-using System.Reflection;
+﻿using System.Reflection;
+using HarmonyLib;
 
-namespace Grate
+namespace Grate;
+
+/// <summary>
+///     This class handles applying harmony patches to the game.
+///     You should not need to modify this class.
+/// </summary>
+public class HarmonyPatches
 {
-    /// <summary>
-    /// This class handles applying harmony patches to the game.
-    /// You should not need to modify this class.
-    /// </summary>
-    public class HarmonyPatches
+    public const string InstanceId = PluginInfo.GUID;
+    private static Harmony instance;
+
+    public static bool IsPatched { get; private set; }
+
+    internal static void ApplyHarmonyPatches()
     {
-        private static Harmony instance;
-
-        public static bool IsPatched { get; private set; }
-        public const string InstanceId = PluginInfo.GUID;
-
-        internal static void ApplyHarmonyPatches()
+        if (!IsPatched)
         {
-            if (!IsPatched)
-            {
-                if (instance == null)
-                {
-                    instance = new Harmony(InstanceId);
-                }
+            if (instance == null) instance = new Harmony(InstanceId);
 
-                instance.PatchAll(Assembly.GetExecutingAssembly());
-                IsPatched = true;
-            }
+            instance.PatchAll(Assembly.GetExecutingAssembly());
+            IsPatched = true;
         }
+    }
 
-        internal static void RemoveHarmonyPatches()
+    internal static void RemoveHarmonyPatches()
+    {
+        if (instance != null && IsPatched)
         {
-            if (instance != null && IsPatched)
-            {
-                instance.UnpatchSelf();
-                IsPatched = false;
-            }
+            instance.UnpatchSelf();
+            IsPatched = false;
         }
     }
 }
