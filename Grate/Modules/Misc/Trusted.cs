@@ -45,17 +45,16 @@ public class Trusted : GrateModule
         {
             Logging.Exception(e);
         }
-        Plugin.menuController.GetComponent<Developer>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
     {
-        if (mod == DisplayName && Plugin.localPlayerTrusted)
+        if (mod == DisplayName && PlayerExtensions.IsTrusted(player))
         {
             if (enabled)
-                player.Rig().gameObject.GetOrAddComponent<NetCheese>();
+                player.Rig().gameObject.GetOrAddComponent<NetPhone>();
             else
-                Destroy(player.Rig().gameObject.GetComponent<NetCheese>());
+                Destroy(player.Rig().gameObject.GetComponent<NetPhone>());
         }
     }
 
@@ -66,7 +65,7 @@ public class Trusted : GrateModule
 
     private void OnRigCached(NetPlayer player, VRRig rig)
     {
-        rig?.gameObject?.GetComponent<NetCheese>()?.Obliterate();
+        rig?.gameObject?.GetComponent<NetPhone>()?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -76,10 +75,10 @@ public class Trusted : GrateModule
 
     public override string Tutorial()
     {
-        return "This item is given out to people the grate developers trust and the developers themselves";
+        return "given out to people the grate developers trust and the developers themselves";
     }
 
-    private class NetCheese : MonoBehaviour
+    private class NetPhone : MonoBehaviour
     {
         private GameObject phone;
         private NetworkedPlayer networkedPlayer;
@@ -102,13 +101,11 @@ public class Trusted : GrateModule
         private void OnDisable()
         {
             phone.Obliterate();
-            Plugin.menuController.GetComponent<Developer>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnDestroy()
         {
             phone.Obliterate();
-            Plugin.menuController.GetComponent<Developer>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
     }
 }

@@ -28,8 +28,6 @@ public class Plugin : BaseUnityPlugin
     public static MenuController? menuController;
     private static GameObject? monkeMenuPrefab;
     public static ConfigFile? configFile;
-    public static bool localPlayerTrusted;
-    public static bool localPlayerDev;
     public static GameObject? Water;
 
     public static Text? debugText;
@@ -61,7 +59,6 @@ public class Plugin : BaseUnityPlugin
             Logging.Exception(e);
         }
     }
-
     private void Start()
     {
         try
@@ -82,8 +79,6 @@ public class Plugin : BaseUnityPlugin
         gt = gameObject.GetOrAddComponent<GestureTracker>();
         nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
         menuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
-        localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
-        localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
     }
 
     public void Cleanup()

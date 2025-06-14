@@ -13,6 +13,7 @@ using Grate.Modules.Multiplayer;
 using Grate.Modules.Physics;
 using Grate.Modules.Teleportation;
 using Grate.Tools;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
@@ -73,6 +74,7 @@ public class MenuController : GrateGrabbable
                     gameObject.AddComponent<Helicopter>(),
                     gameObject.AddComponent<Bubble>(),
                     gameObject.AddComponent<Fly>(),
+                    gameObject.AddComponent<HandFly>(),
                     gameObject.AddComponent<GrapplingHooks>(),
                     gameObject.AddComponent<Climb>(),
                     gameObject.AddComponent<DoubleJump>(),
@@ -126,9 +128,9 @@ public class MenuController : GrateGrabbable
                 var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
                 if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
                 var trustedMod = gameObject.AddComponent<Trusted>();
-                if (Plugin.localPlayerTrusted) modules.Add(trustedMod);
+                if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) modules.Add(trustedMod);
                 var developerMod = gameObject.AddComponent<Developer>();
-                if (Plugin.localPlayerDev) modules.Add(developerMod);
+                if (PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer)) modules.Add(developerMod);
                 modules.AddRange(TooAddmodules);
                 ReloadConfiguration();
             }

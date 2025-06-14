@@ -49,7 +49,7 @@ public class Developer : GrateModule
 
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
     {
-        if (mod == DisplayName && Plugin.localPlayerTrusted)
+        if (mod == DisplayName && PlayerExtensions.IsDev(player))
         {
             if (enabled)
                 player.Rig().gameObject.GetOrAddComponent<NetPhone>();
@@ -96,19 +96,16 @@ public class Developer : GrateModule
             phone.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             phone.SetActive(true);
-            Plugin.menuController.GetComponent<Trusted>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnDisable()
         {
             phone.Obliterate();
-            Plugin.menuController.GetComponent<Trusted>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
 
         private void OnDestroy()
         {
             phone.Obliterate();
-            Plugin.menuController.GetComponent<Trusted>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
     }
 }
