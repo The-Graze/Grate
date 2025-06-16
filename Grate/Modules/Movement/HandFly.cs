@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using Fusion;
 using GorillaLocomotion;
 using Grate.Gestures;
 using Grate.GUI;
@@ -36,14 +37,14 @@ public class HandFly : GrateModule
 
     protected override void OnEnable()
     {
-        if (!MenuController.Instance.Built) return;
-        base.OnEnable();
+        if (!MenuController.Instance.Built || !enabled) return;
         ReloadConfiguration();
+        base.OnEnable();
     }
 
     protected override void ReloadConfiguration()
     {
-        speedScale = Speed.Value * 2;
+        speedScale = Speed.Value * 2.5f;
     }
 
     public static void BindConfigEntries()
