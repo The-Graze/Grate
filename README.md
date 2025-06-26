@@ -39,6 +39,7 @@
 * `Double Jump` - Allows you to double jump. When midair, **press A/B on your right controller** to jump again.
 * `Climb` - By pressing **grip**, you can grab/climb terrain, objects, etc!
 * `Frozone` - By pressing and holding **grip**, you can spawn ice that moves with your hands.
+* `Helicopter` - This allows you to go up & down like a helicopter **Spread your arms out like a helicopter** to activate use your head to direct you up an down.
 ### Physics
 * `Low Gravity` - Decreases the strength of gravity
 * `No Collide` - Allows the player to fall through solid objects. Enabling this automatically enables platforms so you don't fall to your death!
@@ -56,6 +57,8 @@
 * `Piggyback` - Allows you to ride other players! To mount someone, **have them give a thumbs-up**, and then **grip nearby them**. If they **give you a thumbs down** at any point, you'll stop riding them. *Consent is important!*
 * `Telekinesis` - If another player points at you with their grip button pressed, they can
   pick you up and throw you from afar.
+*  `Grab` - If another player grabs you, they can
+  pick you up and throw you.
 * `ESP` - Similar to Fireflies, allowing you to see players through walls.
 ### Miscellaneous
 * `Settings` - At the top of the *Grate* menu on any page, allows you to change settings for most modules.
