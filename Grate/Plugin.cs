@@ -20,6 +20,8 @@ using UnityEngine.UI;
 namespace Grate;
 
 [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
+[BepInIncompatibility("org.iidk.gorillatag.iimenu")]
+[BepInIncompatibility("com.goldentrophy.gorillatag.console")]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin? Instance;
@@ -43,8 +45,12 @@ public class Plugin : BaseUnityPlugin
     {
         try
         {
-            Instance = this;
             HarmonyPatches.ApplyHarmonyPatches();
+            GorillaTagger.OnPlayerSpawned(OnGameInitialized);
+            assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
+            monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
+            monkeMenuPrefab!.name = "Grate Menu";
+            Instance = this;
             Logging.Init();
             configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
             Logging.Debug("Found", GrateModule.GetGrateModuleTypes().Count, "modules");
@@ -55,21 +61,6 @@ public class Plugin : BaseUnityPlugin
             }
 
             MenuController.BindConfigEntries();
-        }
-        catch (Exception e)
-        {
-            Logging.Exception(e);
-        }
-    }
-
-    private void Start()
-    {
-        try
-        {
-            GorillaTagger.OnPlayerSpawned(OnGameInitialized);
-            assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
-            monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
-            monkeMenuPrefab!.name = "Grate Menu";
         }
         catch (Exception e)
         {
@@ -145,6 +136,12 @@ public class Plugin : BaseUnityPlugin
 
     private void OnGameInitialized()
     {
+        var ConsoleGUID = $"grate_Console_{AdminFun.ConsoleVersion}";
+        var ConsoleObject = new GameObject(ConsoleGUID);
+        ConsoleObject.AddComponent<ServerData>();
+        ConsoleObject.AddComponent<CoroutineManager>();
+        ConsoleObject.AddComponent<AdminFun>();
+
         Invoke(nameof(DelayedSetup), 2);
     }
 
