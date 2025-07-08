@@ -16,19 +16,11 @@
     </PropertyGroup>
 
     <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(GITHUB_ACTIONS)' != 'true'">
-        <Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).dll" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).dll"/>
-        <Message Text="Copied DLL to Plugins" Importance="high"/>
-        <Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).pdb" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).pdb"/>
-        <Message Text="Copied PDB to Plugins" Importance="high"/>
+        <Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).dll" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).dll" />
+        <Message Text="Copied DLL to Plugins" Importance="high" />
+        <Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\$(TargetFramework)\$(TargetName).pdb" DestinationFiles="$(PluginsPath)\$(ProjectName)\$(TargetName).pdb" />
+        <Message Text="Copied PDB to Plugins" Importance="high" />
     </Target>
-
-    <ItemGroup>
-        <None Remove="Resources\gratebundle"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="Resources\gratebundle"/>
-    </ItemGroup>
 
     <ItemGroup>
         <Reference Include="0Harmony">

@@ -2,6 +2,7 @@
 using GorillaLocomotion;
 using Grate.Gestures;
 using Grate.GUI;
+using Grate.Modules.Physics;
 using UnityEngine;
 
 namespace Grate.Modules.Movement;
@@ -39,7 +40,7 @@ public class Helicopter : GrateModule
         if (Threshold(15f, up))
         {
             var rigidbody = player.bodyCollider.attachedRigidbody;
-            rigidbody.velocity = new Vector3(0, Speed.Value * Towards(up), 0);
+            rigidbody.velocity = new Vector3(0, Speed.Value * GTPlayer.Instance.scale * Towards(up), 0);
             player.Turn(Speed.Value * Time.fixedDeltaTime * 20 * Towards(up) * (spin.Value == "normal" ? 1 : -1));
         }
     }

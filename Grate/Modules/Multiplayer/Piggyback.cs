@@ -1,10 +1,12 @@
 ﻿using System;
 using GorillaLocomotion;
+using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Modules.Physics;
 using Grate.Networking;
 using Grate.Tools;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -120,7 +122,7 @@ public class Piggyback : GrateModule
     private bool GivingConsent(VRRig rig)
     {
         var np = rig.GetComponent<NetworkedPlayer>();
-        if (Plugin.localPlayerTrusted) return true;
+        if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) return true;
         return
             (np.RightTriggerPressed &&
              np.RightGripPressed &&
@@ -137,7 +139,7 @@ public class Piggyback : GrateModule
     private bool RevokingConsent(VRRig rig)
     {
         var np = rig.GetComponent<NetworkedPlayer>();
-        if (Plugin.localPlayerTrusted) return false;
+        if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) return false;
         return
             (np.RightTriggerPressed &&
              np.RightGripPressed &&
