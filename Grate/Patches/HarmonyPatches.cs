@@ -9,7 +9,7 @@ namespace Grate;
 /// </summary>
 public class HarmonyPatches
 {
-    public const string InstanceId = PluginInfo.GUID;
+    public const string InstanceId = PluginInfo.Guid;
     private static Harmony instance;
 
     public static bool IsPatched { get; private set; }

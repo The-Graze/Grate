@@ -19,7 +19,7 @@ using UnityEngine.UI;
 
 namespace Grate;
 
-[BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
+[BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin? Instance;
