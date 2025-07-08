@@ -53,23 +53,11 @@ public class Plugin : BaseUnityPlugin
                 var bindConfigs = moduleType.GetMethod("BindConfigEntries");
                 if (bindConfigs != null) bindConfigs.Invoke(null, null);
             }
-
-            MenuController.BindConfigEntries();
-        }
-        catch (Exception e)
-        {
-            Logging.Exception(e);
-        }
-    }
-
-    private void Start()
-    {
-        try
-        {
             GorillaTagger.OnPlayerSpawned(OnGameInitialized);
             assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
             monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
             monkeMenuPrefab!.name = "Grate Menu";
+            MenuController.BindConfigEntries();
         }
         catch (Exception e)
         {
