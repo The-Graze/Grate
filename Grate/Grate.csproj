@@ -439,4 +439,9 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Resources\gratebundle" />
+      <EmbeddedResource Include="Resources\gratebundle" />
+    </ItemGroup>
+
 </Project>

@@ -66,7 +66,7 @@ public class Plugin : BaseUnityPlugin
     }
 
     public void Setup()
-    {
+    {   
         gt = gameObject.GetOrAddComponent<GestureTracker>();
         nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
         menuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
@@ -79,7 +79,7 @@ public class Plugin : BaseUnityPlugin
         try
         {
             Logging.Debug("Cleaning up");
-            menuController?.Obliterate();
+            menuController?.gameObject?.Obliterate();
             gt?.Obliterate();
             nph?.Obliterate();
         }
@@ -204,6 +204,11 @@ public class Plugin : BaseUnityPlugin
             {
                 WaWa_graze_dot_cc = true;
                 Setup();
+            }
+            else
+            {
+                WaWa_graze_dot_cc = false;
+                Cleanup();
             }
         }
         else
