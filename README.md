@@ -15,6 +15,7 @@ safe to use online.</h1>
 </p>
 <h4 align="center">(Watch this video by Rylan showing off Grate!)</h1>
 
+
 ## Links
 
 * Discord: https://discord.gg/B2MErU9KCp
@@ -31,13 +32,13 @@ safe to use online.</h1>
 
 * `Airplane` - This allows the player to fly around. **Spread your arms out like an airplane** to activate and use your
   wrists to steer!
-* `Bubble` - (Networked!) Creates a bubble around your so you can float around.
-* `Fly` - Use the **joysticks** fly around
+* `Bubble` - (Networked!) Creates a bubble around your body so you can float around.
+* `Fly` - Use the **joysticks** to fly around.
 * `Grappling Hooks` - **Grab one of the grapple guns** off of your hip holster with **either grip button and then press
-  the trigger to fire**
+  the trigger to fire**.
 * `Platforms` - **Press the grip button** on your controller to create a floating platform in the air that you can stand
   on.
-* `Speed Boost` - Significantly increases the player's movement speed (Speed reduced to avoid bans)
+* `Speed Boost` - Significantly increases the player's movement speed. (Speed reduced to avoid bans)
 * `Nail Gun` - **Press the trigger** to summon the nail gun. **Release the trigger** to fire a nail into surfaces that
   you can **grip** to climb.
 * `Rockets` - **Press the grip button** to spawn a rocket in each hand that boosts you around.
@@ -51,7 +52,7 @@ safe to use online.</h1>
 
 ### Physics
 
-* `Low Gravity` - Decreases the strength of gravity
+* `Low Gravity` - Decreases the strength of gravity.
 * `No Collide` - Allows the player to fall through solid objects. Enabling this automatically enables platforms so you
   don't fall to your death!
 * `No Slip` - Disables sliding on slippery surfaces, like ice.
@@ -65,8 +66,7 @@ safe to use online.</h1>
 * `Pearl` - Use **grip** to summon a teleport pearl. Throw it and you will warp to wherever it lands.
 * `Teleport` - **Make a triangle with your thumbs and index fingers and peer through it** to initiate a teleport. Use
   your head to aim more finely.
-* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by *
-  *pressing and holding grip to spawn the device in your hand**, then **A/B to place portals**.
+* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by **pressing and holding grip to spawn the device in your hand**, then **A/B to place portals**.
 
 ### Multiplayer
 
@@ -134,6 +134,6 @@ Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * Original Bark Mod by [KyleTheScientist](https://github.com/KyleTheScientist), please show them love!
 
-* Thanks to all contributers and any mini devs I let help
+* Thanks to all contributers and any mini devs who help make Grate better.
 
 * Thanks to [Rylan](https://github.com/RylanFoxins) for helping with the README!
