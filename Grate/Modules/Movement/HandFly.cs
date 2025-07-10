@@ -39,7 +39,6 @@ public class HandFly : GrateModule
     {
         if (!MenuController.Instance.Built || !enabled) return;
         ReloadConfiguration();
-        base.OnEnable();
     }
 
     protected override void ReloadConfiguration()
@@ -72,11 +71,15 @@ public class HandFly : GrateModule
     public override string Tutorial()
     {
         return "- To fly, press both grips. \n" +
-               "- To fly around, move your hands to make an arrow. \n" +
-               "- The further apart your hand.";
+               "- To fly around, move your hands. \n" +
+               "- The further apart your hands the faster you go.";
     }
 
     protected override void Cleanup()
     {
+        // im too stupid to figure out why it wont disable if i leave the lobby
+        // -baggZ 
     }
+
+    
 }

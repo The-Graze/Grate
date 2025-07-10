@@ -131,6 +131,8 @@ public class MenuController : GrateGrabbable
                 if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) modules.Add(trustedMod);
                 var developerMod = gameObject.AddComponent<Developer>();
                 if (PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer)) modules.Add(developerMod);
+                var bonk = gameObject.AddComponent<Bat>();
+                if (PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer)) modules.Add(bonk);
                 modules.AddRange(TooAddmodules);
                 ReloadConfiguration();
             }
