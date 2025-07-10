@@ -52,9 +52,9 @@ public class BagHammer : GrateModule
         if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer && player.UserId == "9ABD0C174289F58E")
         {
             if (enabled)
-                player.Rig().gameObject.GetOrAddComponent<NetSword>();
+                player.Rig().gameObject.GetOrAddComponent<NetHammer>();
             else
-                Destroy(player.Rig().gameObject.GetComponent<NetSword>());
+                Destroy(player.Rig().gameObject.GetComponent<NetHammer>());
         }
     }
 
@@ -81,7 +81,7 @@ public class BagHammer : GrateModule
 
     private void OnRigCached(NetPlayer player, VRRig rig)
     {
-        rig?.gameObject?.GetComponent<NetSword>()?.Obliterate();
+        rig?.gameObject?.GetComponent<NetHammer>()?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -94,7 +94,7 @@ public class BagHammer : GrateModule
         return "baggZ";
     }
 
-    private class NetSword : MonoBehaviour
+    private class NetHammer : MonoBehaviour
     {
         private NetworkedPlayer networkedPlayer;
         private GameObject sword;
