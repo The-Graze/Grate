@@ -7,12 +7,14 @@ using Grate.Patches;
 using Grate.Tools;
 using UnityEngine;
 using NetworkPlayer = NetPlayer;
+using UnityEngine.Networking;
+using System.Collections;
 
 namespace Grate.Modules.Misc;
 
-public class Developer : GrateModule
+public class BagPhone : GrateModule
 {
-    public static readonly string DisplayName = "Dev Phone";
+    public static readonly string DisplayName = "Bag Phone";
     private static GameObject Phone;
 
     protected override void Start()
@@ -51,9 +53,9 @@ public class Developer : GrateModule
         if (mod == DisplayName && PlayerExtensions.IsDev(player))
         {
             if (enabled)
-                player.Rig().gameObject.GetOrAddComponent<NetDevPhone>();
+                player.Rig().gameObject.GetOrAddComponent<NetBagPhone>();
             else
-                Destroy(player.Rig().gameObject.GetComponent<NetDevPhone>());
+                Destroy(player.Rig().gameObject.GetComponent<NetBagPhone>());
         }
     }
 
@@ -64,7 +66,7 @@ public class Developer : GrateModule
 
     private void OnRigCached(NetPlayer player, VRRig rig)
     {
-        rig?.gameObject?.GetComponent<NetDevPhone>()?.Obliterate();
+        rig?.gameObject?.GetComponent<NetBagPhone>()?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -74,10 +76,30 @@ public class Developer : GrateModule
 
     public override string Tutorial()
     {
-        return "Given to the devs";
+        return "funni";
     }
 
-    private class NetDevPhone : MonoBehaviour
+    IEnumerator GetImage()
+    {
+        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture("https://raw.githubusercontent.com/baggZ-idk/baggZ-games/refs/heads/main/gratememe.png"))
+        {
+            yield return uwr.SendWebRequest();
+
+            if (uwr.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(uwr.error);
+            }
+            else
+            {
+                // Get downloaded asset bundle
+                var texture = DownloadHandlerTexture.GetContent(uwr);
+                texture.filterMode = FilterMode.Point;
+                Phone.GetComponent<Renderer>().materials[0].mainTexture = texture;
+            }
+        }
+    }
+
+private class NetBagPhone : MonoBehaviour
     {
         private NetworkedPlayer networkedPlayer;
         private GameObject phone;
@@ -106,5 +128,26 @@ public class Developer : GrateModule
         {
             phone.Obliterate();
         }
+
+        IEnumerator GetImage()
+        {
+            using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture("https://raw.githubusercontent.com/baggZ-idk/baggZ-games/refs/heads/main/gratememe.png"))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.Log(uwr.error);
+                }
+                else
+                {
+                    // Get downloaded asset bundle
+                    var texture = DownloadHandlerTexture.GetContent(uwr);
+                    texture.filterMode = FilterMode.Point;
+                    Phone.GetComponent<Renderer>().materials[0].mainTexture = texture;
+                }
+            }
+        }
     }
 }
+
