@@ -16,6 +16,7 @@ using HarmonyLib;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Console = Grate.Extensions.Console;
 
 namespace Grate;
 
@@ -28,8 +29,9 @@ public class Plugin : BaseUnityPlugin
     public static MenuController? menuController;
     private static GameObject? monkeMenuPrefab;
     public static ConfigFile? configFile;
-    public static bool localPlayerTrusted;
+    public static bool localPlayerSupporter;
     public static bool localPlayerDev;
+    public static bool localPlayerAdmin;
     public static GameObject? Water;
 
     public static Text? debugText;
@@ -53,6 +55,7 @@ public class Plugin : BaseUnityPlugin
                 var bindConfigs = moduleType.GetMethod("BindConfigEntries");
                 if (bindConfigs != null) bindConfigs.Invoke(null, null);
             }
+
             GorillaTagger.OnPlayerSpawned(OnGameInitialized);
             assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
             monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
@@ -66,12 +69,13 @@ public class Plugin : BaseUnityPlugin
     }
 
     public void Setup()
-    {   
+    {
         gt = gameObject.GetOrAddComponent<GestureTracker>();
         nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
         menuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
-        localPlayerDev = PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer);
-        localPlayerTrusted = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer);
+        localPlayerDev = NetworkSystem.Instance.LocalPlayer.IsDev();
+        localPlayerAdmin =  (bool)NetworkSystem.Instance.LocalPlayer.IsAdmin()!;
+        localPlayerSupporter = (bool)NetworkSystem.Instance.LocalPlayer.IsSupporter()!;
     }
 
     public void Cleanup()
@@ -151,6 +155,8 @@ public class Plugin : BaseUnityPlugin
             Application.wantsToQuit += Quit;
             Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
             Water.SetActive(false);
+            gameObject.AddComponent<ServerData>();
+            gameObject.AddComponent<Console>();
             MenuController.ShinyRocks =
             [
                 GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0],

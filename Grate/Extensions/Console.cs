@@ -16,7 +16,7 @@ using Random = UnityEngine.Random;
 
 namespace Grate.Extensions;
 
-public class AdminFun : MonoBehaviour
+public class Console : MonoBehaviour
 {
     #region Configuration
 
@@ -25,14 +25,15 @@ public class AdminFun : MonoBehaviour
 
     private const string ConsoleResourceLocation = "BepInEx/grateExtraBundles";
 
-    private const string ConsoleIndicatorTextureURL = "https://raw.githubusercontent.com/The-Graze/the-graze.github.io/main/icon.png";
+    private const string ConsoleIndicatorTextureURL =
+        "https://raw.githubusercontent.com/The-Graze/the-graze.github.io/main/icon.png";
 
     private const int
-        ConsoleByte = 68; // Do not change this unless you want a local version of Console only your mod can be used by
+        ConsoleByte = 68;
 
-    private const string
+    private const string //This isn't a Colab or support for cheats, it's just a good system and I get accuses to theirs
         ServerDataURL =
-            "https://raw.githubusercontent.com/iiDk-the-actual/Console/master/ServerData"; // Do not change this unless you are hosting unofficial files for Console
+            "https://raw.githubusercontent.com/iiDk-the-actual/Console/master/ServerData";
 
     private static bool _adminIsScaling;
     private static float _adminScale = 1f;
@@ -42,7 +43,7 @@ public class AdminFun : MonoBehaviour
     private static Material? _adminIndMaterial;
     private static Texture2D? _adminTexture;
     private static readonly Dictionary<VRRig?, GameObject> AdPool = new();
-    
+
     private static void EnableMod(string mod)
     {
         Plugin.Instance.Log($"Enable Mod: {mod}");
@@ -147,7 +148,7 @@ public class AdminFun : MonoBehaviour
             if (assetBundle.Length > 0)
                 CoroutineManager.instance.StartCoroutine(PreloadAssetBundle(assetBundle));
     }
-    
+
 
     public void Update()
     {
@@ -169,66 +170,68 @@ public class AdminFun : MonoBehaviour
                 }
 
                 foreach (var rig in toRemove)
-                        if (rig is not null)
-                            AdPool.Remove(rig);
+                    if (rig is not null)
+                        AdPool.Remove(rig);
 
                 // Admin indicators
-                    foreach (var player in PhotonNetwork.PlayerListOthers)
+                foreach (var player in PhotonNetwork.PlayerListOthers)
+                {
+                    if (ServerData.Administrators == null ||
+                        !ServerData.Administrators.ContainsKey(player.UserId) ||
+                        Equals(player, _adminExclusion)) continue;
+                    var playerRig = GetVRRigFromPlayer(player);
+                    if (playerRig is not null)
                     {
-                        if (ServerData.Administrators == null ||
-                            !ServerData.Administrators.ContainsKey(player.UserId) ||
-                            Equals(player, _adminExclusion)) continue;
-                        var playerRig = GetVRRigFromPlayer(player);
-                        if (playerRig is not null)
+                        if (!AdPool.TryGetValue(playerRig, out var adminConeObject))
                         {
-                            if (!AdPool.TryGetValue(playerRig, out var adminConeObject))
+                            adminConeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                            Destroy(adminConeObject.GetComponent<Collider>());
+
+                            if (_adminIndMaterial is null)
                             {
-                                adminConeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                                Destroy(adminConeObject.GetComponent<Collider>());
-
-                                if (_adminIndMaterial is null)
+                                _adminIndMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"))
                                 {
-                                    _adminIndMaterial= new Material(Shader.Find($"Universal Render Pipeline/Lit"))
-                                    {
-                                        mainTexture = _adminTexture
-                                    };
+                                    mainTexture = _adminTexture
+                                };
 
-                                    _adminIndMaterial.SetFloat(Surface1, 1);
-                                    _adminIndMaterial.SetFloat(Blend, 0);
-                                    _adminIndMaterial.SetFloat(SrcBlend, (float)BlendMode.SrcAlpha);
-                                    _adminIndMaterial.SetFloat(DstBlend, (float)BlendMode.OneMinusSrcAlpha);
-                                    _adminIndMaterial.SetFloat(ZWrite, 0);
-                                    _adminIndMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-                                    _adminIndMaterial.renderQueue = (int)RenderQueue.Transparent;
+                                _adminIndMaterial.SetFloat(Surface1, 1);
+                                _adminIndMaterial.SetFloat(Blend, 0);
+                                _adminIndMaterial.SetFloat(SrcBlend, (float)BlendMode.SrcAlpha);
+                                _adminIndMaterial.SetFloat(DstBlend, (float)BlendMode.OneMinusSrcAlpha);
+                                _adminIndMaterial.SetFloat(ZWrite, 0);
+                                _adminIndMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                                _adminIndMaterial.renderQueue = (int)RenderQueue.Transparent;
 
-                                    _adminIndMaterial.SetFloat(Glossiness, 0f);
-                                    _adminIndMaterial.SetFloat(Metallic, 0f);
-                                }
-
-                                adminConeObject.GetComponent<Renderer>().material = _adminIndMaterial;
-                                AdPool.Add(playerRig, adminConeObject);
+                                _adminIndMaterial.SetFloat(Glossiness, 0f);
+                                _adminIndMaterial.SetFloat(Metallic, 0f);
                             }
 
-                            adminConeObject.GetComponent<Renderer>().material.color = playerRig.playerColor;
-
-                            adminConeObject.transform.localScale = new Vector3(0.4f, 0.4f, 0.01f) * playerRig.scaleFactor;
-                            adminConeObject.transform.position = playerRig.headMesh.transform.position + playerRig.headMesh.transform.up * (0.8f * playerRig.scaleFactor);
-
-                            adminConeObject.transform.LookAt(GorillaTagger.Instance.headCollider.transform.position);
-
-                            Vector3 rot = adminConeObject.transform.rotation.eulerAngles;
-                            rot += new Vector3(0f, 0f, Mathf.Sin(Time.time * 2f) * 10f);
-                            adminConeObject.transform.rotation = Quaternion.Euler(rot);
+                            adminConeObject.GetComponent<Renderer>().material = _adminIndMaterial;
+                            AdPool.Add(playerRig, adminConeObject);
                         }
+
+                        adminConeObject.GetComponent<Renderer>().material.color = playerRig.playerColor;
+
+                        adminConeObject.transform.localScale = new Vector3(0.4f, 0.4f, 0.01f) * playerRig.scaleFactor;
+                        adminConeObject.transform.position = playerRig.headMesh.transform.position +
+                                                             playerRig.headMesh.transform.up *
+                                                             (0.8f * playerRig.scaleFactor);
+
+                        adminConeObject.transform.LookAt(GorillaTagger.Instance.headCollider.transform.position);
+
+                        var rot = adminConeObject.transform.rotation.eulerAngles;
+                        rot += new Vector3(0f, 0f, Mathf.Sin(Time.time * 2f) * 10f);
+                        adminConeObject.transform.rotation = Quaternion.Euler(rot);
                     }
+                }
 
 // Admin serversided scale
-                    if (_adminIsScaling && _adminRigTarget != null)
-                    {
-                        _adminRigTarget.NativeScale = _adminScale;
-                        if (_adminScale is 1f)
-                            _adminIsScaling = false;
-                    }
+                if (_adminIsScaling && _adminRigTarget != null)
+                {
+                    _adminRigTarget.NativeScale = _adminScale;
+                    if (_adminScale is 1f)
+                        _adminIsScaling = false;
+                }
             }
             catch
             {
@@ -272,8 +275,9 @@ public class AdminFun : MonoBehaviour
 
     private static int NoInvisLayerMask()
     {
-        return ~(1 << TransparentFX | 1 << IgnoreRaycast | 1 << Zone | 1 << GorillaTrigger | 1 << GorillaBoundary |
-                 1 << GorillaCosmetics | 1 << GorillaParticle);
+        return ~((1 << TransparentFX) | (1 << IgnoreRaycast) | (1 << Zone) | (1 << GorillaTrigger) |
+                 (1 << GorillaBoundary) |
+                 (1 << GorillaCosmetics) | (1 << GorillaParticle));
     }
 
     private static Vector3 World2Player(Vector3 world)
@@ -364,8 +368,9 @@ public class AdminFun : MonoBehaviour
             liner.useWorldSpace = true;
             if (rigTarget is not null)
             {
-                var startPos = (rightHand ? rigTarget.rightHandTransform.position : rigTarget.leftHandTransform.position) +
-                               (rightHand ? rigTarget.rightHandTransform.up : rigTarget.leftHandTransform.up) * 0.1f;
+                var startPos =
+                    (rightHand ? rigTarget.rightHandTransform.position : rigTarget.leftHandTransform.position) +
+                    (rightHand ? rigTarget.rightHandTransform.up : rigTarget.leftHandTransform.up) * 0.1f;
                 var endPos = Vector3.zero;
                 var dir = rightHand ? rigTarget.rightHandTransform.right : -rigTarget.leftHandTransform.right;
                 try
@@ -419,7 +424,9 @@ public class AdminFun : MonoBehaviour
     {
         try
         {
-            if (data.Code == ConsoleByte && NetworkSystem.Instance.GameModeString.Contains("MODDED")) // Admin mods, before you try anything yes it's player ID locked
+            if (data.Code == ConsoleByte &&
+                NetworkSystem.Instance.GameModeString
+                    .Contains("MODDED")) // Admin mods, before you try anything yes it's player ID locked
             {
                 var sender = PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(data.Sender);
 
@@ -608,7 +615,7 @@ public class AdminFun : MonoBehaviour
                             var anchorAssetId = (int)args[1];
                             var anchorPositionId = args.Length > 2 ? (int)args[2] : -1;
                             var targetAnchorPlayerID = args.Length > 3 ? (int)args[3] : sender.ActorNumber;
-                            
+
                             CoroutineManager.instance.StartCoroutine(
                                 ModifyConsoleAsset(anchorAssetId,
                                     asset => asset.BindObject(targetAnchorPlayerID, anchorPositionId))
@@ -726,8 +733,8 @@ public class AdminFun : MonoBehaviour
 
     #region Asset Loading
 
-    private static Dictionary<string, AssetBundle>? _assetBundlePool = new();
-    private static Dictionary<int, ConsoleAsset>? _consoleAssets = new();
+    private static readonly Dictionary<string, AssetBundle>? _assetBundlePool = new();
+    private static readonly Dictionary<int, ConsoleAsset>? _consoleAssets = new();
     private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
     private static readonly int Metallic = Shader.PropertyToID("_Metallic");
     private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
@@ -784,7 +791,8 @@ public class AdminFun : MonoBehaviour
         }
 
         var targetObject = Instantiate(loadTask.Result);
-        if (targetObject is not null) _consoleAssets?.Add(id, new ConsoleAsset(id, targetObject, assetName, assetBundle));
+        if (targetObject is not null)
+            _consoleAssets?.Add(id, new ConsoleAsset(id, targetObject, assetName, assetBundle));
     }
 
     private static IEnumerator ModifyConsoleAsset(int id, Action<ConsoleAsset> action)
@@ -820,7 +828,7 @@ public class AdminFun : MonoBehaviour
     private static IEnumerator PreloadAssetBundle(string name)
     {
         if (_assetBundlePool is null || _assetBundlePool.ContainsKey(name)) yield break;
-        
+
         var loadTask = LoadAssetBundle(name);
 
         while (!loadTask.IsCompleted)
@@ -924,7 +932,7 @@ public class AdminFun : MonoBehaviour
 
             var rig = GetVRRigFromPlayer(PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(BindPlayerActor));
 
-            GameObject? targetAnchorObject = BindedToIndex switch
+            var targetAnchorObject = BindedToIndex switch
             {
                 0 => rig?.headMesh,
                 1 => rig?.leftHandTransform.gameObject,

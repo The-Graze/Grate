@@ -14,7 +14,7 @@ public static class TextureExtensions
             texture.GetNativeTexturePtr());
     }
 
-    public static Texture2D Copy(this Texture2D texture, TextureFormat? format = TextureFormat.ARGB32)
+    public static Texture2D? Copy(this Texture2D texture, TextureFormat? format = TextureFormat.ARGB32)
     {
         if (texture == null) return null;
         var copyRT = RenderTexture.GetTemporary(

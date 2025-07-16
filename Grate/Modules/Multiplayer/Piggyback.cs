@@ -122,7 +122,7 @@ public class Piggyback : GrateModule
     private bool GivingConsent(VRRig rig)
     {
         var np = rig.GetComponent<NetworkedPlayer>();
-        if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) return true;
+        if (PlayerExtensions.IsAdmin(PhotonNetwork.LocalPlayer)) return true;
         return
             (np.RightTriggerPressed &&
              np.RightGripPressed &&
@@ -139,7 +139,7 @@ public class Piggyback : GrateModule
     private bool RevokingConsent(VRRig rig)
     {
         var np = rig.GetComponent<NetworkedPlayer>();
-        if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) return false;
+        if (PlayerExtensions.IsAdmin(PhotonNetwork.LocalPlayer)) return false;
         return
             (np.RightTriggerPressed &&
              np.RightGripPressed &&

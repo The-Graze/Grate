@@ -106,10 +106,5 @@ public class Grazing : GrateModule
         {
             vp.gameObject.Obliterate();
         }
-
-        private void OnDestroy()
-        {
-            vp.gameObject.Obliterate();
-        }
     }
 }

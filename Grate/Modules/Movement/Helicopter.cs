@@ -2,7 +2,6 @@
 using GorillaLocomotion;
 using Grate.Gestures;
 using Grate.GUI;
-using Grate.Modules.Physics;
 using UnityEngine;
 
 namespace Grate.Modules.Movement;

@@ -2,7 +2,6 @@
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
-using Grate.Modules.Movement;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
@@ -80,8 +79,8 @@ public class Developer : GrateModule
 
     private class NetPhone : MonoBehaviour
     {
-        private GameObject phone;
         private NetworkedPlayer networkedPlayer;
+        private GameObject phone;
 
         private void OnEnable()
         {

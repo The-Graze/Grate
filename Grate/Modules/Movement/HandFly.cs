@@ -1,68 +1,57 @@
 ﻿using BepInEx.Configuration;
-using Fusion;
 using GorillaLocomotion;
-using Grate.Gestures;
+using Grate.Extensions;
 using Grate.GUI;
 using UnityEngine;
 
 namespace Grate.Modules.Movement;
 
-public class HandFly : GrateModule
+public class LocalGorillaVelocityTracker : MonoBehaviour
 {
-    public static readonly string DisplayName = "Hand Fly";
+    private Vector3 previousLocalPosition;
+    private Vector3 velocity;
 
-    public static ConfigEntry<int> Speed;
-    public static ConfigEntry<bool> LeftHanded;
-    private readonly float acceleration = .1f;
-    private float speedScale = 10f;
+    private void Start() { previousLocalPosition = transform.localPosition; }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        var tracker = GestureTracker.Instance;
-        if (tracker.leftGrip.pressed && tracker.rightGrip.pressed && enabled)
-        {
-            // nullify gravity by adding it's negative value to the player's velocity
-            var rb = GTPlayer.Instance.bodyCollider.attachedRigidbody;
-            if (enabledModules.ContainsKey(Bubble.DisplayName)
-                && !enabledModules[Bubble.DisplayName])
-                rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * GTPlayer.Instance.scale);
+        Vector3 localDisplacement = transform.localPosition - previousLocalPosition;
+        Vector3 localVelocity = localDisplacement / Time.deltaTime;
 
-            var velocity = LeftHanded.Value ?
-                ControllerInputPoller.instance.leftControllerPosition - ControllerInputPoller.instance.rightControllerPosition :
-                ControllerInputPoller.instance.rightControllerPosition - ControllerInputPoller.instance.leftControllerPosition;
-            velocity *= GTPlayer.Instance.scale * speedScale;
-            rb.velocity = Vector3.Lerp(rb.velocity, velocity, acceleration);
-        }
+        velocity = transform.parent.TransformDirection(localVelocity);
+
+        previousLocalPosition = transform.localPosition;
     }
 
+    public Vector3 GetVelocity() => velocity;
+}
+public class HandFly : GrateModule
+{
+    private const string DisplayName = "Hand Fly";
+    private LocalGorillaVelocityTracker? right;
+    private LocalGorillaVelocityTracker? left;
+
+    private ConfigEntry<int>? speed;
+    private float speedScale;
     protected override void OnEnable()
     {
         if (!MenuController.Instance.Built || !enabled) return;
+        Plugin.menuController?.GetComponent<Fly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        right = GTPlayer.Instance.leftControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
+        left = GTPlayer.Instance.rightControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
         ReloadConfiguration();
         base.OnEnable();
     }
 
-    protected override void ReloadConfiguration()
+    private void FixedUpdate()
     {
-        speedScale = Speed.Value * 2.5f;
+        if (ControllerInputPoller.instance.leftControllerIndexFloat > 0.5f)
+            GorillaTagger.Instance.rigidbody.velocity -= right!.GetVelocity() / speedScale * GTPlayer.Instance.scale;
+        
+        if (ControllerInputPoller.instance.rightControllerIndexFloat > 0.5f)
+            GorillaTagger.Instance.rigidbody.velocity -= left!.GetVelocity() / speedScale * GTPlayer.Instance.scale;
     }
-
-    public static void BindConfigEntries()
-    {
-        Speed = Plugin.configFile.Bind(
-            DisplayName,
-            "speed",
-            5,
-            "How fast you fly"
-        );
-
-        LeftHanded = Plugin.configFile.Bind(
-            DisplayName,
-            "Left Handed Mode",
-            false,
-            "Are you left handed"
-        );
-    }
+    
 
     public override string GetDisplayName()
     {
@@ -71,12 +60,30 @@ public class HandFly : GrateModule
 
     public override string Tutorial()
     {
-        return "- To fly, press both grips. \n" +
-               "- To fly around, move your hands to make an arrow. \n" +
-               "- The further apart your hand.";
+        return "-To fly, press Grip to Throw yourself,\n"+
+               "both hands for more speed";
     }
 
     protected override void Cleanup()
     {
+        Plugin.menuController?.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        if (right != null) right.Obliterate();
+        if (left != null) left.Obliterate();
+    }
+
+    protected override void ReloadConfiguration()
+    {
+        speedScale = speed!.Value * 2.5f;
+    }
+
+    public void BindConfigEntries()
+    {
+        speed = Plugin.configFile?.Bind(
+            DisplayName,
+            "speed",
+            5,
+            "How fast you fly"
+        );
+        
     }
 }

@@ -21,8 +21,9 @@ public class NetworkPropertyHandler : MonoBehaviourPunCallbacks
     private readonly Hashtable properties = new();
 
     private float lastPropertyUpdate;
-    public Dictionary<NetPlayer, NetworkedPlayer> networkedPlayers = new();
-    public Action<NetPlayer> OnPlayerJoined, OnPlayerLeft;
+    public Dictionary<NetPlayer?, NetworkedPlayer> networkedPlayers = new();
+    public Action<NetPlayer?> OnPlayerJoined;
+    public Action<NetPlayer?> OnPlayerLeft;
     public Action<NetPlayer, string, bool> OnPlayerModStatusChanged;
 
     private void Awake()
@@ -73,7 +74,7 @@ public class NetworkPropertyHandler : MonoBehaviourPunCallbacks
             }
     }
 
-    public void OnPlayerLeftRoom(NetPlayer otherPlayer)
+    public void OnPlayerLeftRoom(NetPlayer? otherPlayer)
     {
         OnPlayerLeft?.Invoke(otherPlayer);
         if (networkedPlayers.ContainsKey(otherPlayer))
@@ -83,7 +84,7 @@ public class NetworkPropertyHandler : MonoBehaviourPunCallbacks
         }
     }
 
-    public void OnPlayerEnteredRoom(NetPlayer newPlayer)
+    public void OnPlayerEnteredRoom(NetPlayer? newPlayer)
     {
         try
         {
@@ -96,31 +97,40 @@ public class NetworkPropertyHandler : MonoBehaviourPunCallbacks
         }
     }
 
-    private IEnumerator CreateNetworkedPlayer(NetPlayer player = null, VRRig rig = null)
+    private IEnumerator CreateNetworkedPlayer(NetPlayer? player = null, VRRig? rig = null)
     {
-        if (player is null && rig is null)
-            throw new Exception("Both player and rig are null");
-
-        if (player is null)
-            player = rig.OwningNetPlayer;
-        else if (rig is null)
-            for (var i = 0; i < 10; i++)
+        switch (player)
+        {
+            case null when rig is null:
+                throw new Exception("Both player and rig are null");
+            case null:
+                player = rig.OwningNetPlayer;
+                break;
+            default:
             {
-                rig = player.Rig();
-                if (rig is null) yield return new WaitForSeconds(.1f);
+                if (rig is null)
+                    for (var i = 0; i < 10; i++)
+                    {
+                        rig = player.Rig();
+                        if (rig is null) yield return new WaitForSeconds(.1f);
+                    }
+
+                break;
             }
+        }
 
         var np = rig?.gameObject.GetOrAddComponent<NetworkedPlayer>();
-        np.owner = player;
-        np.rig = rig;
-        networkedPlayers.AddOrUpdate(player, np);
+        if (np != null)
+        {
+            np.owner = player;
+            np.rig = rig;
+            networkedPlayers.AddOrUpdate(player, np);
+        }
     }
 
     public void ChangeProperty(string key, object value)
     {
-        if (properties.ContainsKey(key))
+        if (!properties.TryAdd(key, value))
             properties[key] = value;
-        else
-            properties.Add(key, value);
     }
 }

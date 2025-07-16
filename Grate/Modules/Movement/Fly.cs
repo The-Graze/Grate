@@ -50,6 +50,7 @@ public class Fly : GrateModule
     {
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
+        Plugin.menuController?.GetComponent<HandFly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         ReloadConfiguration();
     }
 
@@ -92,5 +93,6 @@ public class Fly : GrateModule
 
     protected override void Cleanup()
     {
+        Plugin.menuController?.GetComponent<HandFly>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 }

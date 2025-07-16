@@ -227,7 +227,9 @@ public class GrateSlider : MonoBehaviour
 {
     private Knob _knob;
     private object _selected;
-    private Transform knob, sliderStart, sliderEnd;
+    private Transform knob;
+    private Transform? sliderStart;
+    private Transform sliderEnd;
     private Text label;
     public Action<object> OnValueChanged;
     private int selectedValue;
@@ -288,16 +290,16 @@ public class GrateSlider : MonoBehaviour
 public class Knob : GrateInteractable
 {
     public int divisions;
-    private int _value;
-    public Action<int> OnValueChanged;
-    private Transform start, end;
+    private int value;
+    public Action<int>? OnValueChanged;
+    private Transform? start, end;
 
     public int Value
     {
-        get => _value;
+        get => value;
         set
         {
-            if (value != _value)
+            if (value != this.value)
             {
                 OnValueChanged?.Invoke(value);
                 if (Selected)
@@ -305,7 +307,7 @@ public class Knob : GrateInteractable
                 Sounds.Play(Sounds.Sound.keyboardclick);
             }
 
-            _value = value;
+            this.value = value;
             transform.position = Vector3.Lerp(start.position, end.position, (float)Value / divisions);
         }
     }
@@ -325,7 +327,7 @@ public class Knob : GrateInteractable
         Value = Mathf.RoundToInt(projLength * divisions);
     }
 
-    public void Initialize(Transform start, Transform end)
+    public void Initialize(Transform? start, Transform end)
     {
         priority = MenuController.Instance.priority;
         this.start = start;

@@ -10,7 +10,7 @@ namespace Grate.Networking;
 
 public class NetworkedPlayer : MonoBehaviour
 {
-    public VRRig rig;
+    public VRRig? rig;
     public bool hasGrate;
     private readonly List<MonoBehaviour> modManagers = new();
     private bool leftGripWasPressed, rightGripWasPressed;
@@ -18,7 +18,7 @@ public class NetworkedPlayer : MonoBehaviour
     private bool leftTriggerWasPressed, rightTriggerWasPressed;
 
     public Action<NetworkedPlayer, bool> OnGripPressed, OnGripReleased;
-    public NetPlayer owner;
+    public NetPlayer? owner;
     public float LeftGripAmount { get; protected set; }
     public float RightGripAmount { get; protected set; }
     public float LeftTriggerAmount { get; protected set; }

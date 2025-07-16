@@ -10,8 +10,8 @@ using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
 using HarmonyLib;
-using UnityEngine;
 using Photon.Pun;
+using UnityEngine;
 
 namespace Grate.Modules.Physics;
 
@@ -196,9 +196,9 @@ public class Potions : GrateModule
         var shrink = potion.gameObject == shrinkPotion;
         if (!shrink && !PositionValidator.Instance.isValidAndStable) return;
         var delta = shrink ? .99f : 1.01f;
-        delta = PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)?
-            sizeChanger.MinScale * delta:
-            Mathf.Clamp(sizeChanger.MinScale * delta, .03f, 20f);
+        delta = PlayerExtensions.IsAdmin(PhotonNetwork.LocalPlayer)
+            ? sizeChanger.MinScale * delta
+            : Mathf.Clamp(sizeChanger.MinScale * delta, .03f, 20f);
         if (delta < 1)
             potion.gulp.pitch = MathExtensions.Map(GTPlayer.Instance.scale, 0, 1, 1.5f, 1);
         else

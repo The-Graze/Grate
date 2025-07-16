@@ -46,7 +46,8 @@ public class MenuController : GrateGrabbable
     public GameObject modPage, settingsPage;
     public Text helpText;
 
-    public Material[] grate, bark, HolloPurp, Monke, old;
+    public Renderer? renderer;
+    public Material[]? grate, bark, hollopurp, monke, old;
 
     private int debugButtons;
 
@@ -57,87 +58,84 @@ public class MenuController : GrateGrabbable
 
     protected override void Awake()
     {
-        if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
+        if (!NetworkSystem.Instance.GameModeString.Contains("MODDED_")) return;
+        Instance = this;
+        try
         {
-            Instance = this;
-            try
+            base.Awake();
+            throwOnDetach = true;
+            gameObject.AddComponent<PositionValidator>();
+            if (Plugin.configFile != null) Plugin.configFile.SettingChanged += SettingsChanged;
+            var tooAddmodules = new List<GrateModule>
             {
-                Logging.Debug("Awake");
-                base.Awake();
-                throwOnDetach = true;
-                gameObject.AddComponent<PositionValidator>();
-                Plugin.configFile.SettingChanged += SettingsChanged;
-                var TooAddmodules = new List<GrateModule>
-                {
-                    // Locomotion
-                    gameObject.AddComponent<Airplane>(),
-                    gameObject.AddComponent<Helicopter>(),
-                    gameObject.AddComponent<Bubble>(),
-                    gameObject.AddComponent<Fly>(),
-                    gameObject.AddComponent<HandFly>(),
-                    gameObject.AddComponent<GrapplingHooks>(),
-                    gameObject.AddComponent<Climb>(),
-                    gameObject.AddComponent<DoubleJump>(),
-                    gameObject.AddComponent<Platforms>(),
-                    gameObject.AddComponent<Frozone>(),
-                    gameObject.AddComponent<NailGun>(),
-                    gameObject.AddComponent<Rockets>(),
-                    gameObject.AddComponent<SpeedBoost>(),
-                    gameObject.AddComponent<Swim>(),
-                    gameObject.AddComponent<Wallrun>(),
-                    gameObject.AddComponent<Zipline>(),
+                // Locomotion
+                gameObject.AddComponent<Airplane>(),
+                gameObject.AddComponent<Helicopter>(),
+                gameObject.AddComponent<Bubble>(),
+                gameObject.AddComponent<Fly>(),
+                gameObject.AddComponent<HandFly>(),
+                gameObject.AddComponent<GrapplingHooks>(),
+                gameObject.AddComponent<Climb>(),
+                gameObject.AddComponent<DoubleJump>(),
+                gameObject.AddComponent<Platforms>(),
+                gameObject.AddComponent<Frozone>(),
+                gameObject.AddComponent<NailGun>(),
+                gameObject.AddComponent<Rockets>(),
+                gameObject.AddComponent<SpeedBoost>(),
+                gameObject.AddComponent<Swim>(),
+                gameObject.AddComponent<Wallrun>(),
+                gameObject.AddComponent<Zipline>(),
 
-                    //// Physics
-                    gameObject.AddComponent<LowGravity>(),
-                    gameObject.AddComponent<NoClip>(),
-                    gameObject.AddComponent<NoSlip>(),
-                    gameObject.AddComponent<Potions>(),
-                    gameObject.AddComponent<SlipperyHands>(),
-                    gameObject.AddComponent<DisableWind>(),
+                //// Physics
+                gameObject.AddComponent<LowGravity>(),
+                gameObject.AddComponent<NoClip>(),
+                gameObject.AddComponent<NoSlip>(),
+                gameObject.AddComponent<Potions>(),
+                gameObject.AddComponent<SlipperyHands>(),
+                gameObject.AddComponent<DisableWind>(),
 
-                    //// Teleportation
-                    gameObject.AddComponent<Checkpoint>(),
-                    gameObject.AddComponent<Portal>(),
-                    gameObject.AddComponent<Pearl>(),
-                    gameObject.AddComponent<Teleport>(),
+                //// Teleportation
+                gameObject.AddComponent<Checkpoint>(),
+                gameObject.AddComponent<Portal>(),
+                gameObject.AddComponent<Pearl>(),
+                gameObject.AddComponent<Teleport>(),
 
-                    //// Multiplayer
-                    gameObject.AddComponent<Boxing>(),
-                    gameObject.AddComponent<Piggyback>(),
-                    gameObject.AddComponent<Telekinesis>(),
-                    gameObject.AddComponent<Grab>(),
-                    gameObject.AddComponent<Fireflies>(),
-                    gameObject.AddComponent<ESP>(),
-                    gameObject.AddComponent<RatSword>(),
-                    gameObject.AddComponent<Kamehameha>()
+                //// Multiplayer
+                gameObject.AddComponent<Boxing>(),
+                gameObject.AddComponent<Piggyback>(),
+                gameObject.AddComponent<Telekinesis>(),
+                gameObject.AddComponent<Grab>(),
+                gameObject.AddComponent<Fireflies>(),
+                gameObject.AddComponent<ESP>(),
+                gameObject.AddComponent<RatSword>(),
+                gameObject.AddComponent<Kamehameha>()
 
-                    //// Misc
-                    //gameObject.AddComponent<ReturnToVS>(),
-                    //gameObject.AddComponent<Lobby>(),
-                };
-                var meow = gameObject.AddComponent<CatMeow>();
-                if (NetworkSystem.Instance.LocalPlayer.UserId == "FBE3EE50747CB892") modules.Add(meow);
-                var sb = gameObject.AddComponent<StoneBroke>();
-                if (NetworkSystem.Instance.LocalPlayer.UserId == "CA8FDFF42B7A1836") modules.Add(sb);
-                var bs = gameObject.AddComponent<BagHammer>();
-                if (NetworkSystem.Instance.LocalPlayer.UserId == "9ABD0C174289F58E") modules.Add(bs);
-                var g = gameObject.AddComponent<Grazing>();
-                if (NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(g);
-                var ch = gameObject.AddComponent<Cheese>();
-                if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
-                var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
-                if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
-                var trustedMod = gameObject.AddComponent<Trusted>();
-                if (PlayerExtensions.IsTrusted(PhotonNetwork.LocalPlayer)) modules.Add(trustedMod);
-                var developerMod = gameObject.AddComponent<Developer>();
-                if (PlayerExtensions.IsDev(PhotonNetwork.LocalPlayer)) modules.Add(developerMod);
-                modules.AddRange(TooAddmodules);
-                ReloadConfiguration();
-            }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
+                //// Misc
+                //gameObject.AddComponent<ReturnToVS>(),
+                //gameObject.AddComponent<Lobby>(),
+            };
+            var meow = gameObject.AddComponent<CatMeow>();
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "FBE3EE50747CB892") modules.Add(meow);
+            var sb = gameObject.AddComponent<StoneBroke>();
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "CA8FDFF42B7A1836") modules.Add(sb);
+            var bs = gameObject.AddComponent<BagHammer>();
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "9ABD0C174289F58E") modules.Add(bs);
+            var g = gameObject.AddComponent<Grazing>();
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(g);
+            var ch = gameObject.AddComponent<Cheese>();
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
+            var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
+            var supporterMod = gameObject.AddComponent<Supporter>();
+            if (NetworkSystem.Instance.LocalPlayer.IsSupporter()) modules.Add(supporterMod);
+            var developerMod = gameObject.AddComponent<Developer>();
+            if (NetworkSystem.Instance.LocalPlayer.IsDev()) modules.Add(developerMod);
+            modules.AddRange(tooAddmodules);
+            ReloadConfiguration();
+        }
+        catch (Exception e)
+        {
+            Logging.Exception(e);
         }
     }
 
@@ -171,10 +169,7 @@ public class MenuController : GrateGrabbable
             }
         }
 
-        if (PhotonNetwork.InRoom && !NetworkSystem.Instance.GameModeString.Contains("MODDED"))
-        {
-            gameObject.Obliterate();
-        }
+        if (PhotonNetwork.InRoom && !NetworkSystem.Instance.GameModeString.Contains("MODDED")) gameObject.Obliterate();
 
         // The potions tutorial needs to be updated frequently to keep the current size
         // up-to-date, even when the mod is disabled
@@ -185,79 +180,114 @@ public class MenuController : GrateGrabbable
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        Plugin.configFile.SettingChanged -= SettingsChanged;
+        Plugin.configFile!.SettingChanged -= SettingsChanged;
     }
 
-    private void ThemeChanged()
+private void ThemeChanged()
+{
+    if (Plugin.assetBundle != null)
     {
-        if (grate == null)
+        if (!renderer)
+            renderer = GetComponent<MeshRenderer>();
+        if (Plugin.assetBundle != null)
         {
-            grate = new[]
+            if (grate == null)
             {
-                Plugin.assetBundle.LoadAsset<Material>("Zipline Rope Material"),
-                Plugin.assetBundle.LoadAsset<Material>("Metal Material")
-            };
-            bark = new[]
-            {
-                Plugin.assetBundle.LoadAsset<Material>("m_Menu Outer"),
-                Plugin.assetBundle.LoadAsset<Material>("m_Menu Inner")
-            };
-            var mat = Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles");
-            HolloPurp = new[]
-            {
-                Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles"),
-                Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles")
-            };
-
-            var furr = Plugin.assetBundle.LoadAsset<Material>("Gorilla Material");
-            Monke = new[]
-            {
-                furr,
-                furr
-            };
-            var plain = new Material(furr);
-            var plain2 = new Material(furr);
-            old = new[]
-            {
-                plain,
-                plain2
-            };
-            old[0].mainTexture = null;
-            old[0].color = new Color(0.17f, 0.17f, 0.17f);
-            old[1].mainTexture = null;
-            old[1].color = new Color(0.2f, 0.2f, 0.2f);
-        }
-
-        var ThemeName = Theme.Value.ToLower();
-        if (ThemeName == "grate") gameObject.GetComponent<MeshRenderer>().materials = grate;
-        if (ThemeName == "bark") gameObject.GetComponent<MeshRenderer>().materials = bark;
-        if (ThemeName == "holowpurple") gameObject.GetComponent<MeshRenderer>().materials = HolloPurp;
-
-        if (ThemeName == "oldgrate") gameObject.GetComponent<MeshRenderer>().materials = old;
-
-        if (ThemeName == "shinyrocks") gameObject.GetComponent<MeshRenderer>().materials = ShinyRocks;
-
-        if (ThemeName == "player")
-        {
-            if (VRRig.LocalRig.CurrentCosmeticSkin != null)
-            {
-                var Skinned = new[]
+                var zipline = Plugin.assetBundle.LoadAsset<Material>("Zipline Rope Material");
+                var metal = Plugin.assetBundle.LoadAsset<Material>("Metal Material");
+                if (zipline && metal)
                 {
-                    VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial,
-                    VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial
-                };
-                gameObject.GetComponent<MeshRenderer>().materials = Skinned;
+                    grate = [zipline, metal];
+                }
             }
-            else
+
+            if (bark == null)
             {
-                gameObject.GetComponent<MeshRenderer>().materials = Monke;
-                Monke[0].color = VRRig.LocalRig.playerColor;
-                Monke[1].color = VRRig.LocalRig.playerColor;
+                var outer = Plugin.assetBundle.LoadAsset<Material>("m_Menu Outer");
+                var inner = Plugin.assetBundle.LoadAsset<Material>("m_Menu Inner");
+                if (outer && inner)
+                {
+                    bark = [outer, inner];
+                }
+            }
+
+            if (hollopurp == null)
+            {
+                var sparkleMat = Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles");
+                if (sparkleMat)
+                {
+                    hollopurp = [sparkleMat, sparkleMat];
+                }
+            }
+
+            if (monke == null || old == null)
+            {
+                var baseMat = Plugin.assetBundle.LoadAsset<Material>("Gorilla Material");
+                if (baseMat)
+                {
+                    monke ??= [baseMat, baseMat];
+
+                    old ??=
+                    [
+                        new Material(baseMat)
+                        {
+                            mainTexture = null,
+                            color = new Color(0.17f, 0.17f, 0.17f)
+                        },
+                        new Material(baseMat)
+                        {
+                            mainTexture = null,
+                            color = new Color(0.2f, 0.2f, 0.2f)
+                        }
+                    ];
+                }
             }
         }
 
-        transform.GetChild(5).gameObject.SetActive(Festive.Value);
+        var themeName = Theme.Value.ToLower();
+
+        switch (themeName)
+        {
+            case "grate":
+                if (grate != null) renderer.materials = grate;
+                break;
+
+            case "bark":
+                renderer.materials = bark;
+                break;
+
+            case "holowpurple":
+                renderer.materials = hollopurp;
+                break;
+
+            case "oldgrate":
+                renderer.materials = old;
+                break;
+
+            case "shinyrocks":
+                renderer.materials = ShinyRocks;
+                break;
+
+            case "player" when VRRig.LocalRig.CurrentCosmeticSkin != null:
+                var skinMat = VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial;
+                renderer.materials = [skinMat, skinMat];
+                break;
+
+            case "player":
+                if (monke != null)
+                {
+                    renderer.materials = monke;
+                    var playerColor = VRRig.LocalRig.playerColor;
+                    monke[0].color = playerColor;
+                    monke[1].color = playerColor;
+                }
+
+                break;
+        }
     }
+    transform.GetChild(5).gameObject.SetActive(Festive.Value);
+}
+
 
     private void ReloadConfiguration()
     {
@@ -575,7 +605,7 @@ public class MenuController : GrateGrabbable
 
             var ThemeDesc = new ConfigDescription(
                 "Which Theme Should Grate Use?",
-                new AcceptableValueList<string>("grate", "OldGrate", "bark", "HolowPurple", "ShinyRocks", "Player")
+                new AcceptableValueList<string>("grate", "OldGrate", "bark", "holowpurple", "shinyrocks", "Player")
             );
             Theme = Plugin.configFile.Bind("General",
                 "theme",
