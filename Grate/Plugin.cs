@@ -74,8 +74,8 @@ public class Plugin : BaseUnityPlugin
         nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
         menuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
         localPlayerDev = NetworkSystem.Instance.LocalPlayer.IsDev();
-        localPlayerAdmin =  (bool)NetworkSystem.Instance.LocalPlayer.IsAdmin()!;
-        localPlayerSupporter = (bool)NetworkSystem.Instance.LocalPlayer.IsSupporter()!;
+        localPlayerAdmin =  NetworkSystem.Instance.LocalPlayer.IsAdmin();
+        localPlayerSupporter = NetworkSystem.Instance.LocalPlayer.IsSupporter();
     }
 
     public void Cleanup()

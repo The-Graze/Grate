@@ -15,7 +15,8 @@ internal class Frozone : GrateModule
     private readonly List<GameObject> prevLIce = new();
     private readonly List<GameObject> prevRIce = new();
 
-    private InputTracker inputL, inputR;
+    private InputTracker? inputL;
+    private InputTracker? inputR;
 
     private bool leftPress, rightPress;
     private Transform leftHandTransform => VRRig.LocalRig.leftHandTransform;

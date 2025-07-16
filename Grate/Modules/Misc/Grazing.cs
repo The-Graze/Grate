@@ -10,11 +10,12 @@ namespace Grate.Modules.Misc;
 public class Grazing : GrateModule
 {
     private GrazeHandler LocalGraze;
-
+    public static GameObject? TV;
     private void Awake()
     {
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
+        TV = Plugin.assetBundle?.LoadAsset<GameObject>("GrazeTV");
     }
 
     protected override void OnEnable()
@@ -38,73 +39,68 @@ public class Grazing : GrateModule
     {
         if (rig?.gameObject?.GetComponent<GrazeHandler>() != null)
         {
-            rig?.gameObject?.GetComponent<GrazeHandler>()?.vp.Obliterate();
             rig?.gameObject?.GetComponent<GrazeHandler>()?.Obliterate();
         }
     }
 
-    private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
+    private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool modEnabled)
     {
-        if (mod == GetDisplayName() && player.UserId == "42D7D32651E93866")
+        if (mod != GetDisplayName() || player.UserId != "42D7D32651E93866") return;
+        
+        if (modEnabled)
         {
-            if (enabled)
-            {
-                player.Rig().gameObject.GetOrAddComponent<GrazeHandler>();
-            }
-            else
-            {
-                player.Rig().gameObject.GetComponent<GrazeHandler>().vp.gameObject.Obliterate();
-                player.Rig().gameObject.GetComponent<GrazeHandler>().Obliterate();
-            }
+            player.Rig()?.gameObject.GetOrAddComponent<GrazeHandler>();
+        }
+        else
+        {
+            player.Rig()?.gameObject.GetComponent<GrazeHandler>().Obliterate();
         }
     }
 
     protected override void Cleanup()
     {
-        LocalGraze?.vp.Obliterate();
         LocalGraze?.Obliterate();
+    }
+    
+    public class MuteButton : GorillaPressableButton
+    {
+        private bool muted;
+        public override void ButtonActivation()
+        {
+            base.ButtonActivation();
+            muted = !muted;
+            transform.parent.GetComponentInChildren<AudioSource>().mute = muted;
+        }
     }
 
     public class GrazeHandler : MonoBehaviour
     {
-        public VideoPlayer vp;
-        private NetworkedPlayer np;
+        public VideoPlayer? vp;
+        private NetworkedPlayer? np;
 
         private void Start()
         {
-            vp = GameObject.CreatePrimitive(PrimitiveType.Cube).AddComponent<VideoPlayer>();
-            vp.transform.localScale = new Vector3(2, 1, 0.01f);
-            vp.GetComponent<Collider>().Obliterate();
-            vp.GetComponent<Renderer>().material.shader = Shader.Find("Universal Render Pipeline/Lit");
-            vp.source = VideoSource.Url;
-            vp.targetMaterialRenderer = vp.GetComponent<Renderer>();
-            vp.url = "https://graze.gay/vid.mp4";
+            np = GetComponent<NetworkedPlayer>();
+            vp = Instantiate(TV, np.rig.head.headTransform.position, np.rig.head.headTransform.rotation)
+                .GetComponentInChildren<VideoPlayer>();
             vp.loopPointReached += delegate { vp.Play(); };
-            vp.Play();
-            vp.transform.SetParent(transform);
-            vp.transform.localPosition = new Vector3(0, 1, 0);
-            vp.transform.localRotation = Quaternion.Euler(Vector3.zero);
         }
 
         private void Update()
         {
-            if (np == null)
+            if (!np) return;
+            if (np?.owner?.UserId != "42D7D32651E93866")
             {
-                np = gameObject.GetComponent<NetworkedPlayer>();
-            }
-            else
-            {
-                if (np.owner.UserId != "42D7D32651E93866")
-                {
-                    vp.gameObject.Obliterate();
-                    this.Obliterate();
-                }
+                this.Obliterate();
             }
         }
-
         private void OnDisable()
         {
-            vp.gameObject.Obliterate();
+            vp?.transform.parent.parent.gameObject.Obliterate();
+        }
+        private void OnDestroy()
+        {
+            vp?.transform.parent.parent.gameObject.Obliterate();
         }
     }
 }

@@ -154,7 +154,8 @@ public class Platforms : GrateModule
     public static ConfigEntry<string> Input;
     public static ConfigEntry<string> Model;
     public Platform left, right, main;
-    private InputTracker inputL, inputR;
+    private InputTracker? inputL;
+    private InputTracker? inputR;
 
     private void Awake()
     {
@@ -254,7 +255,7 @@ public class Platforms : GrateModule
         return platform;
     }
 
-    public void OnActivate(InputTracker tracker)
+    public void OnActivate(InputTracker? tracker)
     {
         if (enabled)
         {
@@ -274,7 +275,7 @@ public class Platforms : GrateModule
         }
     }
 
-    public void OnDeactivate(InputTracker tracker)
+    public void OnDeactivate(InputTracker? tracker)
     {
         var isLeft = tracker.node == XRNode.LeftHand;
 

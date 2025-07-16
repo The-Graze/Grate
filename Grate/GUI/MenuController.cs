@@ -25,26 +25,25 @@ namespace Grate.GUI;
 
 public class MenuController : GrateGrabbable
 {
-    public static MenuController Instance;
-    public static InputTracker SummonTracker;
-    public static ConfigEntry<string> SummonInput;
-    public static ConfigEntry<string> SummonInputHand;
-    public static ConfigEntry<string> Theme;
-    public static ConfigEntry<bool> Festive;
-    public static Material[] ShinyRocks;
+    public static MenuController? Instance;
+    private static InputTracker? _summonTracker;
+    private static ConfigEntry<string>? _summonInput;
+    private static ConfigEntry<string>? _summonInputHand;
+    private static ConfigEntry<string>? _theme;
+    public static Material[]? ShinyRocks;
 
-    public static bool debugger = true;
+    public static bool Debugger = true;
 
     public Vector3
         initialMenuOffset = new(0, .035f, .65f),
         btnDimensions = new(.3f, .05f, .05f);
 
-    public Rigidbody _rigidbody;
-    public List<Transform> modPages;
-    public List<ButtonController> buttons;
-    public List<GrateModule> modules = new();
-    public GameObject modPage, settingsPage;
-    public Text helpText;
+    public Rigidbody? rigidbody;
+    public List<Transform>? modPages;
+    public List<ButtonController>? buttons;
+    public List<GrateModule> modules = [];
+    public GameObject? modPage, settingsPage;
+    public Text? helpText;
 
     public Renderer? renderer;
     public Material[]? grate, bark, hollopurp, monke, old;
@@ -126,6 +125,8 @@ public class MenuController : GrateGrabbable
             if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
             var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
+            var shdfly = gameObject.AddComponent<ShadowFly>();
+            if(NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7" || NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(shdfly);
             var supporterMod = gameObject.AddComponent<Supporter>();
             if (NetworkSystem.Instance.LocalPlayer.IsSupporter()) modules.Add(supporterMod);
             var developerMod = gameObject.AddComponent<Developer>();
@@ -144,8 +145,12 @@ public class MenuController : GrateGrabbable
         Summon();
         transform.SetParent(null);
         transform.position = Vector3.zero;
-        _rigidbody.isKinematic = false;
-        _rigidbody.useGravity = true;
+        if (rigidbody != null)
+        {
+            rigidbody.isKinematic = false;
+            rigidbody.useGravity = true;
+        }
+
         transform.SetParent(null);
         AddBlockerToAllButtons(ButtonController.Blocker.MENU_FALLING);
         docked = false;
@@ -161,8 +166,12 @@ public class MenuController : GrateGrabbable
             }
             else
             {
-                _rigidbody.isKinematic = false;
-                _rigidbody.useGravity = true;
+                if (rigidbody != null)
+                {
+                    rigidbody.isKinematic = false;
+                    rigidbody.useGravity = true;
+                }
+
                 transform.SetParent(null);
                 AddBlockerToAllButtons(ButtonController.Blocker.MENU_FALLING);
                 docked = false;
@@ -244,7 +253,7 @@ private void ThemeChanged()
             }
         }
 
-        var themeName = Theme.Value.ToLower();
+        var themeName = _theme.Value.ToLower();
 
         switch (themeName)
         {
@@ -285,38 +294,35 @@ private void ThemeChanged()
                 break;
         }
     }
-    transform.GetChild(5).gameObject.SetActive(Festive.Value);
 }
-
-
     private void ReloadConfiguration()
     {
-        if (SummonTracker != null)
-            SummonTracker.OnPressed -= Summon;
-        GestureTracker.Instance.OnMeatBeat -= Summon;
+            if (_summonTracker != null)
+                _summonTracker.OnPressed -= Summon;
+            GestureTracker.Instance.OnMeatBeat -= Summon;
 
-        var hand = SummonInputHand.Value == "left"
-            ? XRNode.LeftHand
-            : XRNode.RightHand;
+            var hand = _summonInputHand.Value == "left"
+                ? XRNode.LeftHand
+                : XRNode.RightHand;
 
-        if (SummonInput.Value == "gesture")
-        {
-            GestureTracker.Instance.OnMeatBeat += Summon;
-        }
-        else
-        {
-            SummonTracker = GestureTracker.Instance.GetInputTracker(
-                SummonInput.Value, hand
-            );
-            if (SummonTracker != null)
-                SummonTracker.OnPressed += Summon;
-        }
+            if (_summonInput.Value == "gesture")
+            {
+                GestureTracker.Instance.OnMeatBeat += Summon;
+            }
+            else
+            {
+                _summonTracker = GestureTracker.Instance.GetInputTracker(
+                    _summonInput.Value, hand
+                );
+                if (_summonTracker != null)
+                    _summonTracker.OnPressed += Summon;
+            }
     }
 
     private void SettingsChanged(object sender, SettingChangedEventArgs e)
     {
-        if (e.ChangedSetting == SummonInput || e.ChangedSetting == SummonInputHand) ReloadConfiguration();
-        if (e.ChangedSetting == Theme || e.ChangedSetting == Festive) ThemeChanged();
+        if (e.ChangedSetting == _summonInput || e.ChangedSetting == _summonInputHand) ReloadConfiguration();
+        if (e.ChangedSetting == _theme) ThemeChanged();
     }
 
     private void Summon(InputTracker _)
@@ -334,8 +340,8 @@ private void ThemeChanged()
 
     private void ResetPosition()
     {
-        _rigidbody.isKinematic = true;
-        _rigidbody.velocity = Vector3.zero;
+        rigidbody.isKinematic = true;
+        rigidbody.velocity = Vector3.zero;
         transform.SetParent(Player.Instance.bodyCollider.transform);
         transform.localPosition = initialMenuOffset;
         transform.localRotation = Quaternion.identity;
@@ -344,32 +350,32 @@ private void ThemeChanged()
         docked = true;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private IEnumerator VerCheck()
     {
         using (var request = UnityWebRequest.Get("https://raw.githubusercontent.com/The-Graze/Grate/master/ver.txt"))
         {
             yield return request.SendWebRequest();
-            if (request.result == UnityWebRequest.Result.Success)
+            if (request.result != UnityWebRequest.Result.Success) yield break;
+            
+            var fileContents = request.downloadHandler.text;
+
+            var checkedV = new Version(fileContents);
+            var localv = new Version(PluginInfo.Version);
+            var text = gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>();
+            if (checkedV > localv)
             {
-                var fileContents = request.downloadHandler.text;
-
-                var checkedV = new Version(fileContents);
-                var localv = new Version(PluginInfo.Version);
-
-                if (checkedV > localv)
-                {
-                    gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().horizontalOverflow =
-                        HorizontalWrapMode.Overflow;
-                    gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().verticalOverflow =
-                        VerticalWrapMode.Overflow;
-                    gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().text =
-                        "!!Update Needed!! \n GoTo: \n https://graze.cc/grate";
-                }
-                else
-                {
-                    gameObject.transform.Find("Version Canvas").GetComponentInChildren<Text>().text =
-                        $"{PluginInfo.Name} {PluginInfo.Version}";
-                }
+                text.horizontalOverflow =
+                    HorizontalWrapMode.Overflow;
+                text.verticalOverflow =
+                    VerticalWrapMode.Overflow;
+                text.text =
+                    "!!Update Needed!! \n GoTo: \n https://graze.cc/grate";
+            }
+            else
+            {
+                text.text =
+                    $"{PluginInfo.Name} {PluginInfo.Version}";
             }
         }
     }
@@ -384,8 +390,8 @@ private void ThemeChanged()
             StartCoroutine(VerCheck());
             var collider = gameObject.GetOrAddComponent<BoxCollider>();
             collider.isTrigger = true;
-            _rigidbody = gameObject.GetComponent<Rigidbody>();
-            _rigidbody.isKinematic = true;
+            rigidbody = gameObject.GetComponent<Rigidbody>();
+            rigidbody.isKinematic = true;
 
             SetupInteraction();
             SetupModPages();
@@ -493,14 +499,14 @@ private void ThemeChanged()
     {
         AddDebugButton("Debug Log", (btn, isPressed) =>
         {
-            debugger = isPressed;
-            Logging.Debug("Debugger", debugger ? "active" : "inactive");
+            Debugger = isPressed;
+            Logging.Debug("Debugger", Debugger ? "active" : "inactive");
             Plugin.debugText.text = "";
         });
 
         AddDebugButton("Close game", (btn, isPressed) =>
         {
-            debugger = isPressed;
+            Debugger = isPressed;
             if (btn.text.text == "You sure?")
                 Application.Quit();
             else
@@ -587,7 +593,7 @@ private void ThemeChanged()
                 "Which button you press to open the menu",
                 new AcceptableValueList<string>("gesture", "stick", "a/x", "b/y")
             );
-            SummonInput = Plugin.configFile.Bind("General",
+            _summonInput = Plugin.configFile.Bind("General",
                 "open menu",
                 "gesture",
                 inputDesc
@@ -597,7 +603,7 @@ private void ThemeChanged()
                 "Which hand can open the menu",
                 new AcceptableValueList<string>("left", "right")
             );
-            SummonInputHand = Plugin.configFile.Bind("General",
+            _summonInputHand = Plugin.configFile.Bind("General",
                 "open hand",
                 "right",
                 handDesc
@@ -607,19 +613,10 @@ private void ThemeChanged()
                 "Which Theme Should Grate Use?",
                 new AcceptableValueList<string>("grate", "OldGrate", "bark", "holowpurple", "shinyrocks", "Player")
             );
-            Theme = Plugin.configFile.Bind("General",
+            _theme = Plugin.configFile.Bind("General",
                 "theme",
                 "Grate",
                 ThemeDesc
-            );
-            var FestiveDesc = new ConfigDescription(
-                "Should the christmas lights be on?",
-                new AcceptableValueList<bool>(true, false)
-            );
-            Festive = Plugin.configFile.Bind("General",
-                "festive",
-                false,
-                FestiveDesc
             );
         }
         catch (Exception e)

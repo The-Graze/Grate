@@ -2,6 +2,7 @@
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
+using Grate.Modules.Movement;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
@@ -12,7 +13,7 @@ namespace Grate.Modules.Misc;
 
 public class RatSword : GrateModule
 {
-    public static readonly string DisplayName = "Rat Sword";
+    private static readonly string DisplayName = "Rat Sword";
     private static GameObject? Sword;
 
     protected override void Start()
@@ -40,6 +41,7 @@ public class RatSword : GrateModule
         {
             GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
             GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
+            Plugin.menuController!.GetComponent<DoubleJump>().enabled = true;
         }
         catch (Exception e)
         {
@@ -47,11 +49,11 @@ public class RatSword : GrateModule
         }
     }
 
-    private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
+    private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool modEnabled)
     {
         if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer)
         {
-            if (enabled)
+            if (modEnabled)
                 player.Rig().gameObject.GetOrAddComponent<NetSword>();
             else
                 Destroy(player.Rig().gameObject.GetComponent<NetSword>());
@@ -76,6 +78,7 @@ public class RatSword : GrateModule
         {
             GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
             GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
+            Plugin.menuController!.GetComponent<DoubleJump>().enabled = false;
         }
     }
 

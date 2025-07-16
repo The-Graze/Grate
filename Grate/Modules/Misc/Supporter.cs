@@ -20,13 +20,11 @@ public class Supporter : GrateModule
         base.Start();
         if (_phone == null)
         {
-            _phone = Instantiate(Plugin.assetBundle?.LoadAsset<GameObject>("PHONE"), GestureTracker.Instance.rightHand.transform, false);
-            if (_phone != null)
-            {
-                _phone.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
-                _phone.transform.localRotation = Quaternion.Euler(2, 10, 0);
-                _phone.transform.localScale /= 2;
-            }
+            _phone = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("PHONE"));
+            _phone.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+            _phone.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
+            _phone.transform.localRotation = Quaternion.Euler(2, 10, 0);
+            _phone.transform.localScale /= 2;
         }
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;

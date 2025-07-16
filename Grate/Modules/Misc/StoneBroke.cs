@@ -13,7 +13,8 @@ internal class StoneBroke : GrateModule
 {
     public static GameObject wawa;
 
-    public static InputTracker inputL, inputR;
+    public static InputTracker? inputL;
+    public static InputTracker? inputR;
     private Awsomepnix LocalP;
 
     private void Awake()

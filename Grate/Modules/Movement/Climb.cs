@@ -13,7 +13,8 @@ public class Climb : GrateModule
 {
     public static readonly string DisplayName = "Climb";
     public GameObject climbableLeft, climbableRight;
-    private InputTracker<float> leftGrip, rightGrip;
+    private InputTracker<float>? leftGrip;
+    private InputTracker<float>? rightGrip;
     private Transform leftHand, rightHand;
 
     protected override void OnEnable()
@@ -37,7 +38,7 @@ public class Climb : GrateModule
         }
     }
 
-    public GameObject CreateClimbable(InputTracker<float> grip)
+    public GameObject CreateClimbable(InputTracker<float>? grip)
     {
         var climbable = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         climbable.name = "Grate Climb Obj";

@@ -49,29 +49,48 @@ public class GestureTracker : MonoBehaviour
     private readonly float illProximityThreshold = .1f;
     private readonly Queue<int> meatBeatCollisions = new();
 
-    public List<InputTracker> inputs;
+    public List<InputTracker?> inputs;
     private float lastBeat;
 
     public InputDevice leftController, rightController;
 
-    public InputTracker<float>
-        leftGrip,
-        rightGrip,
-        leftTrigger,
+    public InputTracker<float>?
+        leftGrip;
+
+    public InputTracker<float>?
+        rightGrip;
+
+    public InputTracker<float>?
+        leftTrigger;
+
+    public InputTracker<float>?
         rightTrigger;
 
     public BodyVectors leftHandVectors, rightHandVectors, headVectors;
 
-    public InputTracker<bool>
-        leftStick,
-        rightStick,
-        leftPrimary,
-        rightPrimary,
-        leftSecondary,
+    public InputTracker<bool>?
+        leftStick;
+
+    public InputTracker<bool>?
+        rightStick;
+
+    public InputTracker<bool>?
+        leftPrimary;
+
+    public InputTracker<bool>?
+        rightPrimary;
+
+    public InputTracker<bool>?
+        leftSecondary;
+
+    public InputTracker<bool>?
         rightSecondary;
 
-    public InputTracker<Vector2>
-        leftStickAxis, rightStickAxis;
+    public InputTracker<Vector2>?
+        leftStickAxis;
+
+    public InputTracker<Vector2>?
+        rightStickAxis;
 
     public Action<Vector3> OnGlide;
     public Action OnIlluminati, OnKamehameha;
@@ -107,7 +126,7 @@ public class GestureTracker : MonoBehaviour
         leftStickAxis = new InputTracker<Vector2>(pollerExt.Field("leftControllerStickAxis"), XRNode.LeftHand);
         rightStickAxis = new InputTracker<Vector2>(pollerExt.Field("rightControllerStickAxis"), XRNode.RightHand);
 
-        inputs = new List<InputTracker>
+        inputs = new List<InputTracker?>
         {
             leftGrip, rightGrip,
             leftTrigger, rightTrigger,
@@ -347,7 +366,7 @@ public class GestureTracker : MonoBehaviour
         hand.SendHapticImpulse(0u, strength, duration);
     }
 
-    public InputTracker GetInputTracker(string name, XRNode node)
+    public InputTracker? GetInputTracker(string name, XRNode node)
     {
         switch (name)
         {

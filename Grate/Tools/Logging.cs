@@ -50,7 +50,7 @@ public static class Logging
     public static void Debugger(params object[] content)
     {
         Debug(content);
-        if (MenuController.debugger && Plugin.debugText)
+        if (MenuController.Debugger && Plugin.debugText)
             Plugin.debugText.text = PrependTextToLog(
                 Plugin.debugText.text,
                 string.Join(" ", content)
