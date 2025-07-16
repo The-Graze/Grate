@@ -49,13 +49,11 @@ public class Plugin : BaseUnityPlugin
             HarmonyPatches.ApplyHarmonyPatches();
             Logging.Init();
             configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
-            Logging.Debug("Found", GrateModule.GetGrateModuleTypes().Count, "modules");
             foreach (var moduleType in GrateModule.GetGrateModuleTypes())
             {
                 var bindConfigs = moduleType.GetMethod("BindConfigEntries");
                 if (bindConfigs != null) bindConfigs.Invoke(null, null);
             }
-
             GorillaTagger.OnPlayerSpawned(OnGameInitialized);
             assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
             monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
@@ -64,7 +62,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception e)
         {
-            Logging.Exception(e);
+            Logging.Warning(e.Message + "\n" + e.StackTrace);
         }
     }
 

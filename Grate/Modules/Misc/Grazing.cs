@@ -9,20 +9,23 @@ namespace Grate.Modules.Misc;
 
 public class Grazing : GrateModule
 {
-    private GrazeHandler LocalGraze;
-    public static GameObject? TV;
-    private void Awake()
+    private GrazeHandler? localGraze;
+    private static GameObject? _tv;
+
+    protected override void Start()
     {
+        base.Start();
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
-        TV = Plugin.assetBundle?.LoadAsset<GameObject>("GrazeTV");
+        _tv = Plugin.assetBundle?.LoadAsset<GameObject>("GrazeTV");
+        _tv?.transform.GetChild(1).AddComponent<MuteButton>();
     }
 
     protected override void OnEnable()
     {
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
-        LocalGraze = GorillaTagger.Instance.offlineVRRig.AddComponent<GrazeHandler>();
+        localGraze = GorillaTagger.Instance.offlineVRRig.AddComponent<GrazeHandler>();
     }
 
     public override string GetDisplayName()
@@ -59,7 +62,7 @@ public class Grazing : GrateModule
 
     protected override void Cleanup()
     {
-        LocalGraze?.Obliterate();
+        localGraze?.Obliterate();
     }
     
     public class MuteButton : GorillaPressableButton
@@ -76,12 +79,16 @@ public class Grazing : GrateModule
     public class GrazeHandler : MonoBehaviour
     {
         public VideoPlayer? vp;
+        private GameObject? tv;
         private NetworkedPlayer? np;
 
         private void Start()
         {
             np = GetComponent<NetworkedPlayer>();
-            vp = Instantiate(TV, np.rig.head.headTransform.position, np.rig.head.headTransform.rotation)
+            tv = Instantiate(_tv); 
+            tv.transform.position = np.rig.headConstraint.position;
+            tv.transform.rotation = Quaternion.Euler(new Vector3(0, np.rig.headConstraint.rotation.y, 0));
+            vp = tv?.GetComponentInChildren<VideoPlayer>() 
                 .GetComponentInChildren<VideoPlayer>();
             vp.loopPointReached += delegate { vp.Play(); };
         }
@@ -96,11 +103,11 @@ public class Grazing : GrateModule
         }
         private void OnDisable()
         {
-            vp?.transform.parent.parent.gameObject.Obliterate();
+            OnDestroy();
         }
         private void OnDestroy()
         {
-            vp?.transform.parent.parent.gameObject.Obliterate();
+            tv?.Obliterate();
         }
     }
 }

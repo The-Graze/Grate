@@ -5,7 +5,7 @@ using UnityEngine;
 using NetworkPlayer = NetPlayer;
 namespace Grate.Modules.Movement;
 
-public class ShadowFly : Fly
+public class ShadowFly : GrateModule
 {
     private GameObject? tmpWings;
     private GameObject? enabledWings;
@@ -17,6 +17,28 @@ public class ShadowFly : Fly
         VRRigCachePatches.OnRigCached += OnRigCached;
     }
 
+    protected override void OnEnable()
+    {
+        gameObject.GetComponent<Fly>().enabled = true;
+        gameObject.GetComponent<Fly>().button.AddBlocker(ButtonController.Blocker.BUTTON_PRESSED);
+    }
+
+    public override string GetDisplayName()
+    {
+        return "Shadow Fly";
+    }
+
+    public override string Tutorial()
+    {
+        return "Fly With wings";
+    }
+
+    protected override void Cleanup()
+    {
+        gameObject.GetComponent<Fly>().enabled = false;
+        gameObject.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.BUTTON_PRESSED);
+    }
+
     private void OnRigCached(NetPlayer arg1, VRRig arg2)
     {
         if(enabledWings != null) enabledWings.Obliterate();
@@ -24,7 +46,7 @@ public class ShadowFly : Fly
 
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool modEnabled)
     {
-        if (mod != DisplayName /*|| player.UserId != "AE10C04744CCF6E7"*/) return;
+        if (mod != GetDisplayName() /*|| player.UserId != "AE10C04744CCF6E7"*/) return;
 
         if (modEnabled)
         {

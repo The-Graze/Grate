@@ -25,14 +25,16 @@ public class LocalGorillaVelocityTracker : MonoBehaviour
 
     public Vector3 GetVelocity() => velocity;
 }
+
 public class HandFly : GrateModule
 {
     private const string DisplayName = "Hand Fly";
     private LocalGorillaVelocityTracker? right;
     private LocalGorillaVelocityTracker? left;
 
-    private ConfigEntry<int>? speed;
-    private float speedScale;
+    private static ConfigEntry<int>? Speed;
+    private float speedScale = 5;
+
     protected override void OnEnable()
     {
         if (!MenuController.Instance.Built || !enabled) return;
@@ -47,11 +49,11 @@ public class HandFly : GrateModule
     {
         if (ControllerInputPoller.instance.leftControllerIndexFloat > 0.5f)
             GorillaTagger.Instance.rigidbody.velocity -= right!.GetVelocity() / speedScale * GTPlayer.Instance.scale;
-        
+
         if (ControllerInputPoller.instance.rightControllerIndexFloat > 0.5f)
             GorillaTagger.Instance.rigidbody.velocity -= left!.GetVelocity() / speedScale * GTPlayer.Instance.scale;
     }
-    
+
 
     public override string GetDisplayName()
     {
@@ -60,7 +62,7 @@ public class HandFly : GrateModule
 
     public override string Tutorial()
     {
-        return "-To fly, press Grip to Throw yourself,\n"+
+        return "-To fly, press Grip to Throw yourself,\n" +
                "both hands for more speed";
     }
 
@@ -73,17 +75,16 @@ public class HandFly : GrateModule
 
     protected override void ReloadConfiguration()
     {
-        speedScale = speed!.Value * 2.5f;
+        speedScale = Speed!.Value * 2.5f;
     }
 
-    public void BindConfigEntries()
+    public static void BindConfigEntries()
     {
-        speed = Plugin.configFile?.Bind(
+        Speed = Plugin.configFile.Bind(
             DisplayName,
             "speed",
             5,
             "How fast you fly"
         );
-        
     }
 }
