@@ -48,14 +48,14 @@ public class Bat : GrateModule
         }
     }
 
-    private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
+    private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool modEnabled)
     {
-        if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer && PlayerExtensions.IsTrusted(player))
+        if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer && player.IsSupporter())
         {
-            if (enabled)
-                player.Rig().gameObject.GetOrAddComponent<Bat>();
+            if (modEnabled)
+                player.Rig()?.gameObject.GetOrAddComponent<Bat>();
             else
-                Destroy(player.Rig().gameObject.GetComponent<Bat>());
+                Destroy(player.Rig()?.gameObject.GetComponent<Bat>());
         }
     }
 
