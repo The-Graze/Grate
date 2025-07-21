@@ -12,7 +12,7 @@ namespace Grate.Modules.Misc;
 
 public class Developer : GrateModule
 {
-    public static readonly string DisplayName = "Dev Phone";
+    public static string DisplayName = "Dev Phone";
     private static GameObject Phone;
 
     protected override void Start()

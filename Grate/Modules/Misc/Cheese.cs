@@ -12,7 +12,7 @@ namespace Grate.Modules.Misc;
 
 public class Cheese : GrateModule
 {
-    public static readonly string DisplayName = "Cheesination";
+    public static string DisplayName = "Cheesination";
     private static GameObject DaCheese;
 
     protected override void Start()

@@ -11,9 +11,9 @@ using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Misc;
 
-public class Bat : GrateModule
+public class BonkBat : GrateModule
 {
-    public static readonly string DisplayName = "Bonk Bat";
+    public static string DisplayName = "Bonk Bat";
     private static GameObject? bat;
 
     protected override void Start()
@@ -53,9 +53,9 @@ public class Bat : GrateModule
         if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer && player.IsSupporter())
         {
             if (modEnabled)
-                player.Rig()?.gameObject.GetOrAddComponent<Bat>();
+                player.Rig()?.gameObject.GetOrAddComponent<BonkBat>();
             else
-                Destroy(player.Rig()?.gameObject.GetComponent<Bat>());
+                Destroy(player.Rig()?.gameObject.GetComponent<BonkBat>());
         }
     }
 

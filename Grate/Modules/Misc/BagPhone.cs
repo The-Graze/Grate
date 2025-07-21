@@ -14,7 +14,7 @@ namespace Grate.Modules.Misc;
 
 public class BagPhone : GrateModule
 {
-    public static readonly string DisplayName = "Bag Phone";
+    public static string DisplayName = "Bag Phone";
     private static GameObject Phone;
 
     protected override void Start()
