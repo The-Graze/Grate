@@ -14,7 +14,8 @@ public class ButtonController : MonoBehaviour
         NOCLIP_BOUNDARY,
         PIGGYBACKING,
         BUTTON_PRESSED,
-        MOD_INCOMPAT
+        MOD_INCOMPAT,
+        MOD_CONTROLL
     }
 
     public float buttonPushDistance = 0.03f; // Distance the button travels when pushed
@@ -28,7 +29,8 @@ public class ButtonController : MonoBehaviour
         { Blocker.NOCLIP_BOUNDARY, "YOU ARE TOO CLOSE TO A WALL TO ACTIVATE THIS" },
         { Blocker.PIGGYBACKING, "NO COLLIDE CANNOT BE TOGGLED WHILE PIGGYBACK IS ACTIVE" },
         { Blocker.BUTTON_PRESSED, "" },
-        { Blocker.MOD_INCOMPAT, "YOU HAVE A MOD THAT DOSN't WORK WITH THIS MOD" }
+        { Blocker.MOD_INCOMPAT, "YOU HAVE A MOD THAT DOSN't WORK WITH THIS MOD" },
+        { Blocker.MOD_CONTROLL, "UNDER CONTROLL OF ANOTHER MOD" }
     };
 
     private readonly float cooldown = .1f;
@@ -82,7 +84,7 @@ public class ButtonController : MonoBehaviour
         }
     }
 
-    protected void Press(GameObject self, Collider collider)
+    public void Press(GameObject self, Collider collider)
     {
         try
         {

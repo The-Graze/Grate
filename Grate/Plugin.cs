@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
@@ -16,6 +17,7 @@ using HarmonyLib;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
+using Valve.Newtonsoft.Json;
 using Console = Grate.Extensions.Console;
 
 namespace Grate;
@@ -57,6 +59,10 @@ public class Plugin : BaseUnityPlugin
         monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
         monkeMenuPrefab!.name = "Grate Menu";
         MenuController.BindConfigEntries();
+
+        Dictionary<string, string> tmp = new() { { "wawa", "wawa" } };
+        var wawa = JsonConvert.SerializeObject(tmp);
+        File.WriteAllText(Path.Combine(Paths.BepInExRootPath, "Ex.txt"),  wawa);
     }
 
     public void Setup()

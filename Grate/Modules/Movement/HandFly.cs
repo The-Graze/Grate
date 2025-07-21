@@ -33,7 +33,7 @@ public class HandFly : GrateModule
     private LocalGorillaVelocityTracker? left;
 
     private static ConfigEntry<int>? Speed;
-    private float speedScale = 5;
+    private float SpeedScale => Speed!.Value * 2.5f;
 
     protected override void OnEnable()
     {
@@ -48,10 +48,10 @@ public class HandFly : GrateModule
     private void FixedUpdate()
     {
         if (ControllerInputPoller.instance.leftControllerIndexFloat > 0.5f)
-            GorillaTagger.Instance.rigidbody.velocity -= right!.GetVelocity() / speedScale * GTPlayer.Instance.scale;
+            GorillaTagger.Instance.rigidbody.velocity -= right!.GetVelocity() / SpeedScale * GTPlayer.Instance.scale;
 
         if (ControllerInputPoller.instance.rightControllerIndexFloat > 0.5f)
-            GorillaTagger.Instance.rigidbody.velocity -= left!.GetVelocity() / speedScale * GTPlayer.Instance.scale;
+            GorillaTagger.Instance.rigidbody.velocity -= left!.GetVelocity() / SpeedScale * GTPlayer.Instance.scale;
     }
 
 
@@ -72,11 +72,7 @@ public class HandFly : GrateModule
         if (right != null) right.Obliterate();
         if (left != null) left.Obliterate();
     }
-
-    protected override void ReloadConfiguration()
-    {
-        speedScale = Speed!.Value * 2.5f;
-    }
+    
 
     public static void BindConfigEntries()
     {
