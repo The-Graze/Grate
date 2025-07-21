@@ -59,10 +59,6 @@ public class Plugin : BaseUnityPlugin
         monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
         monkeMenuPrefab!.name = "Grate Menu";
         MenuController.BindConfigEntries();
-
-        Dictionary<string, string> tmp = new() { { "wawa", "wawa" } };
-        var wawa = JsonConvert.SerializeObject(tmp);
-        File.WriteAllText(Path.Combine(Paths.BepInExRootPath, "Ex.txt"),  wawa);
     }
 
     public void Setup()
