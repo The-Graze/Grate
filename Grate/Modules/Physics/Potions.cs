@@ -27,7 +27,7 @@ public class Potions : GrateModule
     public static readonly string playerSizeKey = "GratePlayerSize";
     public static Dictionary<VRRig, SizeChanger> sizeChangers = new();
 
-    public static ConfigEntry<bool> ShowNetworkedSizes;
+    public static ConfigEntry<bool> ShowNetworkedSizes, ShowPotions;
     private readonly Vector3 holsterOffset = new(0.15f, -0.15f, 0.15f);
     private GameObject bottlePrefab, shrinkPotion, growPotion;
 
@@ -240,6 +240,16 @@ public class Potions : GrateModule
 
     protected override void ReloadConfiguration()
     {
+        shrinkPotion.GetComponent<Renderer>().enabled = ShowPotions.Value;
+        foreach (var rend in  shrinkPotion.GetComponentsInChildren<Renderer>())
+        {
+            rend.enabled = ShowPotions.Value;
+        }
+        growPotion.GetComponent<Renderer>().enabled = ShowPotions.Value;
+        foreach (var rend in  growPotion.GetComponentsInChildren<Renderer>())
+        {
+            rend.enabled = ShowPotions.Value;
+        }
     }
 
     public static void BindConfigEntries()
@@ -250,6 +260,12 @@ public class Potions : GrateModule
             true,
             "Whether or not to show how big other players using the Potions module are"
         );
+        ShowPotions = Plugin.configFile.Bind(
+            DisplayName,
+            "show potions", 
+            true,
+            " Hide the local Bottles"
+            );
     }
 
     public static void TryGetSizeChangerForRig(VRRig rig, out SizeChanger sc)

@@ -12,7 +12,7 @@ namespace Grate.Modules.Misc;
 
 public class BagHammer : GrateModule
 {
-    public static readonly string DisplayName = "Bag Hammer";
+    public static string DisplayName = "Bag Hammer";
     private static GameObject? Sword;
 
     protected override void Start()

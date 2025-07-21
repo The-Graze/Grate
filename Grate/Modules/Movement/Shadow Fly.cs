@@ -1,4 +1,4 @@
-using Grate.Extensions;
+/*using Grate.Extensions;
 using Grate.Networking;
 using Grate.Patches;
 using UnityEngine;
@@ -46,7 +46,7 @@ public class ShadowFly : GrateModule
 
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool modEnabled)
     {
-        if (mod != GetDisplayName() /*|| player.UserId != "AE10C04744CCF6E7"*/) return;
+        if (mod != GetDisplayName() || player.UserId != "AE10C04744CCF6E7") return;
 
         if (modEnabled)
         {
@@ -57,4 +57,4 @@ public class ShadowFly : GrateModule
             enabledWings.Obliterate();
         }
     }
-}
+}*/

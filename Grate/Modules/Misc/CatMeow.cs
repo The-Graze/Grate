@@ -68,9 +68,11 @@ internal class CatMeow : GrateModule
         GripOff();
     }
 
+    public static string DisplayName = "Meow";
+
     public override string GetDisplayName()
     {
-        return "Meow";
+        return DisplayName;
     }
 
     public override string Tutorial()

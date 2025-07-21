@@ -28,7 +28,7 @@ public class LocalGorillaVelocityTracker : MonoBehaviour
 
 public class HandFly : GrateModule
 {
-    private const string DisplayName = "Hand Fly";
+    public static string DisplayName = "Hand Fly";
     private LocalGorillaVelocityTracker? right;
     private LocalGorillaVelocityTracker? left;
 

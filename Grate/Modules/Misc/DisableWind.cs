@@ -3,6 +3,7 @@
 internal class DisableWind : GrateModule
 {
     public static bool Enabled;
+    public static string DisplayName = "Disable Wind";
 
     protected override void Start()
     {
@@ -18,7 +19,7 @@ internal class DisableWind : GrateModule
 
     public override string GetDisplayName()
     {
-        return "Disable Wind";
+        return DisplayName;
     }
 
     public override string Tutorial()

@@ -13,7 +13,7 @@ namespace Grate.Modules.Misc;
 
 public class Bat : GrateModule
 {
-    public static readonly string DisplayName = "Bat";
+    public static readonly string DisplayName = "Bonk Bat";
     private static GameObject? bat;
 
     protected override void Start()
