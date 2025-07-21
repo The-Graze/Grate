@@ -82,7 +82,7 @@ public class BonkBat : GrateModule
 
     private void OnRigCached(NetPlayer player, VRRig rig)
     {
-        rig?.gameObject?.GetComponent<Bat>()?.Obliterate();
+        rig?.gameObject?.GetComponent<BonkBat>()?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -105,7 +105,7 @@ public class BonkBat : GrateModule
             networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
             var rightHand = networkedPlayer.rig.rightHandTransform;
 
-            bat = Instantiate<GameObject>(Bat.bat);
+            bat = Instantiate<GameObject>(BonkBat.bat);
 
             bat.transform.SetParent(rightHand);
             bat.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
@@ -120,7 +120,7 @@ public class BonkBat : GrateModule
         {
             if (other.layer == LayerMask.NameToLayer("Gorilla Tag Collider"))
             {
-                Bat.bat.GetComponent<AudioSource>().Play();
+                BonkBat.bat.GetComponent<AudioSource>().Play();
             }
         }
 
