@@ -39,9 +39,9 @@ public class Portal : GrateModule
         {
             if (!launcherPrefab)
             {
-                launcherPrefab = Plugin.assetBundle.LoadAsset<GameObject>("PortalGun");
-                orangePortal = Plugin.assetBundle.LoadAsset<GameObject>("OrangePortal");
-                bluePortal = Plugin.assetBundle.LoadAsset<GameObject>("BluePortal");
+                launcherPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("PortalGun");
+                orangePortal = Plugin.AssetBundle.LoadAsset<GameObject>("OrangePortal");
+                bluePortal = Plugin.AssetBundle.LoadAsset<GameObject>("BluePortal");
             }
 
             launcher = Instantiate(launcherPrefab);
@@ -240,7 +240,7 @@ public class Portal : GrateModule
 
     public static void BindConfigEntries()
     {
-        LauncherHand = Plugin.configFile.Bind(
+        LauncherHand = Plugin.ConfigFile.Bind(
             DisplayName,
             "launcher hand",
             "right",
@@ -249,7 +249,7 @@ public class Portal : GrateModule
                 new AcceptableValueList<string>("left", "right")
             )
         );
-        PortalSize = Plugin.configFile.Bind(
+        PortalSize = Plugin.ConfigFile.Bind(
             DisplayName,
             "Portal Size",
             "normal",

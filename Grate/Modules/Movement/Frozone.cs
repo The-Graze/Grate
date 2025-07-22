@@ -25,7 +25,7 @@ internal class Frozone : GrateModule
     protected override void Start()
     {
         base.Start();
-        IcePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Ice");
+        IcePrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Ice");
         IcePrefab.GetComponent<BoxCollider>().enabled = true;
         IcePrefab.AddComponent<GorillaSurfaceOverride>().overrideIndex = 59;
     }
@@ -96,7 +96,7 @@ internal class Frozone : GrateModule
         inputR = GestureTracker.Instance.GetInputTracker("grip", XRNode.RightHand);
         inputR.OnPressed += OnActivate;
         inputR.OnReleased += OnDeactivate;
-        Plugin.menuController.GetComponent<Platforms>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Platforms>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     public override string GetDisplayName()
@@ -139,6 +139,6 @@ internal class Frozone : GrateModule
     protected override void Cleanup()
     {
         Unsub();
-        Plugin.menuController.GetComponent<Platforms>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Platforms>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 }

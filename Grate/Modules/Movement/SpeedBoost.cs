@@ -67,7 +67,7 @@ public class SpeedBoost : GrateModule
 
     public static void BindConfigEntries()
     {
-        Speed = Plugin.configFile.Bind(
+        Speed = Plugin.ConfigFile.Bind(
             DisplayName,
             "speed",
             5,

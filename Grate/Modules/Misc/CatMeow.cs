@@ -40,16 +40,16 @@ internal class CatMeow : GrateModule
         try
         {
             rig = GorillaTagger.Instance.offlineVRRig;
-            meowerPrefab = Plugin.assetBundle.LoadAsset<GameObject>("ParticleEmitter");
+            meowerPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("ParticleEmitter");
             meowbox = Instantiate(meowerPrefab, rig.gameObject.transform);
             meowbox.transform.localPosition = Vector3.zero;
             meowParticles = meowbox.GetComponent<ParticleSystem>();
             meowAudio = meowbox.GetComponent<AudioSource>();
 
-            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow1"));
-            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow2"));
-            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow3"));
-            meowSounds.Add(Plugin.assetBundle.LoadAsset<AudioClip>("meow4"));
+            meowSounds.Add(Plugin.AssetBundle.LoadAsset<AudioClip>("meow1"));
+            meowSounds.Add(Plugin.AssetBundle.LoadAsset<AudioClip>("meow2"));
+            meowSounds.Add(Plugin.AssetBundle.LoadAsset<AudioClip>("meow3"));
+            meowSounds.Add(Plugin.AssetBundle.LoadAsset<AudioClip>("meow4"));
         }
         catch
         {

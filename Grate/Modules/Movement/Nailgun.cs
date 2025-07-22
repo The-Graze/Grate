@@ -35,8 +35,8 @@ public class NailGun : GrateModule
         {
             if (!launcherPrefab)
             {
-                launcherPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Nail Gun");
-                nailPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Nail");
+                launcherPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Nail Gun");
+                nailPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Nail");
             }
 
             launcher = Instantiate(launcherPrefab);
@@ -186,14 +186,14 @@ public class NailGun : GrateModule
 
     public static void BindConfigEntries()
     {
-        MaxNailGuns = Plugin.configFile.Bind(
+        MaxNailGuns = Plugin.ConfigFile.Bind(
             DisplayName,
             "max nails",
             5,
             "Maximum number of nails that can exist at one time (multiplied by 4)"
         );
 
-        LauncherHand = Plugin.configFile.Bind(
+        LauncherHand = Plugin.ConfigFile.Bind(
             DisplayName,
             "nailgun hand",
             "left",

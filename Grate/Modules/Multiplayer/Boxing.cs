@@ -142,7 +142,7 @@ public class Boxing : GrateModule
 
     private BoxingGlove CreateGlove(Transform parent, bool isLeft = true)
     {
-        var glove = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Boxing Glove"));
+        var glove = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Boxing Glove"));
         var side = isLeft ? "Left" : "Right";
         glove.name = $"Boxing Glove ({side})";
         glove.transform.SetParent(parent, false);
@@ -184,14 +184,14 @@ public class Boxing : GrateModule
     public static void BindConfigEntries()
     {
         Logging.Debug("Binding", DisplayName, "to config");
-        PunchForce = Plugin.configFile.Bind(
+        PunchForce = Plugin.ConfigFile.Bind(
             DisplayName,
             "punch force",
             5,
             "How much force will be applied to you when you get punched"
         );
 
-        BuffMonke = Plugin.configFile.Bind(
+        BuffMonke = Plugin.ConfigFile.Bind(
             DisplayName,
             "Buff monke",
             false,

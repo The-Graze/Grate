@@ -104,6 +104,9 @@
         <Reference Include="LIV.LCK">
           <HintPath>$(GameAssemblyPath)\LIV.LCK.dll</HintPath>
         </Reference>
+        <Reference Include="LIV.LCK.Tests.Common">
+          <HintPath>..\libs\Managed\LIV.LCK.Tests.Common.dll</HintPath>
+        </Reference>
         <Reference Include="LIV.LCK_GorillaTag">
           <HintPath>$(GameAssemblyPath)\LIV.LCK_GorillaTag.dll</HintPath>
         </Reference>

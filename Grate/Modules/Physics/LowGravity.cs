@@ -44,7 +44,7 @@ public class LowGravity : GrateModule
 
     public static void BindConfigEntries()
     {
-        Multiplier = Plugin.configFile.Bind(
+        Multiplier = Plugin.ConfigFile.Bind(
             DisplayName,
             "multiplier",
             2,

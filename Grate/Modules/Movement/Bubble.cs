@@ -56,7 +56,7 @@ public class Bubble : GrateModule
 
     private void Awake()
     {
-        if (!bubblePrefab) bubblePrefab = Plugin.assetBundle.LoadAsset<GameObject>("BubbleP");
+        if (!bubblePrefab) bubblePrefab = Plugin.AssetBundle.LoadAsset<GameObject>("BubbleP");
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
     }
@@ -177,13 +177,13 @@ public class Bubble : GrateModule
 
     public static void BindConfigEntries()
     {
-        BubbleSize = Plugin.configFile.Bind(
+        BubbleSize = Plugin.ConfigFile.Bind(
             DisplayName,
             "bubble size",
             5,
             "How far you have to reach to hit the bubble"
         );
-        BubbleSpeed = Plugin.configFile.Bind(
+        BubbleSpeed = Plugin.ConfigFile.Bind(
             DisplayName,
             "bubble speed",
             5,

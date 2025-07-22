@@ -25,7 +25,7 @@ public class Pearl : GrateModule
         try
         {
             Instance = this;
-            pearlPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Pearl");
+            pearlPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Pearl");
         }
         catch (Exception e)
         {
@@ -93,7 +93,7 @@ public class Pearl : GrateModule
 
     public static void BindConfigEntries()
     {
-        ThrowForce = Plugin.configFile.Bind(
+        ThrowForce = Plugin.ConfigFile.Bind(
             DisplayName,
             "throw force",
             5,

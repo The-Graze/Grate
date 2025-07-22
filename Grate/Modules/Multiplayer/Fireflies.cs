@@ -30,7 +30,7 @@ public class Firefly : MonoBehaviour
         try
         {
             rig = gameObject.GetComponent<VRRig>();
-            fly = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Firefly")).gameObject;
+            fly = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Firefly")).gameObject;
             modelRenderer = fly.transform.Find("Model").GetComponent<Renderer>();
             leftWing = fly.transform.Find("Model/Wing L");
             rightWing = fly.transform.Find("Model/Wing R");

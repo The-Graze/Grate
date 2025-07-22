@@ -25,7 +25,7 @@ public abstract class GrateModule : MonoBehaviour
     protected virtual void OnEnable()
     {
         LastEnabled = this;
-        Plugin.configFile.SettingChanged += SettingsChanged;
+        Plugin.ConfigFile.SettingChanged += SettingsChanged;
         if (button)
             button.IsPressed = true;
         SetStatus(true);
@@ -33,7 +33,7 @@ public abstract class GrateModule : MonoBehaviour
 
     protected virtual void OnDisable()
     {
-        Plugin.configFile.SettingChanged -= SettingsChanged;
+        Plugin.ConfigFile.SettingChanged -= SettingsChanged;
         if (button)
             button.IsPressed = false;
         Cleanup();

@@ -18,7 +18,7 @@ public class DebugRay : MonoBehaviour
         lineRenderer.startColor = color;
         lineRenderer.startWidth = .01f;
         lineRenderer.endWidth = .01f;
-        lineRenderer.material = Plugin.assetBundle.LoadAsset<Material>("X-Ray Material");
+        lineRenderer.material = Plugin.AssetBundle.LoadAsset<Material>("X-Ray Material");
         //Destroy(sphere);
     }
 

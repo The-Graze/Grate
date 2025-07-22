@@ -16,7 +16,7 @@ internal class PlayerAntiAntiTeleport
 {
     private static bool Prefix()
     {
-        return !Plugin.WaWa_graze_dot_cc;
+        return !Plugin.WaWaGrazeDotCc;
     }
 }
 

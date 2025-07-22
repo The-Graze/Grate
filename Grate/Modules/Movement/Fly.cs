@@ -50,7 +50,7 @@ public class Fly : GrateModule
     {
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
-        Plugin.menuController?.GetComponent<HandFly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController?.GetComponent<HandFly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         ReloadConfiguration();
     }
 
@@ -76,14 +76,14 @@ public class Fly : GrateModule
 
     public static void BindConfigEntries()
     {
-        Speed = Plugin.configFile.Bind(
+        Speed = Plugin.ConfigFile.Bind(
             DisplayName,
             "speed",
             5,
             "How fast you fly"
         );
 
-        Acceleration = Plugin.configFile.Bind(
+        Acceleration = Plugin.ConfigFile.Bind(
             DisplayName,
             "acceleration",
             5,
@@ -93,6 +93,6 @@ public class Fly : GrateModule
 
     protected override void Cleanup()
     {
-        Plugin.menuController?.GetComponent<HandFly>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController?.GetComponent<HandFly>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 }

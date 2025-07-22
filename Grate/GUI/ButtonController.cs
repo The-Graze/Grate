@@ -90,7 +90,7 @@ public class ButtonController : MonoBehaviour
         {
             if (!Interactable && blockerText[blockers[0]].Length > 0)
             {
-                Plugin.menuController.helpText.text = blockerText[blockers[0]];
+                Plugin.MenuController.helpText.text = blockerText[blockers[0]];
                 return;
             }
 
@@ -108,7 +108,7 @@ public class ButtonController : MonoBehaviour
             GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(67, isLeft, 0.05f);
             var hand = isLeft ? GestureTracker.Instance.leftController : GestureTracker.Instance.rightController;
             GestureTracker.Instance.HapticPulse(isLeft);
-            Plugin.menuController.AddBlockerToAllButtons(Blocker.BUTTON_PRESSED);
+            Plugin.MenuController.AddBlockerToAllButtons(Blocker.BUTTON_PRESSED);
             Invoke(nameof(RemoveCooldownBlocker), .1f);
             buttonModel.localPosition = Vector3.up * -buttonPushDistance;
         }
@@ -126,7 +126,7 @@ public class ButtonController : MonoBehaviour
 
     private void RemoveCooldownBlocker()
     {
-        Plugin.menuController.RemoveBlockerFromAllButtons(Blocker.BUTTON_PRESSED);
+        Plugin.MenuController.RemoveBlockerFromAllButtons(Blocker.BUTTON_PRESSED);
     }
 
     public void SetText(string text)

@@ -21,7 +21,7 @@ public class ColliderRenderer : MonoBehaviour
             obj = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
             obj.GetComponent<BoxCollider>().Obliterate();
             var material =
-                Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Cloud").GetComponent<Renderer>().material);
+                Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Cloud").GetComponent<Renderer>().material);
             var color = Random.ColorHSV();
             color.a = .25f;
             material.color = color;
@@ -37,7 +37,7 @@ public class ColliderRenderer : MonoBehaviour
             obj = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
             obj.GetComponent<SphereCollider>().Obliterate();
             var material =
-                Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Cloud").GetComponent<Renderer>().material);
+                Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Cloud").GetComponent<Renderer>().material);
             var color = Random.ColorHSV();
             color.a = .25f;
             material.color = color;
@@ -52,7 +52,7 @@ public class ColliderRenderer : MonoBehaviour
             obj = GameObject.CreatePrimitive(PrimitiveType.Cube).transform;
             obj.GetComponent<BoxCollider>().Obliterate();
             var material =
-                Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Cloud").GetComponent<Renderer>().material);
+                Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Cloud").GetComponent<Renderer>().material);
             var color = Random.ColorHSV();
             color.a = .25f;
             material.color = color;

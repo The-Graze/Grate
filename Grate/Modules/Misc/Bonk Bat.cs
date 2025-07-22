@@ -21,7 +21,7 @@ public class BonkBat : GrateModule
         base.Start();
         if (bat == null)
         {
-            bat = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("bat Variant"));
+            bat = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("bat Variant"));
             bat.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             bat.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
             bat.transform.localRotation = Quaternion.Euler(9, 0, 0);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
@@ -14,10 +13,8 @@ using Grate.Modules;
 using Grate.Networking;
 using Grate.Tools;
 using HarmonyLib;
-using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
-using Valve.Newtonsoft.Json;
 using Console = Grate.Extensions.Console;
 
 namespace Grate;
@@ -26,17 +23,17 @@ namespace Grate;
 public class Plugin : BaseUnityPlugin
 {
     public static Plugin? Instance;
-    public static bool initialized, WaWa_graze_dot_cc;
-    public static AssetBundle? assetBundle;
-    public static MenuController? menuController;
+    public static bool Initialized, WaWaGrazeDotCc;
+    public static AssetBundle? AssetBundle;
+    public static MenuController? MenuController;
     private static GameObject? monkeMenuPrefab;
-    public static ConfigFile? configFile;
-    public static bool localPlayerSupporter;
-    public static bool localPlayerDev;
-    public static bool localPlayerAdmin;
+    public static ConfigFile? ConfigFile;
+    public static bool LocalPlayerSupporter;
+    public static bool LocalPlayerDev;
+    public static bool LocalPlayerAdmin;
     public static GameObject? Water;
 
-    public static Text? debugText;
+    public static Text? DebugText;
     private GestureTracker? gt;
     private NetworkPropertyHandler? nph;
 
@@ -48,15 +45,15 @@ public class Plugin : BaseUnityPlugin
         Instance = this;
         HarmonyPatches.ApplyHarmonyPatches();
         Logging.Init();
-        configFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
+        ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
         foreach (var moduleType in GrateModule.GetGrateModuleTypes())
         {
             var bindConfigs = moduleType.GetMethod("BindConfigEntries");
             if (bindConfigs != null) bindConfigs.Invoke(null, null);
         }
         GorillaTagger.OnPlayerSpawned(OnGameInitialized);
-        assetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
-        monkeMenuPrefab = assetBundle?.LoadAsset<GameObject>("Bark Menu");
+        AssetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
+        monkeMenuPrefab = AssetBundle?.LoadAsset<GameObject>("Bark Menu");
         monkeMenuPrefab!.name = "Grate Menu";
         MenuController.BindConfigEntries();
     }
@@ -65,18 +62,17 @@ public class Plugin : BaseUnityPlugin
     {
         gt = gameObject.GetOrAddComponent<GestureTracker>();
         nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
-        menuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
-        localPlayerDev = NetworkSystem.Instance.LocalPlayer.IsDev();
-        localPlayerAdmin =  NetworkSystem.Instance.LocalPlayer.IsAdmin();
-        localPlayerSupporter = NetworkSystem.Instance.LocalPlayer.IsSupporter();
+        MenuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
+        LocalPlayerDev = NetworkSystem.Instance.LocalPlayer.IsDev();
+        LocalPlayerAdmin =  NetworkSystem.Instance.LocalPlayer.IsAdmin();
+        LocalPlayerSupporter = NetworkSystem.Instance.LocalPlayer.IsSupporter();
     }
 
     public void Cleanup()
     {
         try
         {
-            Logging.Debug("Cleaning up");
-            menuController?.gameObject?.Obliterate();
+            MenuController?.gameObject.Obliterate();
             gt?.Obliterate();
             nph?.Obliterate();
         }
@@ -118,7 +114,7 @@ public class Plugin : BaseUnityPlugin
                     text.verticalOverflow = VerticalWrapMode.Overflow;
                     text.color = Color.white;
                     text.GetComponent<RectTransform>().localScale = Vector3.one * .02f;
-                    debugText = text;
+                    DebugText = text;
                 }
             }
         }
@@ -138,13 +134,13 @@ public class Plugin : BaseUnityPlugin
         try
         {
             Logging.Debug("OnGameInitialized");
-            initialized = true;
+            Initialized = true;
             var platform = (PlatformTagJoin)Traverse.Create(PlayFabAuthenticator.instance).Field("platform").GetValue();
             Logging.Info("Platform: ", platform);
             IsSteam = platform.PlatformTag.Contains("Steam");
 
-            NetworkSystem.Instance.OnJoinedRoomEvent += аaа;
-            NetworkSystem.Instance.OnReturnedToSinglePlayer += аaа;
+            NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
+            NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
             Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
             Water.SetActive(false);
@@ -168,7 +164,7 @@ public class Plugin : BaseUnityPlugin
     {
         if (NetworkSystem.Instance.InRoom)
         {
-            NetworkSystem.Instance.OnReturnedToSinglePlayer += aQuit;
+            NetworkSystem.Instance.OnReturnedToSinglePlayer += AQuit;
             NetworkSystem.Instance.ReturnToSinglePlayer();
             return false;
         }
@@ -176,9 +172,9 @@ public class Plugin : BaseUnityPlugin
         return true;
     }
 
-    private void aQuit()
+    private void AQuit()
     {
-        WaWa_graze_dot_cc = false;
+        WaWaGrazeDotCc = false;
         Cleanup();
         Invoke(nameof(DelayQuit), 1);
     }
@@ -188,7 +184,7 @@ public class Plugin : BaseUnityPlugin
         Application.Quit();
     }
 
-    private void аaа()
+    private void Аaа()
     {
         StartCoroutine(Jоοin());
     }
@@ -201,31 +197,38 @@ public class Plugin : BaseUnityPlugin
         {
             if (NetworkSystem.Instance.GameModeString.Contains("MODDED_"))
             {
-                WaWa_graze_dot_cc = true;
+                WaWaGrazeDotCc = true;
                 Setup();
             }
             else
             {
-                WaWa_graze_dot_cc = false;
+                WaWaGrazeDotCc = false;
                 Cleanup();
             }
         }
         else
         {
-            WaWa_graze_dot_cc = false;
+            WaWaGrazeDotCc = false;
             Cleanup();
         }
     }
 
-    public void JoinLobby(string LobbyName)
+    public void JoinLobby(string lobbyName)
     {
-        StartCoroutine(JoinLobbyInternal(LobbyName));
+        StartCoroutine(JoinLobbyInternal(lobbyName));
     }
 
-    private IEnumerator JoinLobbyInternal(string LobbyName)
+    private IEnumerator JoinLobbyInternal(string lobbyName)
     {
-        NetworkSystem.Instance.ReturnToSinglePlayer();
-        yield return new WaitForSeconds(1.5f);
-        PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(LobbyName, JoinType.Solo);
+        if (NetworkSystem.Instance.InRoom)
+        {
+            if(NetworkSystem.Instance.RoomName ==  lobbyName)
+            {
+                NetworkSystem.Instance.ReturnToSinglePlayer();
+            }
+        }
+
+        yield return new WaitForSeconds(3);
+        PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(lobbyName, JoinType.Solo);
     }
 }

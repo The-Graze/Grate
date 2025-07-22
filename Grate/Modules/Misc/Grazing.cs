@@ -17,7 +17,7 @@ public class Grazing : GrateModule
         base.Start();
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
-        _tv = Plugin.assetBundle?.LoadAsset<GameObject>("GrazeTV");
+        _tv = Plugin.AssetBundle?.LoadAsset<GameObject>("GrazeTV");
         _tv?.transform.GetChild(1).AddComponent<MuteButton>();
     }
 

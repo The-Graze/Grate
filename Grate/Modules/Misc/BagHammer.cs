@@ -20,7 +20,7 @@ public class BagHammer : GrateModule
         base.Start();
         if (Sword == null)
         {
-            Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("bagHammer"));
+            Sword = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("bagHammer"));
             Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             Sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
             Sword.transform.localRotation = Quaternion.Euler(9, 0, 0);

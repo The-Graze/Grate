@@ -54,9 +54,9 @@ public class Zipline : GrateModule
         {
             if (!launcherPrefab)
             {
-                launcherPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Zipline Launcher");
-                ziplinePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Zipline Rope");
-                ziplineAudioLoop = Plugin.assetBundle.LoadAsset<AudioClip>("Zipline Loop");
+                launcherPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Zipline Launcher");
+                ziplinePrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Zipline Rope");
+                ziplineAudioLoop = Plugin.AssetBundle.LoadAsset<AudioClip>("Zipline Loop");
             }
 
             launcher = Instantiate(launcherPrefab);
@@ -350,14 +350,14 @@ public class Zipline : GrateModule
 
     public static void BindConfigEntries()
     {
-        MaxZiplines = Plugin.configFile.Bind(
+        MaxZiplines = Plugin.ConfigFile.Bind(
             DisplayName,
             "max ziplines",
             3,
             "Maximum number of ziplines that can exist at one time"
         );
 
-        LauncherHand = Plugin.configFile.Bind(
+        LauncherHand = Plugin.ConfigFile.Bind(
             DisplayName,
             "launcher hand",
             "right",
@@ -367,7 +367,7 @@ public class Zipline : GrateModule
             )
         );
 
-        GravityMultiplier = Plugin.configFile.Bind(
+        GravityMultiplier = Plugin.ConfigFile.Bind(
             DisplayName,
             "gravity multiplier",
             5,

@@ -21,7 +21,7 @@ public class Airplane : GrateModule
         base.OnEnable();
         ReloadConfiguration();
         GestureTracker.Instance.OnGlide += OnGlide;
-        Plugin.menuController.GetComponent<Helicopter>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Helicopter>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     private void OnGlide(Vector3 direction)
@@ -50,7 +50,7 @@ public class Airplane : GrateModule
         if (!MenuController.Instance.Built) return;
         if (!GestureTracker.Instance) return;
         GestureTracker.Instance.OnGlide -= OnGlide;
-        Plugin.menuController.GetComponent<Helicopter>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Helicopter>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     protected override void ReloadConfiguration()
@@ -60,14 +60,14 @@ public class Airplane : GrateModule
 
     public static void BindConfigEntries()
     {
-        Speed = Plugin.configFile.Bind(
+        Speed = Plugin.ConfigFile.Bind(
             DisplayName,
             "speed",
             5,
             "How fast you fly"
         );
 
-        SteerWith = Plugin.configFile.Bind(
+        SteerWith = Plugin.ConfigFile.Bind(
             DisplayName,
             "steer with",
             "wrists",

@@ -52,9 +52,9 @@ public class SettingsPage : MonoBehaviour
 
     private ConfigEntryBase GetEntry(string modName, string key)
     {
-        foreach (var definition in Plugin.configFile.Keys)
+        foreach (var definition in Plugin.ConfigFile.Keys)
             if (definition.Section == modName && definition.Key == key)
-                return Plugin.configFile[definition];
+                return Plugin.ConfigFile[definition];
 
         throw new Exception($"Could not find config entry for {modName} with key {key}");
     }
@@ -64,9 +64,9 @@ public class SettingsPage : MonoBehaviour
         try
         {
             var configKeys = new List<string>();
-            foreach (var definition in Plugin.configFile.Keys)
+            foreach (var definition in Plugin.ConfigFile.Keys)
                 if (definition.Section == modName)
-                    configKeys.Add(Plugin.configFile[definition].Definition.Key);
+                    configKeys.Add(Plugin.ConfigFile[definition].Definition.Key);
 
             return configKeys;
         }

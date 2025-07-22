@@ -54,7 +54,7 @@ public class Grab : GrateModule
         try
         {
             ReloadConfiguration();
-            var prefab = Plugin.assetBundle.LoadAsset<GameObject>("TK Hitbox");
+            var prefab = Plugin.AssetBundle.LoadAsset<GameObject>("TK Hitbox");
             var hitbox = Instantiate(prefab);
             hitbox.name = "Grate GB Hitbox";
             hitbox.transform.SetParent(GTPlayer.Instance.bodyCollider.transform, false);

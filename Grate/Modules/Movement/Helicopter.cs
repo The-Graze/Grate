@@ -19,7 +19,7 @@ public class Helicopter : GrateModule
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
         GestureTracker.Instance.OnGlide += OnGlide;
-        Plugin.menuController.GetComponent<Airplane>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Airplane>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     private void OnGlide(Vector3 direction)
@@ -63,19 +63,19 @@ public class Helicopter : GrateModule
         if (!MenuController.Instance.Built) return;
         if (!GestureTracker.Instance) return;
         GestureTracker.Instance.OnGlide -= OnGlide;
-        Plugin.menuController.GetComponent<Airplane>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Airplane>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     public static void BindConfigEntries()
     {
-        Speed = Plugin.configFile.Bind(
+        Speed = Plugin.ConfigFile.Bind(
             DisplayName,
             "speed",
             5,
             "How fast you spin"
         );
 
-        Mode = Plugin.configFile.Bind(
+        Mode = Plugin.ConfigFile.Bind(
             DisplayName,
             "mode",
             "snappy",
@@ -85,7 +85,7 @@ public class Helicopter : GrateModule
             )
         );
 
-        spin = Plugin.configFile.Bind(
+        spin = Plugin.ConfigFile.Bind(
             DisplayName,
             "direction",
             "normal",

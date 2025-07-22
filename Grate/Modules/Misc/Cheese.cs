@@ -20,7 +20,7 @@ public class Cheese : GrateModule
         base.Start();
         if (DaCheese == null)
         {
-            DaCheese = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("cheese"));
+            DaCheese = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("cheese"));
             DaCheese.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             DaCheese.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
             DaCheese.transform.localRotation = Quaternion.Euler(2, 10, 0);

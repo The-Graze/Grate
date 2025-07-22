@@ -26,7 +26,7 @@ public class Rockets : GrateModule
         try
         {
             Instance = this;
-            rocketPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Rocket");
+            rocketPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Rocket");
         }
         catch (Exception e)
         {
@@ -51,7 +51,7 @@ public class Rockets : GrateModule
         try
         {
             if (!rocketPrefab)
-                rocketPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Rocket");
+                rocketPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Rocket");
 
             rocketL = SetupRocket(Instantiate(rocketPrefab), true);
             rocketR = SetupRocket(Instantiate(rocketPrefab), false);
@@ -112,14 +112,14 @@ public class Rockets : GrateModule
 
     public static void BindConfigEntries()
     {
-        Power = Plugin.configFile.Bind(
+        Power = Plugin.ConfigFile.Bind(
             DisplayName,
             "power",
             5,
             "The power of each rocket"
         );
 
-        Volume = Plugin.configFile.Bind(
+        Volume = Plugin.ConfigFile.Bind(
             DisplayName,
             "thruster volume",
             10,

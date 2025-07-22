@@ -21,7 +21,7 @@ public class RatSword : GrateModule
         base.Start();
         if (Sword == null)
         {
-            Sword = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Rat Sword"));
+            Sword = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Rat Sword"));
             Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             Sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
             Sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
@@ -41,7 +41,7 @@ public class RatSword : GrateModule
         {
             GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
             GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
-            Plugin.menuController!.GetComponent<DoubleJump>().enabled = true;
+            Plugin.MenuController!.GetComponent<DoubleJump>().enabled = true;
         }
         catch (Exception e)
         {
@@ -78,7 +78,7 @@ public class RatSword : GrateModule
         {
             GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
             GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
-            Plugin.menuController!.GetComponent<DoubleJump>().enabled = false;
+            Plugin.MenuController!.GetComponent<DoubleJump>().enabled = false;
         }
     }
 

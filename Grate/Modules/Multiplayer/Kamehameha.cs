@@ -37,8 +37,8 @@ public class Kamehameha : GrateModule
     protected override void Start()
     {
         base.Start();
-        bananaLine = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Banana Line")).GetComponent<LineRenderer>();
-        bananaLine.material = Plugin.assetBundle.LoadAsset<Material>("Laser Sight Material");
+        bananaLine = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Banana Line")).GetComponent<LineRenderer>();
+        bananaLine.material = Plugin.AssetBundle.LoadAsset<Material>("Laser Sight Material");
         bananaLine.gameObject.SetActive(false);
 
         orb = GameObject.CreatePrimitive(PrimitiveType.Sphere).transform;
@@ -50,7 +50,7 @@ public class Kamehameha : GrateModule
         orb.gameObject.layer = GrateInteractor.InteractionLayer;
         orb.gameObject.GetComponent<Renderer>().material = bananaLine.material;
 
-        Effects = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Kahme PSystem")).GetComponent<ParticleSystem>();
+        Effects = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Kahme PSystem")).GetComponent<ParticleSystem>();
         Effects.transform.SetParent(orbBody.transform, false);
         Effects.transform.localPosition = Vector3.zero;
         NetworkPropertyHandler.Instance?.ChangeProperty(KamehamehaKey, "None");
@@ -186,14 +186,14 @@ public class Kamehameha : GrateModule
         var kahdesk = new ConfigDescription(
             "Color for your Ultimate Power!", colorNames
         );
-        c_khameColor = Plugin.configFile.Bind(
+        c_khameColor = Plugin.ConfigFile.Bind(
             DisplayName,
             "Color",
             Color.yellow.ColorName(),
             kahdesk
         );
 
-        c_Networked = Plugin.configFile.Bind(DisplayName, "Network?", true,
+        c_Networked = Plugin.ConfigFile.Bind(DisplayName, "Network?", true,
             "Decide weather you want to see Other peoples power!");
     }
 

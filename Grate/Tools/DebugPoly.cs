@@ -20,7 +20,7 @@ public class DebugPoly : MonoBehaviour
             var polygon = new GameObject("Debug Polygon");
             polygon.transform.parent = transform;
             renderer = polygon.AddComponent<MeshRenderer>();
-            renderer.material = Plugin.assetBundle.LoadAsset<Material>("Cloud Material");
+            renderer.material = Plugin.AssetBundle.LoadAsset<Material>("Cloud Material");
             renderer.material.color = new Color(1, 1, 1, .1f);
             // Add a mesh filter component and set the mesh to the one we just created
             var filter = polygon.AddComponent<MeshFilter>();

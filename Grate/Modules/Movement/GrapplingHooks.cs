@@ -24,7 +24,7 @@ public class GrapplingHooks : GrateModule
     {
         try
         {
-            bananaGunPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Banana Gun");
+            bananaGunPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Banana Gun");
         }
         catch (Exception e)
         {
@@ -49,7 +49,7 @@ public class GrapplingHooks : GrateModule
         try
         {
             if (!bananaGunPrefab)
-                bananaGunPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Banana Gun");
+                bananaGunPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Banana Gun");
 
             holsterL = new GameObject("Holster (Left)").transform;
             bananaGunL = Instantiate(bananaGunPrefab);
@@ -125,7 +125,7 @@ public class GrapplingHooks : GrateModule
 
     public static void BindConfigEntries()
     {
-        RopeType = Plugin.configFile.Bind(
+        RopeType = Plugin.ConfigFile.Bind(
             DisplayName,
             "rope type",
             "elastic",
@@ -135,21 +135,21 @@ public class GrapplingHooks : GrateModule
             )
         );
 
-        Spring = Plugin.configFile.Bind(
+        Spring = Plugin.ConfigFile.Bind(
             DisplayName,
             "springiness",
             5,
             "If ropes are elastic, this is how springy the ropes are"
         );
 
-        Steering = Plugin.configFile.Bind(
+        Steering = Plugin.ConfigFile.Bind(
             DisplayName,
             "steering",
             5,
             "How much influence you have over your velocity"
         );
 
-        MaxLength = Plugin.configFile.Bind(
+        MaxLength = Plugin.ConfigFile.Bind(
             DisplayName,
             "max length",
             5,

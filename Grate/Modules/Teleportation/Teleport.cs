@@ -34,7 +34,7 @@ public class Teleport : GrateModule
         base.OnEnable();
         try
         {
-            teleportMarker = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("Checkpoint Banana")).transform;
+            teleportMarker = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Checkpoint Banana")).transform;
             teleportMarker.gameObject.SetActive(false);
             window = new GameObject("Teleport Window").transform;
             poly = window.gameObject.AddComponent<DebugPoly>();
@@ -156,7 +156,7 @@ public class Teleport : GrateModule
 
     public static void BindConfigEntries()
     {
-        ChargeTime = Plugin.configFile.Bind(
+        ChargeTime = Plugin.ConfigFile.Bind(
             DisplayName,
             "charge time",
             5,

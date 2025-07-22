@@ -41,9 +41,9 @@ public class Checkpoint : GrateModule
         try
         {
             base.Start();
-            checkpointPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Checkpoint Banana");
+            checkpointPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Checkpoint Banana");
             checkpointPrefab.gameObject.SetActive(false);
-            bananaLinePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Banana Line");
+            bananaLinePrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Banana Line");
             bananaLinePrefab.gameObject.SetActive(false);
         }
         catch (Exception e)
@@ -198,7 +198,7 @@ public class Checkpoint : GrateModule
 
     public static void BindConfigEntries()
     {
-        ChargeTime = Plugin.configFile.Bind(
+        ChargeTime = Plugin.ConfigFile.Bind(
             DisplayName,
             "charge time",
             5,

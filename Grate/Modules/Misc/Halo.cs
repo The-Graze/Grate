@@ -54,8 +54,8 @@ public class Halo : GrateModule
     {
         if (!haloPrefab)
         {
-            haloPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Halo");
-            lightBeamPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Light Beam");
+            haloPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Halo");
+            lightBeamPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Light Beam");
         }
 
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;

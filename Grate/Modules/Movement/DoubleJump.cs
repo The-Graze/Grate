@@ -57,7 +57,7 @@ public class DoubleJump : GrateModule
 
     public static void BindConfigEntries()
     {
-        JumpForce = Plugin.configFile.Bind(
+        JumpForce = Plugin.ConfigFile.Bind(
             DisplayName,
             "Jump Force",
             "Normal",

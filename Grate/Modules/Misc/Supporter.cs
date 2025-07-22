@@ -20,7 +20,7 @@ public class Supporter : GrateModule
         base.Start();
         if (_phone == null)
         {
-            _phone = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("PHONE"));
+            _phone = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("PHONE"));
             _phone.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             _phone.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
             _phone.transform.localRotation = Quaternion.Euler(2, 10, 0);

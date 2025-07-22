@@ -41,9 +41,9 @@ public class Potions : GrateModule
         {
             Instance = this;
             NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, GTPlayer.Instance.scale);
-            bottlePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Potion Bottle");
-            shrinkMaterial = Plugin.assetBundle.LoadAsset<Material>("Portal A Material");
-            growMaterial = Plugin.assetBundle.LoadAsset<Material>("Portal B Material");
+            bottlePrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Potion Bottle");
+            shrinkMaterial = Plugin.AssetBundle.LoadAsset<Material>("Portal A Material");
+            growMaterial = Plugin.AssetBundle.LoadAsset<Material>("Portal B Material");
             VRRigCachePatches.OnRigCached += OnRigCached;
         }
         catch (Exception e)
@@ -138,7 +138,7 @@ public class Potions : GrateModule
         try
         {
             if (!bottlePrefab)
-                bottlePrefab = Plugin.assetBundle.LoadAsset<GameObject>("Potion Bottle");
+                bottlePrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Potion Bottle");
             var scale = (float)Math.Sqrt(GTPlayer.Instance.scale);
 
             NetworkPropertyHandler.Instance?.ChangeProperty(playerSizeKey, scale);
@@ -254,13 +254,13 @@ public class Potions : GrateModule
 
     public static void BindConfigEntries()
     {
-        ShowNetworkedSizes = Plugin.configFile.Bind(
+        ShowNetworkedSizes = Plugin.ConfigFile.Bind(
             DisplayName,
             "show networked size",
             true,
             "Whether or not to show how big other players using the Potions module are"
         );
-        ShowPotions = Plugin.configFile.Bind(
+        ShowPotions = Plugin.ConfigFile.Bind(
             DisplayName,
             "show potions", 
             true,

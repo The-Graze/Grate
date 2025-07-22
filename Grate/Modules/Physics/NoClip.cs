@@ -38,7 +38,7 @@ public class NoClip : GrateModule
             if (!Piggyback.mounted)
                 try
                 {
-                    var fly = Plugin.menuController.GetComponent<Fly>();
+                    var fly = Plugin.MenuController.GetComponent<Fly>();
                     flyWasEnabled = fly.enabled;
                     fly.enabled = true;
                     fly.button.AddBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
@@ -78,7 +78,7 @@ public class NoClip : GrateModule
 
     private IEnumerator CleanupRoutine()
     {
-        Plugin.menuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
+        Plugin.MenuController.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.NOCLIP_BOUNDARY);
         GTPlayer.Instance.locomotionEnabledLayers = baseMask;
         GTPlayer.Instance.bodyCollider.isTrigger = baseBodyIsTrigger;
         GTPlayer.Instance.headCollider.isTrigger = baseHeadIsTrigger;
@@ -87,7 +87,7 @@ public class NoClip : GrateModule
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
         TriggerBoxPatches.triggersEnabled = true;
-        Plugin.menuController.GetComponent<Fly>().enabled = flyWasEnabled;
+        Plugin.MenuController.GetComponent<Fly>().enabled = flyWasEnabled;
         Logging.Debug("Enabling triggers");
         active = false;
     }

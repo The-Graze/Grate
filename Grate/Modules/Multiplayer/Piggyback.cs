@@ -155,14 +155,14 @@ public class Piggyback : GrateModule
 
     private void EnableNoClip()
     {
-        var noclip = Plugin.menuController.GetComponent<NoClip>();
+        var noclip = Plugin.MenuController.GetComponent<NoClip>();
         noclip.button.AddBlocker(ButtonController.Blocker.PIGGYBACKING);
         noclip.enabled = true;
     }
 
     private void DisableNoClip()
     {
-        var noclip = Plugin.menuController.GetComponent<NoClip>();
+        var noclip = Plugin.MenuController.GetComponent<NoClip>();
         noclip.button.RemoveBlocker(ButtonController.Blocker.PIGGYBACKING);
         noclip.enabled = false;
     }

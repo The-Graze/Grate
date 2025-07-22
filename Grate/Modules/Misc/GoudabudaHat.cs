@@ -20,7 +20,7 @@ public class GoudabudaHat : GrateModule
     {
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
-        goudabudaHat = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("goudabuda"));
+        goudabudaHat = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("goudabuda"));
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
         goudabudaHat.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);

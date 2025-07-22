@@ -50,7 +50,7 @@ public class Wallrun : GrateModule
 
     public static void BindConfigEntries()
     {
-        Power = Plugin.configFile.Bind(
+        Power = Plugin.ConfigFile.Bind(
             DisplayName,
             "power",
             5,

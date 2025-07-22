@@ -26,7 +26,7 @@ internal class StoneBroke : GrateModule
     protected override void Start()
     {
         base.Start();
-        wawa = Plugin.assetBundle.LoadAsset<GameObject>("bs");
+        wawa = Plugin.AssetBundle.LoadAsset<GameObject>("bs");
     }
 
     protected override void OnEnable()

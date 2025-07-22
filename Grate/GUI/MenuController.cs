@@ -64,7 +64,7 @@ public class MenuController : GrateGrabbable
             base.Awake();
             throwOnDetach = true;
             gameObject.AddComponent<PositionValidator>();
-            if (Plugin.configFile != null) Plugin.configFile.SettingChanged += SettingsChanged;
+            if (Plugin.ConfigFile != null) Plugin.ConfigFile.SettingChanged += SettingsChanged;
             var tooAddmodules = new List<GrateModule>
             {
                 // Locomotion
@@ -191,21 +191,21 @@ public class MenuController : GrateGrabbable
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        Plugin.configFile!.SettingChanged -= SettingsChanged;
+        Plugin.ConfigFile!.SettingChanged -= SettingsChanged;
     }
 
 private void ThemeChanged()
 {
-    if (Plugin.assetBundle != null)
+    if (Plugin.AssetBundle != null)
     {
         if (!renderer)
             renderer = GetComponent<MeshRenderer>();
-        if (Plugin.assetBundle != null)
+        if (Plugin.AssetBundle != null)
         {
             if (grate == null)
             {
-                var zipline = Plugin.assetBundle.LoadAsset<Material>("Zipline Rope Material");
-                var metal = Plugin.assetBundle.LoadAsset<Material>("Metal Material");
+                var zipline = Plugin.AssetBundle.LoadAsset<Material>("Zipline Rope Material");
+                var metal = Plugin.AssetBundle.LoadAsset<Material>("Metal Material");
                 if (zipline && metal)
                 {
                     grate = [zipline, metal];
@@ -214,8 +214,8 @@ private void ThemeChanged()
 
             if (bark == null)
             {
-                var outer = Plugin.assetBundle.LoadAsset<Material>("m_Menu Outer");
-                var inner = Plugin.assetBundle.LoadAsset<Material>("m_Menu Inner");
+                var outer = Plugin.AssetBundle.LoadAsset<Material>("m_Menu Outer");
+                var inner = Plugin.AssetBundle.LoadAsset<Material>("m_Menu Inner");
                 if (outer && inner)
                 {
                     bark = [outer, inner];
@@ -224,7 +224,7 @@ private void ThemeChanged()
 
             if (hollopurp == null)
             {
-                var sparkleMat = Plugin.assetBundle.LoadAsset<Material>("m_TK Sparkles");
+                var sparkleMat = Plugin.AssetBundle.LoadAsset<Material>("m_TK Sparkles");
                 if (sparkleMat)
                 {
                     hollopurp = [sparkleMat, sparkleMat];
@@ -233,7 +233,7 @@ private void ThemeChanged()
 
             if (monke == null || old == null)
             {
-                var baseMat = Plugin.assetBundle.LoadAsset<Material>("Gorilla Material");
+                var baseMat = Plugin.AssetBundle.LoadAsset<Material>("Gorilla Material");
                 if (baseMat)
                 {
                     monke ??= [baseMat, baseMat];
@@ -503,7 +503,7 @@ private void ThemeChanged()
         {
             Debugger = isPressed;
             Logging.Debug("Debugger", Debugger ? "active" : "inactive");
-            Plugin.debugText.text = "";
+            Plugin.DebugText.text = "";
         });
 
         AddDebugButton("Close game", (btn, isPressed) =>
@@ -595,7 +595,7 @@ private void ThemeChanged()
                 "Which button you press to open the menu",
                 new AcceptableValueList<string>("gesture", "stick", "a/x", "b/y")
             );
-            _summonInput = Plugin.configFile.Bind("General",
+            _summonInput = Plugin.ConfigFile.Bind("General",
                 "open menu",
                 "gesture",
                 inputDesc
@@ -605,7 +605,7 @@ private void ThemeChanged()
                 "Which hand can open the menu",
                 new AcceptableValueList<string>("left", "right")
             );
-            _summonInputHand = Plugin.configFile.Bind("General",
+            _summonInputHand = Plugin.ConfigFile.Bind("General",
                 "open hand",
                 "right",
                 handDesc
@@ -615,7 +615,7 @@ private void ThemeChanged()
                 "Which Theme Should Grate Use?",
                 new AcceptableValueList<string>("grate", "OldGrate", "bark", "holowpurple", "shinyrocks", "Player")
             );
-            _theme = Plugin.configFile.Bind("General",
+            _theme = Plugin.ConfigFile.Bind("General",
                 "theme",
                 "Grate",
                 ThemeDesc

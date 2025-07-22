@@ -16,7 +16,7 @@ public class ShadowFly : GrateModule
     public static string DisplayName = "Shadow Fly";
     protected override void Start()
     {
-        localWings = Plugin.assetBundle?.LoadAsset<GameObject>("ShadowWings");
+        localWings = Plugin.AssetBundle?.LoadAsset<GameObject>("ShadowWings");
         AddNet();
     }
 

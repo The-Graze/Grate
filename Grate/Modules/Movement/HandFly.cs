@@ -38,7 +38,7 @@ public class HandFly : GrateModule
     protected override void OnEnable()
     {
         if (!MenuController.Instance.Built || !enabled) return;
-        Plugin.menuController?.GetComponent<Fly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController?.GetComponent<Fly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         right = GTPlayer.Instance.leftControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
         left = GTPlayer.Instance.rightControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
         ReloadConfiguration();
@@ -68,7 +68,7 @@ public class HandFly : GrateModule
 
     protected override void Cleanup()
     {
-        Plugin.menuController?.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController?.GetComponent<Fly>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         if (right != null) right.Obliterate();
         if (left != null) left.Obliterate();
     }
@@ -76,7 +76,7 @@ public class HandFly : GrateModule
 
     public static void BindConfigEntries()
     {
-        Speed = Plugin.configFile.Bind(
+        Speed = Plugin.ConfigFile.Bind(
             DisplayName,
             "speed",
             5,

@@ -22,7 +22,7 @@ public class BagPhone : GrateModule
         base.Start();
         if (Phone == null)
         {
-            Phone = Instantiate(Plugin.assetBundle.LoadAsset<GameObject>("DEVPHONE"));
+            Phone = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("DEVPHONE"));
             Phone.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             Phone.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
             Phone.transform.localRotation = Quaternion.Euler(2, 10, 0);

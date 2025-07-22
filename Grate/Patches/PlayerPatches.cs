@@ -54,7 +54,7 @@ public class VRRigLateUpdatePatch
 {
     private static void Postfix(VRRig __instance, ref AudioSource ___voiceAudio)
     {
-        if (!Plugin.WaWa_graze_dot_cc || !___voiceAudio) return;
+        if (!Plugin.WaWaGrazeDotCc || !___voiceAudio) return;
         try
         {
             ___voiceAudio.pitch = Mathf.Clamp(___voiceAudio.pitch, .8f, 1.2f);

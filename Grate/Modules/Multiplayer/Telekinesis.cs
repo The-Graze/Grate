@@ -65,7 +65,7 @@ public class Telekinesis : GrateModule
         try
         {
             ReloadConfiguration();
-            var prefab = Plugin.assetBundle.LoadAsset<GameObject>("TK Hitbox");
+            var prefab = Plugin.AssetBundle.LoadAsset<GameObject>("TK Hitbox");
             var hitbox = Instantiate(prefab);
             hitbox.name = "Grate TK Hitbox";
             hitbox.transform.SetParent(GTPlayer.Instance.bodyCollider.transform, false);

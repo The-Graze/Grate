@@ -159,7 +159,7 @@ public class Platforms : GrateModule
 
     private void Awake()
     {
-        if (!platformPrefab) platformPrefab = Plugin.assetBundle.LoadAsset<GameObject>("Bark Platform");
+        if (!platformPrefab) platformPrefab = Plugin.AssetBundle.LoadAsset<GameObject>("Bark Platform");
         foreach (var ghc in Resources.FindObjectsOfTypeAll<GorillaHandClimber>())
         {
             if (ghc.xrNode == XRNode.LeftHand) LeftC = ghc;
@@ -239,7 +239,7 @@ public class Platforms : GrateModule
             left = CreatePlatform(true);
             right = CreatePlatform(false);
             ReloadConfiguration();
-            Plugin.menuController.GetComponent<Frozone>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+            Plugin.MenuController.GetComponent<Frozone>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         }
         catch (Exception e)
         {
@@ -299,7 +299,7 @@ public class Platforms : GrateModule
         }
 
         Unsub();
-        Plugin.menuController.GetComponent<Frozone>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+        Plugin.MenuController.GetComponent<Frozone>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     protected override void ReloadConfiguration()
@@ -350,21 +350,21 @@ public class Platforms : GrateModule
     {
         try
         {
-            Sticky = Plugin.configFile.Bind(
+            Sticky = Plugin.ConfigFile.Bind(
                 DisplayName,
                 "sticky",
                 false,
                 "Whether or not your hands stick to the platforms"
             );
 
-            Scale = Plugin.configFile.Bind(
+            Scale = Plugin.ConfigFile.Bind(
                 DisplayName,
                 "size",
                 5,
                 "The size of the platforms"
             );
 
-            Input = Plugin.configFile.Bind(
+            Input = Plugin.ConfigFile.Bind(
                 DisplayName,
                 "input",
                 "grip",
@@ -374,7 +374,7 @@ public class Platforms : GrateModule
                 )
             );
 
-            Model = Plugin.configFile.Bind(
+            Model = Plugin.ConfigFile.Bind(
                 DisplayName,
                 "model",
                 "cloud",
