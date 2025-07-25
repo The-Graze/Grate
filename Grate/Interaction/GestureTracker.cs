@@ -176,7 +176,7 @@ public class GestureTracker : MonoBehaviour
                 foreach (var input in inputs)
                     input.UpdateValues();
             else
-                Application.Quit();
+                NetworkSystem.Instance.ReturnToSinglePlayer();
         }
     }
 

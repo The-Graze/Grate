@@ -30,7 +30,6 @@ public class ShadowFly : GrateModule
         }
         catch (Exception e)
         {
-            Application.Quit(1);
             Debug.LogException(e);
         }
         base.Start();
