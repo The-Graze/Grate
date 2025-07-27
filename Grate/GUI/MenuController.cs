@@ -119,8 +119,6 @@ public class MenuController : GrateGrabbable
             if (NetworkSystem.Instance.LocalPlayer.UserId == "CA8FDFF42B7A1836") modules.Add(sb);
             var bs = gameObject.AddComponent<BagHammer>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "9ABD0C174289F58E") modules.Add(bs);
-            var bp = gameObject.AddComponent<BagPhone>();
-            if (NetworkSystem.Instance.LocalPlayer.UserId == "9ABD0C174289F58E") modules.Add(bp);
             var g = gameObject.AddComponent<Grazing>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(g);
             var ch = gameObject.AddComponent<Cheese>();

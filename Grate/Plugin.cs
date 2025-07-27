@@ -38,7 +38,7 @@ public class Plugin : BaseUnityPlugin
     private NetworkPropertyHandler? nph;
 
     public static bool IsSteam { get; private set; }
-    public static bool DebugMode { get; protected set; } = false;
+    public static bool DebugMode { get; protected set; } = true;
 
     private void Awake()
     {
