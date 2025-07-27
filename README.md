@@ -11,7 +11,7 @@ game that toggles various fun/useful mechanics on and off. Because it is only en
 safe to use online.</h1>
 
 <p align="center">
-    <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://raw.githubusercontent.com/RylanFoxins/Grate/refs/heads/master/Art/NewGrateArt.png?raw=true"
+    <a href="https://youtu.be/ZAYFbcq63nc"><img width="auto" height="auto" src="https://raw.githubusercontent.com/The-Graze/Grate/refs/heads/master/Grate/Art/NewGrateArt.png?raw=true"
 </p>
 <h4 align="center">(Watch this video by Rylan showing off Grate!)</h1>
 
@@ -49,6 +49,7 @@ safe to use online.</h1>
 * `Double Jump` - Allows you to double jump. When midair, **press A/B on your right controller** to jump again.
 * `Climb` - By pressing **grip**, you can grab/climb terrain, objects, etc!
 * `Frozone` - By pressing and holding **grip**, you can spawn ice that moves with your hands.
+* `Hand Fly` - By holding **grip**, you can pull yourself through the air!
 
 ### Physics
 
