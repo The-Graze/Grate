@@ -26,6 +26,7 @@ public class Supporter : GrateModule
             _phone.transform.localRotation = Quaternion.Euler(2, 10, 0);
             _phone.transform.localScale /= 2;
         }
+
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
         _phone?.SetActive(false);
@@ -86,7 +87,7 @@ public class Supporter : GrateModule
 
             phone = Instantiate(_phone, rightHand, false);
 
-            if (phone == null) 
+            if (phone == null)
                 return;
             phone.transform.localPosition = new Vector3(0.0992f, 0.06f, 0.02f);
             phone.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);

@@ -11,29 +11,44 @@ public class LocalGorillaVelocityTracker : MonoBehaviour
     private Vector3 previousLocalPosition;
     private Vector3 velocity;
 
-    private void Start() { previousLocalPosition = transform.localPosition; }
+    private void Start()
+    {
+        previousLocalPosition = transform.localPosition;
+    }
 
     private void Update()
     {
-        Vector3 localDisplacement = transform.localPosition - previousLocalPosition;
-        Vector3 localVelocity = localDisplacement / Time.deltaTime;
+        var localDisplacement = transform.localPosition - previousLocalPosition;
+        var localVelocity = localDisplacement / Time.deltaTime;
 
         velocity = transform.parent.TransformDirection(localVelocity);
 
         previousLocalPosition = transform.localPosition;
     }
 
-    public Vector3 GetVelocity() => velocity;
+    public Vector3 GetVelocity()
+    {
+        return velocity;
+    }
 }
 
 public class HandFly : GrateModule
 {
     public static string DisplayName = "Hand Fly";
-    private LocalGorillaVelocityTracker? right;
-    private LocalGorillaVelocityTracker? left;
 
     private static ConfigEntry<int>? Speed;
+    private LocalGorillaVelocityTracker? left;
+    private LocalGorillaVelocityTracker? right;
     private float SpeedScale => 10 + Speed!.Value * -2.5f;
+
+    private void FixedUpdate()
+    {
+        if (ControllerInputPoller.instance.leftControllerIndexFloat > 0.5f)
+            GorillaTagger.Instance.rigidbody.velocity -= right!.GetVelocity() / SpeedScale * GTPlayer.Instance.scale;
+
+        if (ControllerInputPoller.instance.rightControllerIndexFloat > 0.5f)
+            GorillaTagger.Instance.rigidbody.velocity -= left!.GetVelocity() / SpeedScale * GTPlayer.Instance.scale;
+    }
 
     protected override void OnEnable()
     {
@@ -43,15 +58,6 @@ public class HandFly : GrateModule
         left = GTPlayer.Instance.rightControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
         ReloadConfiguration();
         base.OnEnable();
-    }
-
-    private void FixedUpdate()
-    {
-        if (ControllerInputPoller.instance.leftControllerIndexFloat > 0.5f)
-            GorillaTagger.Instance.rigidbody.velocity -= right!.GetVelocity() / SpeedScale * GTPlayer.Instance.scale;
-
-        if (ControllerInputPoller.instance.rightControllerIndexFloat > 0.5f)
-            GorillaTagger.Instance.rigidbody.velocity -= left!.GetVelocity() / SpeedScale * GTPlayer.Instance.scale;
     }
 
 
@@ -72,7 +78,7 @@ public class HandFly : GrateModule
         if (right != null) right.Obliterate();
         if (left != null) left.Obliterate();
     }
-    
+
 
     public static void BindConfigEntries()
     {

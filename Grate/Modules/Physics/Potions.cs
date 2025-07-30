@@ -241,15 +241,9 @@ public class Potions : GrateModule
     protected override void ReloadConfiguration()
     {
         shrinkPotion.GetComponent<Renderer>().enabled = ShowPotions.Value;
-        foreach (var rend in  shrinkPotion.GetComponentsInChildren<Renderer>())
-        {
-            rend.enabled = ShowPotions.Value;
-        }
+        foreach (var rend in shrinkPotion.GetComponentsInChildren<Renderer>()) rend.enabled = ShowPotions.Value;
         growPotion.GetComponent<Renderer>().enabled = ShowPotions.Value;
-        foreach (var rend in  growPotion.GetComponentsInChildren<Renderer>())
-        {
-            rend.enabled = ShowPotions.Value;
-        }
+        foreach (var rend in growPotion.GetComponentsInChildren<Renderer>()) rend.enabled = ShowPotions.Value;
     }
 
     public static void BindConfigEntries()
@@ -262,10 +256,10 @@ public class Potions : GrateModule
         );
         ShowPotions = Plugin.ConfigFile.Bind(
             DisplayName,
-            "show potions", 
+            "show potions",
             true,
             " Hide the local Bottles"
-            );
+        );
     }
 
     public static void TryGetSizeChangerForRig(VRRig rig, out SizeChanger sc)

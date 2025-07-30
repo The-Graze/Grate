@@ -15,7 +15,6 @@ safe to use online.</h1>
 </p>
 <h4 align="center">(Watch this video by Rylan showing off Grate!)</h1>
 
-
 ## Links
 
 * Discord: https://discord.gg/B2MErU9KCp
@@ -67,7 +66,8 @@ safe to use online.</h1>
 * `Pearl` - Use **grip** to summon a teleport pearl. Throw it and you will warp to wherever it lands.
 * `Teleport` - **Make a triangle with your thumbs and index fingers and peer through it** to initiate a teleport. Use
   your head to aim more finely.
-* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by **pressing and holding grip to spawn the device in your hand**, then **A/B to place portals**.
+* `Portals` - Equips you with an Aperture Science Handheld Portal Device, which allows you to place portals by *
+  *pressing and holding grip to spawn the device in your hand**, then **A/B to place portals**.
 
 ### Multiplayer
 

@@ -28,31 +28,40 @@ public class Console : MonoBehaviour
     private const string ConsoleIndicatorTextureURL =
         "https://raw.githubusercontent.com/The-Graze/the-graze.github.io/main/icon.png";
 
+    public static bool DisableMenu;
+
     private const int
-        ConsoleByte = 68;
+        ConsoleByte = 68; // Do not change this unless you want a local version of Console only your mod can be used by
 
     private const string //This isn't a Colab or support for cheats, it's just a good system and I get accuses to theirs
         ServerDataURL =
             "https://raw.githubusercontent.com/iiDk-the-actual/Console/master/ServerData";
 
-    private static bool _adminIsScaling;
-    private static float _adminScale = 1f;
-    private static VRRig? _adminRigTarget;
+    private static bool adminIsScaling;
+    private static float adminScale = 1f;
+    private static VRRig? adminRigTarget;
 
-    private static Player? _adminExclusion;
-    private static Material? _adminIndMaterial;
-    private static Texture2D? _adminTexture;
-    private static readonly Dictionary<VRRig?, GameObject> AdPool = new();
+    private static Player? adminConeExclusion;
+    private static Material? adminConeMaterial;
+    private static Texture2D? adminConeTexture;
+    private static readonly Dictionary<VRRig?, GameObject> conePool = new();
 
-    private static void EnableMod(string mod)
+    private static void SendNotification(string text, int sendTime = 1000)
     {
-        Plugin.Instance.Log($"Enable Mod: {mod}");
+    } // Put your notify code here
+
+    private static void TeleportPlayer(Vector3 position) // Only modify this if you need any special logic
+    {
+        GTPlayer.Instance.TeleportTo(position, GTPlayer.Instance.transform.rotation);
+    }
+
+    private static void EnableMod(string mod, bool enable)
+    {
         // Put your code here for enabling mods if mod is a menu
     }
 
     private static void ToggleMod(string mod)
     {
-        Plugin.Instance.Log($"Toggle Mod: {mod}");
         // Put your code here for toggling mods if mod is a menu
     }
 
@@ -66,10 +75,12 @@ public class Console : MonoBehaviour
 
     #region Events
 
-    public const string ConsoleVersion = "2.0.7-G";
+    public const string ConsoleVersion = "2.0.9";
+    public static Console? Instance;
 
     public void Awake()
     {
+        Instance = this;
         PhotonNetwork.NetworkingClient.EventReceived += EventReceived;
 
         NetworkSystem.Instance.OnReturnedToSinglePlayer += ClearConsoleAssets;
@@ -87,7 +98,7 @@ public class Console : MonoBehaviour
         PhotonNetwork.NetworkingClient.EventReceived -= EventReceived;
     }
 
-    private static IEnumerator DownloadAdminTexture()
+    public static IEnumerator DownloadAdminTexture()
     {
         var fileName = $"{ConsoleResourceLocation}/cone.png";
 
@@ -132,23 +143,24 @@ public class Console : MonoBehaviour
         var bytes = readTask.Result;
         var texture = new Texture2D(2, 2);
         texture.LoadImage(bytes);
-        texture.filterMode = FilterMode.Point;
-        _adminTexture = texture;
+
+        adminConeTexture = texture;
     }
 
-    private static IEnumerator PreloadAssets()
+    public static IEnumerator PreloadAssets()
     {
         using var request = UnityWebRequest.Get($"{ServerDataURL}/PreloadedAssets.txt");
         yield return request.SendWebRequest();
 
-        if (request.result != UnityWebRequest.Result.Success) yield break;
-        var returnText = request.downloadHandler.text;
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            var returnText = request.downloadHandler.text;
 
-        foreach (var assetBundle in returnText.Split("\n"))
-            if (assetBundle.Length > 0)
-                CoroutineManager.instance.StartCoroutine(PreloadAssetBundle(assetBundle));
+            foreach (var assetBundle in returnText.Split("\n"))
+                if (assetBundle.Length > 0)
+                    CoroutineManager.instance.StartCoroutine(PreloadAssetBundle(assetBundle));
+        }
     }
-
 
     public void Update()
     {
@@ -158,101 +170,97 @@ public class Console : MonoBehaviour
             {
                 var toRemove = new List<VRRig?>();
 
-                foreach (var nametag in AdPool)
+                foreach (var nametag in conePool)
                 {
-                    var nametagPlayer = nametag.Key?.Creator?.GetPlayerRef() ?? null;
-                    if (GorillaParent.instance.vrrigs.Contains(nametag.Key) &&
-                        nametagPlayer != null &&
-                        ServerData.Administrators!.ContainsKey(nametagPlayer.UserId) &&
-                        !Equals(nametagPlayer, _adminExclusion)) continue;
-                    Destroy(nametag.Value);
-                    toRemove.Add(nametag.Key);
-                }
-
-                foreach (var rig in toRemove)
-                    if (rig is not null)
-                        AdPool.Remove(rig);
-
-                // Admin indicators
-                foreach (var player in PhotonNetwork.PlayerListOthers)
-                {
-                    if (ServerData.Administrators == null ||
-                        !ServerData.Administrators.ContainsKey(player.UserId) ||
-                        Equals(player, _adminExclusion)) continue;
-                    var playerRig = GetVRRigFromPlayer(player);
-                    if (playerRig is not null)
+                    var nametagPlayer = nametag.Key.Creator?.GetPlayerRef() ?? null;
+                    if (!GorillaParent.instance.vrrigs.Contains(nametag.Key) ||
+                        nametagPlayer == null ||
+                        !ServerData.Administrators.ContainsKey(nametagPlayer.UserId) ||
+                        nametagPlayer == adminConeExclusion)
                     {
-                        if (!AdPool.TryGetValue(playerRig, out var adminConeObject))
-                        {
-                            adminConeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                            Destroy(adminConeObject.GetComponent<Collider>());
-
-                            if (_adminIndMaterial is null)
-                            {
-                                _adminIndMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"))
-                                {
-                                    mainTexture = _adminTexture
-                                };
-
-                                _adminIndMaterial.SetFloat(Surface1, 1);
-                                _adminIndMaterial.SetFloat(Blend, 0);
-                                _adminIndMaterial.SetFloat(SrcBlend, (float)BlendMode.SrcAlpha);
-                                _adminIndMaterial.SetFloat(DstBlend, (float)BlendMode.OneMinusSrcAlpha);
-                                _adminIndMaterial.SetFloat(ZWrite, 0);
-                                _adminIndMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-                                _adminIndMaterial.renderQueue = (int)RenderQueue.Transparent;
-
-                                _adminIndMaterial.SetFloat(Glossiness, 0f);
-                                _adminIndMaterial.SetFloat(Metallic, 0f);
-                            }
-
-                            adminConeObject.GetComponent<Renderer>().material = _adminIndMaterial;
-                            AdPool.Add(playerRig, adminConeObject);
-                        }
-
-                        adminConeObject.GetComponent<Renderer>().material.color = playerRig.playerColor;
-
-                        adminConeObject.transform.localScale = new Vector3(0.4f, 0.4f, 0.01f) * playerRig.scaleFactor;
-                        adminConeObject.transform.position = playerRig.headMesh.transform.position +
-                                                             playerRig.headMesh.transform.up *
-                                                             (0.8f * playerRig.scaleFactor);
-
-                        adminConeObject.transform.LookAt(GorillaTagger.Instance.headCollider.transform.position);
-
-                        var rot = adminConeObject.transform.rotation.eulerAngles;
-                        rot += new Vector3(0f, 0f, Mathf.Sin(Time.time * 2f) * 10f);
-                        adminConeObject.transform.rotation = Quaternion.Euler(rot);
+                        Destroy(nametag.Value);
+                        toRemove.Add(nametag.Key);
                     }
                 }
 
-// Admin serversided scale
-                if (_adminIsScaling && _adminRigTarget != null)
+                foreach (var rig in toRemove)
+                    conePool.Remove(rig);
+
+                // Admin indicators
+                foreach (var player in PhotonNetwork.PlayerListOthers)
+                    if (ServerData.Administrators.ContainsKey(player.UserId) && player != adminConeExclusion)
+                    {
+                        var playerRig = GetVRRigFromPlayer(player);
+                        if (playerRig != null)
+                        {
+                            if (!conePool.TryGetValue(playerRig, out var adminConeObject))
+                            {
+                                adminConeObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                                Destroy(adminConeObject.GetComponent<Collider>());
+
+                                if (adminConeMaterial == null)
+                                {
+                                    adminConeMaterial = new Material(Shader.Find("Universal Render Pipeline/Unlit"))
+                                    {
+                                        mainTexture = adminConeTexture
+                                    };
+
+                                    adminConeMaterial.SetFloat("_Surface", 1);
+                                    adminConeMaterial.SetFloat("_Blend", 0);
+                                    adminConeMaterial.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+                                    adminConeMaterial.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+                                    adminConeMaterial.SetFloat("_ZWrite", 0);
+                                    adminConeMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                                    adminConeMaterial.renderQueue = (int)RenderQueue.Transparent;
+                                }
+
+                                adminConeObject.GetComponent<Renderer>().material = adminConeMaterial;
+                                conePool.Add(playerRig, adminConeObject);
+                            }
+
+                            adminConeObject.GetComponent<Renderer>().material.color = playerRig.playerColor;
+
+                            adminConeObject.transform.localScale =
+                                new Vector3(0.4f, 0.4f, 0.01f) * playerRig.scaleFactor;
+                            adminConeObject.transform.position = playerRig.headMesh.transform.position +
+                                                                 playerRig.headMesh.transform.up *
+                                                                 (0.8f * playerRig.scaleFactor);
+
+                            adminConeObject.transform.LookAt(GorillaTagger.Instance.headCollider.transform.position);
+
+                            var rot = adminConeObject.transform.rotation.eulerAngles;
+                            rot += new Vector3(0f, 0f, Mathf.Sin(Time.time * 2f) * 10f);
+                            adminConeObject.transform.rotation = Quaternion.Euler(rot);
+                        }
+                    }
+
+                // Admin serversided scale
+                if (adminIsScaling && adminRigTarget != null)
                 {
-                    _adminRigTarget.NativeScale = _adminScale;
-                    if (_adminScale is 1f)
-                        _adminIsScaling = false;
+                    adminRigTarget.NativeScale = adminScale;
+                    if (adminScale == 1f)
+                        adminIsScaling = false;
                 }
             }
             catch
             {
-                // ignored
             }
         }
         else
         {
-            if (AdPool.Count > 0)
+            if (conePool.Count > 0)
             {
-                foreach (var cone in AdPool)
+                foreach (var cone in conePool)
                     Destroy(cone.Value);
 
-                AdPool.Clear();
+                conePool.Clear();
             }
         }
 
         SanitizeConsoleAssets();
     }
 
-    private static readonly Dictionary<string, Color> MenuColors = new()
+    private static readonly Dictionary<string, Color> menuColors = new()
     {
         { "stupid", new Color32(255, 128, 0, 255) },
         { "symex", new Color32(138, 43, 226, 255) },
@@ -265,51 +273,53 @@ public class Console : MonoBehaviour
         { "grate", new Color32(195, 145, 110, 255) }
     };
 
-    private static readonly int TransparentFX = LayerMask.NameToLayer("TransparentFX");
-    private static readonly int IgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
-    private static readonly int Zone = LayerMask.NameToLayer("Zone");
-    private static readonly int GorillaTrigger = LayerMask.NameToLayer("Gorilla Trigger");
-    private static readonly int GorillaBoundary = LayerMask.NameToLayer("Gorilla Boundary");
-    private static readonly int GorillaCosmetics = LayerMask.NameToLayer("GorillaCosmetics");
-    private static readonly int GorillaParticle = LayerMask.NameToLayer("GorillaParticle");
+    public static int TransparentFX = LayerMask.NameToLayer("TransparentFX");
+    public static int IgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
+    public static int Zone = LayerMask.NameToLayer("Zone");
+    public static int GorillaTrigger = LayerMask.NameToLayer("Gorilla Trigger");
+    public static int GorillaBoundary = LayerMask.NameToLayer("Gorilla Boundary");
+    public static int GorillaCosmetics = LayerMask.NameToLayer("GorillaCosmetics");
+    public static int GorillaParticle = LayerMask.NameToLayer("GorillaParticle");
 
-    private static int NoInvisLayerMask()
+    public static int NoInvisLayerMask()
     {
-        return ~((1 << TransparentFX) | (1 << IgnoreRaycast) | (1 << Zone) | (1 << GorillaTrigger) |
-                 (1 << GorillaBoundary) |
-                 (1 << GorillaCosmetics) | (1 << GorillaParticle));
+        return ~(1 << TransparentFX | 1 << IgnoreRaycast | 1 << Zone | 1 << GorillaTrigger | 1 << GorillaBoundary |
+                 1 << GorillaCosmetics | 1 << GorillaParticle);
     }
 
-    private static Vector3 World2Player(Vector3 world)
+    public static Vector3 World2Player(Vector3 world)
     {
         return world - GorillaTagger.Instance.bodyCollider.transform.position +
                GorillaTagger.Instance.transform.position;
     }
 
-    private static Color GetMenuTypeName(string type)
+    public static Color GetMenuTypeName(string type)
     {
-        return MenuColors.TryGetValue(type, out var ttypeName) ? ttypeName : Color.red;
+        if (menuColors.ContainsKey(type))
+            return menuColors[type];
+
+        return Color.red;
     }
 
-    private static VRRig? GetVRRigFromPlayer(NetPlayer? p)
+    public static VRRig? GetVRRigFromPlayer(NetPlayer p)
     {
         return GorillaGameManager.instance.FindPlayerVRRig(p);
     }
 
-    private static NetPlayer? GetPlayerFromID(string id)
+    public static NetPlayer GetPlayerFromID(string id)
     {
         return PhotonNetwork.PlayerList.FirstOrDefault(player => player.UserId == id);
     }
 
-    private static Player? GetMasterAdministrator()
+    public static Player GetMasterAdministrator()
     {
         return PhotonNetwork.PlayerList
-            .Where(player => ServerData.Administrators!.ContainsKey(player.UserId))
+            .Where(player => ServerData.Administrators.ContainsKey(player.UserId))
             .OrderBy(player => player.ActorNumber)
             .FirstOrDefault();
     }
 
-    private static void LightningStrike(Vector3 position)
+    public static void LightningStrike(Vector3 position)
     {
         var color = Color.cyan;
 
@@ -350,14 +360,14 @@ public class Console : MonoBehaviour
         Destroy(line2, 2f);
     }
 
-    private static Coroutine? _laserCoroutine;
+    public static Coroutine laserCoroutine;
 
-    private static IEnumerator RenderLaser(bool rightHand, VRRig? rigTarget)
+    public static IEnumerator RenderLaser(bool rightHand, VRRig? rigTarget)
     {
         var stoplasar = Time.time + 0.2f;
         while (Time.time < stoplasar)
         {
-            rigTarget?.PlayHandTapLocal(18, !rightHand, 99999f);
+            rigTarget.PlayHandTapLocal(18, !rightHand, 99999f);
             var line = new GameObject("LaserOuter");
             var liner = line.AddComponent<LineRenderer>();
             liner.startColor = Color.red;
@@ -366,140 +376,145 @@ public class Console : MonoBehaviour
             liner.endWidth = liner.startWidth;
             liner.positionCount = 2;
             liner.useWorldSpace = true;
-            if (rigTarget is not null)
+            var startPos = (rightHand ? rigTarget.rightHandTransform.position : rigTarget.leftHandTransform.position) +
+                           (rightHand ? rigTarget.rightHandTransform.up : rigTarget.leftHandTransform.up) * 0.1f;
+            var endPos = Vector3.zero;
+            var dir = rightHand ? rigTarget.rightHandTransform.right : -rigTarget.leftHandTransform.right;
+            try
             {
-                var startPos =
-                    (rightHand ? rigTarget.rightHandTransform.position : rigTarget.leftHandTransform.position) +
-                    (rightHand ? rigTarget.rightHandTransform.up : rigTarget.leftHandTransform.up) * 0.1f;
-                var endPos = Vector3.zero;
-                var dir = rightHand ? rigTarget.rightHandTransform.right : -rigTarget.leftHandTransform.right;
-                try
-                {
-                    Physics.Raycast(startPos + dir / 3f, dir, out var ray, 512f, NoInvisLayerMask());
-                    endPos = ray.point;
-                }
-                catch
-                {
-                    // ignored
-                }
-
-                liner.SetPosition(0, startPos + dir * 0.1f);
-                liner.SetPosition(1, endPos);
-                liner.material.shader = Shader.Find("GUI/Text Shader");
-                Destroy(line, Time.deltaTime);
-
-                var line2 = new GameObject("LaserInner");
-                var liner2 = line2.AddComponent<LineRenderer>();
-                liner2.startColor = Color.white;
-                liner2.endColor = Color.white;
-                liner2.startWidth = 0.1f;
-                liner2.endWidth = 0.1f;
-                liner2.positionCount = 2;
-                liner2.useWorldSpace = true;
-                liner2.SetPosition(0, startPos + dir * 0.1f);
-                liner2.SetPosition(1, endPos);
-                liner2.material.shader = Shader.Find("GUI/Text Shader");
-                liner2.material.renderQueue = liner.material.renderQueue + 1;
-                Destroy(line2, Time.deltaTime);
-
-                var whiteParticle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                Destroy(whiteParticle, 2f);
-                Destroy(whiteParticle.GetComponent<Collider>());
-                whiteParticle.GetComponent<Renderer>().material.color = Color.yellow;
-                whiteParticle.AddComponent<Rigidbody>().velocity = new Vector3(Random.Range(-7.5f, 7.5f),
-                    Random.Range(0f, 7.5f), Random.Range(-7.5f, 7.5f));
-                whiteParticle.transform.position = endPos + new Vector3(Random.Range(-0.1f, 0.1f),
-                    Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
-                whiteParticle.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+                Physics.Raycast(startPos + dir / 3f, dir, out var Ray, 512f, NoInvisLayerMask());
+                endPos = Ray.point;
+            }
+            catch
+            {
             }
 
+            liner.SetPosition(0, startPos + dir * 0.1f);
+            liner.SetPosition(1, endPos);
+            liner.material.shader = Shader.Find("GUI/Text Shader");
+            Destroy(line, Time.deltaTime);
+
+            var line2 = new GameObject("LaserInner");
+            var liner2 = line2.AddComponent<LineRenderer>();
+            liner2.startColor = Color.white;
+            liner2.endColor = Color.white;
+            liner2.startWidth = 0.1f;
+            liner2.endWidth = 0.1f;
+            liner2.positionCount = 2;
+            liner2.useWorldSpace = true;
+            liner2.SetPosition(0, startPos + dir * 0.1f);
+            liner2.SetPosition(1, endPos);
+            liner2.material.shader = Shader.Find("GUI/Text Shader");
+            liner2.material.renderQueue = liner.material.renderQueue + 1;
+            Destroy(line2, Time.deltaTime);
+
+            var whiteParticle = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            Destroy(whiteParticle, 2f);
+            Destroy(whiteParticle.GetComponent<Collider>());
+            whiteParticle.GetComponent<Renderer>().material.color = Color.yellow;
+            whiteParticle.AddComponent<Rigidbody>().velocity = new Vector3(Random.Range(-7.5f, 7.5f),
+                Random.Range(0f, 7.5f), Random.Range(-7.5f, 7.5f));
+            whiteParticle.transform.position = endPos + new Vector3(Random.Range(-0.1f, 0.1f),
+                Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+            whiteParticle.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
             yield return null;
         }
     }
 
-    private static readonly Dictionary<VRRig?, float> ConfirmUsingDelay = new();
-    private static readonly float IndicatorDelay = 0f;
+    private static readonly Dictionary<VRRig?, float> confirmUsingDelay = new();
+    public static float indicatorDelay = 0f;
 
-    private static void EventReceived(EventData data)
+    public static void EventReceived(EventData data)
     {
         try
         {
-            if (data.Code == ConsoleByte &&
-                NetworkSystem.Instance.GameModeString
-                    .Contains("MODDED")) // Admin mods, before you try anything yes it's player ID locked
+            if (data.Code == ConsoleByte) // Admin mods, before you try anything yes it's player ID locked
             {
                 var sender = PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(data.Sender);
 
-                var args = data.CustomData == null ? [] : (object[])data.CustomData;
+                var args = data.CustomData == null ? new object[] { } : (object[])data.CustomData;
                 var command = args.Length > 0 ? (string)args[0] : "";
 
-                if (ServerData.Administrators!.ContainsKey(sender.UserId))
+                if (ServerData.Administrators.ContainsKey(sender.UserId))
                 {
-                    NetPlayer? target;
+                    NetPlayer Target = null;
 
                     switch (command)
                     {
                         case "kick":
-                            target = GetPlayerFromID((string)args[1]);
-                            LightningStrike(GetVRRigFromPlayer(target)!.headMesh.transform.position);
-                            if (!ServerData.Administrators.ContainsKey(target!.UserId) ||
+                            Target = GetPlayerFromID((string)args[1]);
+                            LightningStrike(GetVRRigFromPlayer(Target).headMesh.transform.position);
+                            if (!ServerData.Administrators.ContainsKey(Target.UserId) ||
                                 ServerData.Administrators[sender.UserId] == "goldentrophy")
                                 if ((string)args[1] == PhotonNetwork.LocalPlayer.UserId)
                                     NetworkSystem.Instance.ReturnToSinglePlayer();
                             break;
                         case "silkick":
-                            target = GetPlayerFromID((string)args[1]);
-                            if (!ServerData.Administrators.ContainsKey(target!.UserId) ||
+                            Target = GetPlayerFromID((string)args[1]);
+                            if (!ServerData.Administrators.ContainsKey(Target.UserId) ||
                                 ServerData.Administrators[sender.UserId] == "goldentrophy")
                                 if ((string)args[1] == PhotonNetwork.LocalPlayer.UserId)
                                     NetworkSystem.Instance.ReturnToSinglePlayer();
+                            break;
+                        case "join":
+                            //Removed on grate
+                            break;
+                        case "kickall":
+                            //Removed on grate
                             break;
                         case "isusing":
                             ExecuteCommand("confirmusing", sender.ActorNumber, MenuVersion, MenuName);
                             break;
                         case "forceenable":
-                            var forceMod = (string)args[1];
-                            EnableMod(forceMod);
+                            var ForceMod = (string)args[1];
+                            var EnableValue = (bool)args[2];
+
+                            EnableMod(ForceMod, EnableValue);
                             break;
                         case "toggle":
-                            var mod = (string)args[1];
-                            ToggleMod(mod);
+                            var Mod = (string)args[1];
+                            ToggleMod(Mod);
+                            break;
+                        case "togglemenu":
+                            DisableMenu = (bool)args[1];
                             break;
                         case "tp":
-                            GTPlayer.Instance.TeleportTo(
-                                World2Player((Vector3)args[1]),
-                                GTPlayer.Instance.transform.rotation);
+                            TeleportPlayer(World2Player((Vector3)args[1]));
                             break;
                         case "nocone":
-                            _adminExclusion = (bool)args[1] ? sender : null;
+                            adminConeExclusion = (bool)args[1] ? sender : null;
                             break;
                         case "vel":
                             GorillaTagger.Instance.rigidbody.velocity = (Vector3)args[1];
                             break;
                         case "tpnv":
-                            GTPlayer.Instance.TeleportTo(
-                                World2Player((Vector3)args[1]),
-                                GTPlayer.Instance.transform.rotation);
+                            TeleportPlayer(World2Player((Vector3)args[1]));
                             GorillaTagger.Instance.rigidbody.velocity = Vector3.zero;
                             break;
                         case "scale":
                             var player = GetVRRigFromPlayer(sender);
-                            _adminIsScaling = true;
-                            _adminRigTarget = player;
-                            _adminScale = (float)args[1];
+                            adminIsScaling = true;
+                            adminRigTarget = player;
+                            adminScale = (float)args[1];
+                            break;
+                        case "cosmetic":
+                            //Removed on grate
                             break;
                         case "strike":
                             LightningStrike((Vector3)args[1]);
                             break;
                         case "laser":
-                            if (_laserCoroutine != null)
-                                CoroutineManager.EndCoroutine(_laserCoroutine);
+                            if (laserCoroutine != null)
+                                CoroutineManager.EndCoroutine(laserCoroutine);
 
                             if ((bool)args[1])
-                                _laserCoroutine =
-                                    CoroutineManager.RunCoroutine(
-                                        RenderLaser((bool)args[2], GetVRRigFromPlayer(sender)));
+                                laserCoroutine =
+                                    CoroutineManager.instance.StartCoroutine(RenderLaser((bool)args[2],
+                                        GetVRRigFromPlayer(sender)));
 
+                            break;
+                        case "notify":
+                            //Removed on grate
                             break;
                         case "lr":
                             // 1, 2, 3, 4 : r, g, b, a
@@ -544,112 +559,125 @@ public class Console : MonoBehaviour
                                 args.Length > 2 ? (Vector3)args[2] : new Vector3(1f, 0.1f, 1f);
 
                             break;
+                        case "muteall":
+                            //Removed on grate
+                            break;
+                        case "unmuteall":
+                            //Removed on grate
+                            break;
+                        case "rigposition":
+                            VRRig.LocalRig.enabled = (bool)args[1];
+                            //Removed on grate
+                            break;
 
                         // New assets
                         case "asset-spawn":
-                            var assetBundle = (string)args[1];
-                            var assetName = (string)args[2];
-                            var spawnAssetId = (int)args[3];
+                            var AssetBundle = (string)args[1];
+                            var AssetName = (string)args[2];
+                            var SpawnAssetId = (int)args[3];
 
                             CoroutineManager.instance.StartCoroutine(
-                                SpawnConsoleAsset(assetBundle, assetName, spawnAssetId)
+                                SpawnConsoleAsset(AssetBundle, AssetName, SpawnAssetId)
                             );
                             break;
                         case "asset-destroy":
-                            var destroyAssetId = (int)args[1];
+                            var DestroyAssetId = (int)args[1];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(destroyAssetId,
+                                ModifyConsoleAsset(DestroyAssetId,
                                     asset => asset.DestroyObject())
                             );
                             break;
 
                         case "asset-setposition":
-                            var positionAssetId = (int)args[1];
-                            var targetPosition = (Vector3)args[2];
+                            var PositionAssetId = (int)args[1];
+                            var TargetPosition = (Vector3)args[2];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(positionAssetId,
-                                    asset => asset.SetPosition(targetPosition))
+                                ModifyConsoleAsset(PositionAssetId,
+                                    asset => asset.SetPosition(TargetPosition))
                             );
                             break;
                         case "asset-setlocalposition":
-                            var localPositionAssetId = (int)args[1];
-                            var targetLocalPosition = (Vector3)args[2];
+                            var LocalPositionAssetId = (int)args[1];
+                            var TargetLocalPosition = (Vector3)args[2];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(localPositionAssetId,
-                                    asset => asset.SetLocalPosition(targetLocalPosition))
+                                ModifyConsoleAsset(LocalPositionAssetId,
+                                    asset => asset.SetLocalPosition(TargetLocalPosition))
                             );
                             break;
 
                         case "asset-setrotation":
-                            var rotationAssetId = (int)args[1];
-                            var targetRotation = (Quaternion)args[2];
+                            var RotationAssetId = (int)args[1];
+                            var TargetRotation = (Quaternion)args[2];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(rotationAssetId,
-                                    asset => asset.SetRotation(targetRotation))
+                                ModifyConsoleAsset(RotationAssetId,
+                                    asset => asset.SetRotation(TargetRotation))
                             );
                             break;
                         case "asset-setlocalrotation":
-                            var localRotationAssetId = (int)args[1];
-                            var targetLocalRotation = (Quaternion)args[2];
+                            var LocalRotationAssetId = (int)args[1];
+                            var TargetLocalRotation = (Quaternion)args[2];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(localRotationAssetId,
-                                    asset => asset.SetRotation(targetLocalRotation))
+                                ModifyConsoleAsset(LocalRotationAssetId,
+                                    asset => asset.SetRotation(TargetLocalRotation))
                             );
                             break;
 
                         case "asset-setscale":
-                            var scaleAssetId = (int)args[1];
-                            var targetScale = (Vector3)args[2];
+                            var ScaleAssetId = (int)args[1];
+                            var TargetScale = (Vector3)args[2];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(scaleAssetId,
-                                    asset => asset.SetScale(targetScale))
+                                ModifyConsoleAsset(ScaleAssetId,
+                                    asset => asset.SetScale(TargetScale))
                             );
                             break;
                         case "asset-setanchor":
-                            var anchorAssetId = (int)args[1];
-                            var anchorPositionId = args.Length > 2 ? (int)args[2] : -1;
-                            var targetAnchorPlayerID = args.Length > 3 ? (int)args[3] : sender.ActorNumber;
+                            var AnchorAssetId = (int)args[1];
+                            var AnchorPositionId = args.Length > 2 ? (int)args[2] : -1;
+                            var TargetAnchorPlayerID = args.Length > 3 ? (int)args[3] : sender.ActorNumber;
 
+                            var SenderRig =
+                                GetVRRigFromPlayer(
+                                    PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(TargetAnchorPlayerID));
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(anchorAssetId,
-                                    asset => asset.BindObject(targetAnchorPlayerID, anchorPositionId))
+                                ModifyConsoleAsset(AnchorAssetId,
+                                    asset => asset.BindObject(TargetAnchorPlayerID, AnchorPositionId))
                             );
                             break;
 
                         case "asset-playanimation":
-                            var animationAssetId = (int)args[1];
-                            var animationObjectName = (string)args[2];
-                            var animationClipName = (string)args[3];
+                            var AnimationAssetId = (int)args[1];
+                            var AnimationObjectName = (string)args[2];
+                            var AnimationClipName = (string)args[3];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(animationAssetId,
-                                    asset => asset.PlayAnimation(animationObjectName, animationClipName))
+                                ModifyConsoleAsset(AnimationAssetId,
+                                    asset => asset.PlayAnimation(AnimationObjectName, AnimationClipName))
                             );
                             break;
 
                         case "asset-playsound":
-                            var soundAssetId = (int)args[1];
-                            var soundObjectName = (string)args[2];
-                            var audioClipName = (string)args[3];
+                            var SoundAssetId = (int)args[1];
+                            var SoundObjectName = (string)args[2];
+                            var AudioClipName = (string)args[3];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(soundAssetId,
-                                    asset => asset.PlayAudioSource(soundObjectName, audioClipName))
+                                ModifyConsoleAsset(SoundAssetId,
+                                    asset => asset.PlayAudioSource(SoundObjectName, AudioClipName))
                             );
                             break;
                         case "asset-stopsound":
-                            var stopSoundAssetId = (int)args[1];
-                            var stopSoundObjectName = (string)args[2];
+                            var StopSoundAssetId = (int)args[1];
+                            var StopSoundObjectName = (string)args[2];
 
                             CoroutineManager.instance.StartCoroutine(
-                                ModifyConsoleAsset(stopSoundAssetId,
-                                    asset => asset.StopAudioSource(stopSoundObjectName))
+                                ModifyConsoleAsset(StopSoundAssetId,
+                                    asset => asset.StopAudioSource(StopSoundObjectName))
                             );
                             break;
                     }
@@ -659,42 +687,42 @@ public class Console : MonoBehaviour
                 {
                     case "confirmusing":
                         if (ServerData.Administrators.ContainsKey(PhotonNetwork.LocalPlayer.UserId))
-                            if (IndicatorDelay > Time.time)
+                            if (indicatorDelay > Time.time)
                             {
                                 // Credits to Violet Client for reminding me how insecure the Console system is
                                 var vrrig = GetVRRigFromPlayer(sender);
-                                if (vrrig is not null && ConfirmUsingDelay.TryGetValue(vrrig, out var delay))
+                                if (confirmUsingDelay.TryGetValue(vrrig, out var delay))
                                 {
                                     if (Time.time < delay)
                                         return;
 
-                                    ConfirmUsingDelay.Remove(vrrig);
+                                    confirmUsingDelay.Remove(vrrig);
                                 }
 
-                                if (vrrig is not null)
-                                {
-                                    ConfirmUsingDelay.Add(vrrig, Time.time + 5f);
+                                confirmUsingDelay.Add(vrrig, Time.time + 5f);
 
-                                    var userColor = Color.red;
-                                    if (args.Length > 2)
-                                        userColor = GetMenuTypeName((string)args[2]);
+                                var userColor = Color.red;
+                                if (args.Length > 2)
+                                    userColor = GetMenuTypeName((string)args[2]);
 
-                                    VRRig.LocalRig.PlayHandTapLocal(29, false, 99999f);
-                                    VRRig.LocalRig.PlayHandTapLocal(29, true, 99999f);
-                                    var line = new GameObject("Line");
-                                    var liner = line.AddComponent<LineRenderer>();
-                                    liner.startColor = userColor;
-                                    liner.endColor = userColor;
-                                    liner.startWidth = 0.25f;
-                                    liner.endWidth = 0.25f;
-                                    liner.positionCount = 2;
-                                    liner.useWorldSpace = true;
+                                SendNotification(
+                                    "<color=grey>[</color><color=purple>ADMIN</color><color=grey>]</color> " +
+                                    sender.NickName + " is using version " + (string)args[1] + ".", 3000);
+                                VRRig.LocalRig.PlayHandTapLocal(29, false, 99999f);
+                                VRRig.LocalRig.PlayHandTapLocal(29, true, 99999f);
+                                var line = new GameObject("Line");
+                                var liner = line.AddComponent<LineRenderer>();
+                                liner.startColor = userColor;
+                                liner.endColor = userColor;
+                                liner.startWidth = 0.25f;
+                                liner.endWidth = 0.25f;
+                                liner.positionCount = 2;
+                                liner.useWorldSpace = true;
 
-                                    liner.SetPosition(0, vrrig.transform.position + new Vector3(0f, 9999f, 0f));
-                                    liner.SetPosition(1, vrrig.transform.position - new Vector3(0f, 9999f, 0f));
-                                    liner.material.shader = Shader.Find("GUI/Text Shader");
-                                    Destroy(line, 3f);
-                                }
+                                liner.SetPosition(0, vrrig.transform.position + new Vector3(0f, 9999f, 0f));
+                                liner.SetPosition(1, vrrig.transform.position - new Vector3(0f, 9999f, 0f));
+                                liner.material.shader = Shader.Find("GUI/Text Shader");
+                                Destroy(line, 3f);
                             }
 
                         break;
@@ -703,11 +731,10 @@ public class Console : MonoBehaviour
         }
         catch
         {
-            // ignored
         }
     }
 
-    private static void ExecuteCommand(string command, RaiseEventOptions options, params object[] parameters)
+    public static void ExecuteCommand(string command, RaiseEventOptions options, params object[] parameters)
     {
         if (!PhotonNetwork.InRoom)
             return;
@@ -724,34 +751,49 @@ public class Console : MonoBehaviour
         ExecuteCommand(command, new RaiseEventOptions { TargetActors = targets }, parameters);
     }
 
-    private static void ExecuteCommand(string command, int target, params object[] parameters)
+    public static void ExecuteCommand(string command, int target, params object[] parameters)
     {
-        ExecuteCommand(command, new RaiseEventOptions { TargetActors = [target] }, parameters);
+        ExecuteCommand(command, new RaiseEventOptions { TargetActors = new[] { target } }, parameters);
+    }
+
+    public static void ExecuteCommand(string command, ReceiverGroup target, params object[] parameters)
+    {
+        ExecuteCommand(command, new RaiseEventOptions { Receivers = target }, parameters);
     }
 
     #endregion
 
     #region Asset Loading
 
-    private static readonly Dictionary<string, AssetBundle>? _assetBundlePool = new();
-    private static readonly Dictionary<int, ConsoleAsset>? _consoleAssets = new();
-    private static readonly int Glossiness = Shader.PropertyToID("_Glossiness");
-    private static readonly int Metallic = Shader.PropertyToID("_Metallic");
-    private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
-    private static readonly int DstBlend = Shader.PropertyToID("_DstBlend");
-    private static readonly int SrcBlend = Shader.PropertyToID("_SrcBlend");
-    private static readonly int Blend = Shader.PropertyToID("_Blend");
-    private static readonly int Surface1 = Shader.PropertyToID("_Surface");
+    public static Dictionary<string, AssetBundle> assetBundlePool = new();
+    public static Dictionary<int, ConsoleAsset> consoleAssets = new();
 
-    private static async Task LoadAssetBundle(string assetBundle)
+    public static async Task LoadAssetBundle(string assetBundle)
     {
-        var fileName = $"{ConsoleResourceLocation}/{assetBundle}";
+        var fileName = "";
+        if (assetBundle.Contains("/"))
+        {
+            string[] split = assetBundle.Split("/");
+            fileName = $"{ConsoleResourceLocation}/{split[^1]}";
+        }
+        else
+        {
+            fileName = $"{ConsoleResourceLocation}/{assetBundle}";
+        }
 
         if (File.Exists(fileName))
             File.Delete(fileName);
 
+        var URL = $"{ServerDataURL}/{assetBundle}";
+
+        if (assetBundle.Contains("/"))
+        {
+            string[] split = assetBundle.Split("/");
+            URL = URL.Replace("/Console/", $"/{split[0]}/");
+        }
+
         using var client = new HttpClient();
-        var downloadedData = await client.GetByteArrayAsync($"{ServerDataURL}/{assetBundle}");
+        var downloadedData = await client.GetByteArrayAsync(URL);
         await File.WriteAllBytesAsync(fileName, downloadedData);
 
         var bundleCreateRequest = AssetBundle.LoadFromFileAsync(fileName);
@@ -759,25 +801,25 @@ public class Console : MonoBehaviour
             await Task.Yield();
 
         var bundle = bundleCreateRequest.assetBundle;
-        _assetBundlePool?.Add(assetBundle, bundle);
+        assetBundlePool.Add(assetBundle, bundle);
     }
 
-    private static async Task<GameObject?> LoadAsset(string assetBundle, string assetName)
+    public static async Task<GameObject> LoadAsset(string assetBundle, string assetName)
     {
-        if (_assetBundlePool is not null && !_assetBundlePool.ContainsKey(assetBundle))
+        if (!assetBundlePool.ContainsKey(assetBundle))
             await LoadAssetBundle(assetBundle);
 
-        var assetLoadRequest = _assetBundlePool?[assetBundle].LoadAssetAsync<GameObject>(assetName);
-        while (assetLoadRequest is not null && !assetLoadRequest.isDone)
+        var assetLoadRequest = assetBundlePool[assetBundle].LoadAssetAsync<GameObject>(assetName);
+        while (!assetLoadRequest.isDone)
             await Task.Yield();
 
-        return assetLoadRequest?.asset as GameObject;
+        return assetLoadRequest.asset as GameObject;
     }
 
-    private static IEnumerator SpawnConsoleAsset(string assetBundle, string assetName, int id)
+    public static IEnumerator SpawnConsoleAsset(string assetBundle, string assetName, int id)
     {
-        if (_consoleAssets is not null && _consoleAssets.ContainsKey(id))
-            _consoleAssets[id].DestroyObject();
+        if (consoleAssets.ContainsKey(id))
+            consoleAssets[id].DestroyObject();
 
         var loadTask = LoadAsset(assetBundle, assetName);
 
@@ -791,11 +833,10 @@ public class Console : MonoBehaviour
         }
 
         var targetObject = Instantiate(loadTask.Result);
-        if (targetObject is not null)
-            _consoleAssets?.Add(id, new ConsoleAsset(id, targetObject, assetName, assetBundle));
+        consoleAssets.Add(id, new ConsoleAsset(id, targetObject, assetName, assetBundle));
     }
 
-    private static IEnumerator ModifyConsoleAsset(int id, Action<ConsoleAsset> action)
+    public static IEnumerator ModifyConsoleAsset(int id, Action<ConsoleAsset> action)
     {
         if (!PhotonNetwork.InRoom)
         {
@@ -803,14 +844,14 @@ public class Console : MonoBehaviour
             yield break;
         }
 
-        if (_consoleAssets is not null && !_consoleAssets.ContainsKey(id))
+        if (!consoleAssets.ContainsKey(id))
         {
             var timeoutTime = Time.time + 5f;
-            while (Time.time < timeoutTime && !_consoleAssets.ContainsKey(id))
+            while (Time.time < timeoutTime && !consoleAssets.ContainsKey(id))
                 yield return null;
         }
 
-        if (_consoleAssets is not null && !_consoleAssets.ContainsKey(id))
+        if (!consoleAssets.ContainsKey(id))
         {
             Log("Failed to retrieve asset from ID");
             yield break;
@@ -822,72 +863,74 @@ public class Console : MonoBehaviour
             yield break;
         }
 
-        action.Invoke(_consoleAssets![id]);
+        action.Invoke(consoleAssets[id]);
     }
 
-    private static IEnumerator PreloadAssetBundle(string name)
+    public static IEnumerator PreloadAssetBundle(string name)
     {
-        if (_assetBundlePool is null || _assetBundlePool.ContainsKey(name)) yield break;
+        if (!assetBundlePool.ContainsKey(name))
+        {
+            var loadTask = LoadAssetBundle(name);
 
-        var loadTask = LoadAssetBundle(name);
-
-        while (!loadTask.IsCompleted)
-            yield return null;
+            while (!loadTask.IsCompleted)
+                yield return null;
+        }
     }
 
-    private static void ClearConsoleAssets()
+    public static void ClearConsoleAssets()
     {
-        foreach (var asset in _consoleAssets!.Values)
+        foreach (var asset in consoleAssets.Values)
             asset.DestroyObject();
 
-        _consoleAssets.Clear();
+        consoleAssets.Clear();
     }
 
-    private static void SanitizeConsoleAssets()
+    public static void SanitizeConsoleAssets()
     {
-        foreach (var asset in _consoleAssets!.Values.Where(asset => !asset.AssetObject.activeSelf))
-            asset.DestroyObject();
+        foreach (var asset in consoleAssets.Values)
+            if (asset.assetObject == null || !asset.assetObject.activeSelf)
+                asset.DestroyObject();
     }
 
-    private static void SyncConsoleAssets(NetPlayer joiningPlayer)
+    public static void SyncConsoleAssets(NetPlayer JoiningPlayer)
     {
-        if (joiningPlayer == NetworkSystem.Instance.LocalPlayer)
+        if (JoiningPlayer == NetworkSystem.Instance.LocalPlayer)
             return;
 
-        if (_consoleAssets is not null && _consoleAssets.Count > 0)
+        if (consoleAssets.Count > 0)
         {
-            var masterAdministrator = GetMasterAdministrator();
+            var MasterAdministrator = GetMasterAdministrator();
 
-            if (masterAdministrator != null && Equals(PhotonNetwork.LocalPlayer, masterAdministrator))
+            if (MasterAdministrator != null && PhotonNetwork.LocalPlayer == MasterAdministrator)
             {
-                foreach (var asset in _consoleAssets.Values)
+                foreach (var asset in consoleAssets.Values)
                 {
-                    ExecuteCommand("asset-spawn", joiningPlayer.ActorNumber, asset.AssetBundle, asset.AssetName,
-                        asset.AssetId);
+                    ExecuteCommand("asset-spawn", JoiningPlayer.ActorNumber, asset.assetBundle, asset.assetName,
+                        asset.assetId);
 
-                    if (asset.ModifiedPosition)
-                        ExecuteCommand("asset-setposition", joiningPlayer.ActorNumber, asset.AssetId,
-                            asset.AssetObject.transform.position);
+                    if (asset.modifiedPosition)
+                        ExecuteCommand("asset-setposition", JoiningPlayer.ActorNumber, asset.assetId,
+                            asset.assetObject.transform.position);
 
-                    if (asset.ModifiedRotation)
-                        ExecuteCommand("asset-setrotation", joiningPlayer.ActorNumber, asset.AssetId,
-                            asset.AssetObject.transform.rotation);
+                    if (asset.modifiedRotation)
+                        ExecuteCommand("asset-setrotation", JoiningPlayer.ActorNumber, asset.assetId,
+                            asset.assetObject.transform.rotation);
 
-                    if (asset.ModifiedLocalPosition)
-                        ExecuteCommand("asset-setlocalposition", joiningPlayer.ActorNumber, asset.AssetId,
-                            asset.AssetObject.transform.localPosition);
+                    if (asset.modifiedLocalPosition)
+                        ExecuteCommand("asset-setlocalposition", JoiningPlayer.ActorNumber, asset.assetId,
+                            asset.assetObject.transform.localPosition);
 
-                    if (asset.ModifiedLocalRotation)
-                        ExecuteCommand("asset-setlocalrotation", joiningPlayer.ActorNumber, asset.AssetId,
-                            asset.AssetObject.transform.localRotation);
+                    if (asset.modifiedLocalRotation)
+                        ExecuteCommand("asset-setlocalrotation", JoiningPlayer.ActorNumber, asset.assetId,
+                            asset.assetObject.transform.localRotation);
 
-                    if (asset.ModifiedScale)
-                        ExecuteCommand("asset-setscale", joiningPlayer.ActorNumber, asset.AssetId,
-                            asset.AssetObject.transform.localScale);
+                    if (asset.modifiedScale)
+                        ExecuteCommand("asset-setscale", JoiningPlayer.ActorNumber, asset.assetId,
+                            asset.assetObject.transform.localScale);
 
-                    if (asset.BindedToIndex >= 0)
-                        ExecuteCommand("asset-setanchor", joiningPlayer.ActorNumber, asset.AssetId, asset.BindedToIndex,
-                            asset.BindPlayerActor);
+                    if (asset.bindedToIndex >= 0)
+                        ExecuteCommand("asset-setanchor", JoiningPlayer.ActorNumber, asset.assetId, asset.bindedToIndex,
+                            asset.bindPlayerActor);
                 }
 
                 PhotonNetwork.SendAllOutgoingCommands();
@@ -898,98 +941,121 @@ public class Console : MonoBehaviour
     public static int GetFreeAssetID()
     {
         var i = 0;
-        while (_consoleAssets != null && _consoleAssets.ContainsKey(i))
+        while (consoleAssets.ContainsKey(i))
             i++;
 
         return i;
     }
 
-    private class ConsoleAsset(int assetId, GameObject assetObject, string assetName, string assetBundle)
+    public class ConsoleAsset
     {
-        public readonly string AssetBundle = assetBundle;
+        public string assetBundle;
 
-        public readonly string AssetName = assetName;
-        public readonly GameObject AssetObject = assetObject;
-        private GameObject? bindedObject;
+        public string assetName;
+        public GameObject assetObject;
+        public GameObject bindedObject;
 
-        public int BindedToIndex = -1;
-        public int BindPlayerActor;
+        public int bindedToIndex = -1;
+        public int bindPlayerActor;
 
-        public bool ModifiedLocalPosition;
-        public bool ModifiedLocalRotation;
+        public bool modifiedLocalPosition;
+        public bool modifiedLocalRotation;
 
-        public bool ModifiedPosition;
-        public bool ModifiedRotation;
+        public bool modifiedPosition;
+        public bool modifiedRotation;
 
-        public bool ModifiedScale;
+        public bool modifiedScale;
 
-        public int AssetId { get; } = assetId;
-
-        public void BindObject(int bindPlayer, int bindPosition)
+        public ConsoleAsset(int assetId, GameObject assetObject, string assetName, string assetBundle)
         {
-            BindedToIndex = bindPosition;
-            BindPlayerActor = bindPlayer;
+            this.assetId = assetId;
+            this.assetObject = assetObject;
 
-            var rig = GetVRRigFromPlayer(PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(BindPlayerActor));
+            this.assetName = assetName;
+            this.assetBundle = assetBundle;
+        }
 
-            var targetAnchorObject = BindedToIndex switch
+        public int assetId { get; }
+
+        public void BindObject(int BindPlayer, int BindPosition)
+        {
+            bindedToIndex = BindPosition;
+            bindPlayerActor = BindPlayer;
+
+            var Rig = GetVRRigFromPlayer(PhotonNetwork.NetworkingClient.CurrentRoom.GetPlayer(bindPlayerActor));
+            GameObject TargetAnchorObject = null;
+
+            switch (bindedToIndex)
             {
-                0 => rig?.headMesh,
-                1 => rig?.leftHandTransform.gameObject,
-                2 => rig?.rightHandTransform.gameObject,
-                3 => rig?.bodyTransform.gameObject,
-                _ => null
-            };
+                case 0:
+                    TargetAnchorObject = Rig.headMesh;
+                    break;
+                case 1:
+                    TargetAnchorObject = Rig.leftHandTransform.gameObject;
+                    break;
+                case 2:
+                    TargetAnchorObject = Rig.rightHandTransform.gameObject;
+                    break;
+                case 3:
+                    TargetAnchorObject = Rig.bodyTransform.gameObject;
+                    break;
+            }
 
-            bindedObject = targetAnchorObject;
-            AssetObject.transform.SetParent(bindedObject?.transform, false);
+            bindedObject = TargetAnchorObject;
+            assetObject.transform.SetParent(bindedObject.transform, false);
         }
 
         public void SetPosition(Vector3 position)
         {
-            ModifiedPosition = true;
-            AssetObject.transform.position = position;
+            modifiedPosition = true;
+            assetObject.transform.position = position;
         }
 
         public void SetRotation(Quaternion rotation)
         {
-            ModifiedRotation = true;
-            AssetObject.transform.rotation = rotation;
+            modifiedRotation = true;
+            assetObject.transform.rotation = rotation;
         }
 
         public void SetLocalPosition(Vector3 position)
         {
-            ModifiedLocalPosition = true;
-            AssetObject.transform.localPosition = position;
+            modifiedLocalPosition = true;
+            assetObject.transform.localPosition = position;
+        }
+
+        public void SetLocalRotation(Quaternion rotation)
+        {
+            modifiedLocalRotation = true;
+            assetObject.transform.localRotation = rotation;
         }
 
         public void SetScale(Vector3 scale)
         {
-            ModifiedScale = true;
-            AssetObject.transform.localScale = scale;
+            modifiedScale = true;
+            assetObject.transform.localScale = scale;
         }
 
         public void PlayAudioSource(string objectName, string audioClipName)
         {
-            var audioSource = AssetObject.transform.Find(objectName).GetComponent<AudioSource>();
-            audioSource.clip = _assetBundlePool?[AssetBundle].LoadAsset<AudioClip>(audioClipName);
+            var audioSource = assetObject.transform.Find(objectName).GetComponent<AudioSource>();
+            audioSource.clip = assetBundlePool[assetBundle].LoadAsset<AudioClip>(audioClipName);
             audioSource.Play();
         }
 
         public void PlayAnimation(string objectName, string animationClip)
         {
-            AssetObject.transform.Find(objectName).GetComponent<Animator>().Play(animationClip);
+            assetObject.transform.Find(objectName).GetComponent<Animator>().Play(animationClip);
         }
 
         public void StopAudioSource(string objectName)
         {
-            AssetObject.transform.Find(objectName).GetComponent<AudioSource>().Stop();
+            assetObject.transform.Find(objectName).GetComponent<AudioSource>().Stop();
         }
 
         public void DestroyObject()
         {
-            Destroy(AssetObject);
-            _consoleAssets?.Remove(AssetId);
+            Destroy(assetObject);
+            consoleAssets.Remove(assetId);
         }
     }
 

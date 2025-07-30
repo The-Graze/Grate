@@ -14,8 +14,8 @@ public class Climb : GrateModule
     public static readonly string DisplayName = "Climb";
     public GameObject climbableLeft, climbableRight;
     private InputTracker<float>? leftGrip;
-    private InputTracker<float>? rightGrip;
     private Transform leftHand, rightHand;
+    private InputTracker<float>? rightGrip;
 
     protected override void OnEnable()
     {

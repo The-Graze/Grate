@@ -228,11 +228,11 @@ public class GrateSlider : MonoBehaviour
     private Knob _knob;
     private object _selected;
     private Transform knob;
-    private Transform? sliderStart;
-    private Transform sliderEnd;
     private Text label;
     public Action<object> OnValueChanged;
     private int selectedValue;
+    private Transform sliderEnd;
+    private Transform? sliderStart;
     private object[] values;
 
     public object Selected
@@ -290,9 +290,9 @@ public class GrateSlider : MonoBehaviour
 public class Knob : GrateInteractable
 {
     public int divisions;
-    private int value;
     public Action<int>? OnValueChanged;
     private Transform? start, end;
+    private int value;
 
     public int Value
     {

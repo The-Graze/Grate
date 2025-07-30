@@ -38,7 +38,7 @@ public class Plugin : BaseUnityPlugin
     private NetworkPropertyHandler? nph;
 
     public static bool IsSteam { get; private set; }
-    public static bool DebugMode { get; protected set; } = true;
+    public static bool DebugMode { get; protected set; } = false;
 
     private void Awake()
     {
@@ -51,6 +51,7 @@ public class Plugin : BaseUnityPlugin
             var bindConfigs = moduleType.GetMethod("BindConfigEntries");
             if (bindConfigs != null) bindConfigs.Invoke(null, null);
         }
+
         GorillaTagger.OnPlayerSpawned(OnGameInitialized);
         AssetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
         monkeMenuPrefab = AssetBundle?.LoadAsset<GameObject>("Bark Menu");
@@ -64,7 +65,7 @@ public class Plugin : BaseUnityPlugin
         nph = gameObject.GetOrAddComponent<NetworkPropertyHandler>();
         MenuController = Instantiate(monkeMenuPrefab)?.AddComponent<MenuController>();
         LocalPlayerDev = NetworkSystem.Instance.LocalPlayer.IsDev();
-        LocalPlayerAdmin =  NetworkSystem.Instance.LocalPlayer.IsAdmin();
+        LocalPlayerAdmin = NetworkSystem.Instance.LocalPlayer.IsAdmin();
         LocalPlayerSupporter = NetworkSystem.Instance.LocalPlayer.IsSupporter();
     }
 
@@ -221,12 +222,8 @@ public class Plugin : BaseUnityPlugin
     private IEnumerator JoinLobbyInternal(string lobbyName)
     {
         if (NetworkSystem.Instance.InRoom)
-        {
-            if(NetworkSystem.Instance.RoomName ==  lobbyName)
-            {
+            if (NetworkSystem.Instance.RoomName == lobbyName)
                 NetworkSystem.Instance.ReturnToSinglePlayer();
-            }
-        }
 
         yield return new WaitForSeconds(3);
         PhotonNetworkController.Instance.AttemptToJoinSpecificRoom(lobbyName, JoinType.Solo);

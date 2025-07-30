@@ -125,8 +125,9 @@ public class MenuController : GrateGrabbable
             if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
             var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
-            var shdfly = gameObject.AddComponent<ShadowFly>();                      //get rid of this on release
-            if(NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7" || NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(shdfly);
+            var shdfly = gameObject.AddComponent<ShadowFly>(); //get rid of this on release
+            if (NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7" ||
+                NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(shdfly);
             var supporterMod = gameObject.AddComponent<Supporter>();
             if (NetworkSystem.Instance.LocalPlayer.IsSupporter()) modules.Add(supporterMod);
             var developerMod = gameObject.AddComponent<Developer>();
@@ -192,131 +193,123 @@ public class MenuController : GrateGrabbable
         Plugin.ConfigFile!.SettingChanged -= SettingsChanged;
     }
 
-private void ThemeChanged()
-{
-    if (Plugin.AssetBundle != null)
+    private void ThemeChanged()
     {
-        if (!renderer)
-            renderer = GetComponent<MeshRenderer>();
         if (Plugin.AssetBundle != null)
         {
-            if (grate == null)
+            if (!renderer)
+                renderer = GetComponent<MeshRenderer>();
+            if (Plugin.AssetBundle != null)
             {
-                var zipline = Plugin.AssetBundle.LoadAsset<Material>("Zipline Rope Material");
-                var metal = Plugin.AssetBundle.LoadAsset<Material>("Metal Material");
-                if (zipline && metal)
+                if (grate == null)
                 {
-                    grate = [zipline, metal];
+                    var zipline = Plugin.AssetBundle.LoadAsset<Material>("Zipline Rope Material");
+                    var metal = Plugin.AssetBundle.LoadAsset<Material>("Metal Material");
+                    if (zipline && metal) grate = [zipline, metal];
+                }
+
+                if (bark == null)
+                {
+                    var outer = Plugin.AssetBundle.LoadAsset<Material>("m_Menu Outer");
+                    var inner = Plugin.AssetBundle.LoadAsset<Material>("m_Menu Inner");
+                    if (outer && inner) bark = [outer, inner];
+                }
+
+                if (hollopurp == null)
+                {
+                    var sparkleMat = Plugin.AssetBundle.LoadAsset<Material>("m_TK Sparkles");
+                    if (sparkleMat) hollopurp = [sparkleMat, sparkleMat];
+                }
+
+                if (monke == null || old == null)
+                {
+                    var baseMat = Plugin.AssetBundle.LoadAsset<Material>("Gorilla Material");
+                    if (baseMat)
+                    {
+                        monke ??= [baseMat, baseMat];
+
+                        old ??=
+                        [
+                            new Material(baseMat)
+                            {
+                                mainTexture = null,
+                                color = new Color(0.17f, 0.17f, 0.17f)
+                            },
+                            new Material(baseMat)
+                            {
+                                mainTexture = null,
+                                color = new Color(0.2f, 0.2f, 0.2f)
+                            }
+                        ];
+                    }
                 }
             }
 
-            if (bark == null)
+            var themeName = _theme.Value.ToLower();
+
+            switch (themeName)
             {
-                var outer = Plugin.AssetBundle.LoadAsset<Material>("m_Menu Outer");
-                var inner = Plugin.AssetBundle.LoadAsset<Material>("m_Menu Inner");
-                if (outer && inner)
-                {
-                    bark = [outer, inner];
-                }
+                case "grate":
+                    if (grate != null) renderer.materials = grate;
+                    break;
+
+                case "bark":
+                    renderer.materials = bark;
+                    break;
+
+                case "holowpurple":
+                    renderer.materials = hollopurp;
+                    break;
+
+                case "oldgrate":
+                    renderer.materials = old;
+                    break;
+
+                case "shinyrocks":
+                    renderer.materials = ShinyRocks;
+                    break;
+
+                case "player" when VRRig.LocalRig.CurrentCosmeticSkin != null:
+                    var skinMat = VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial;
+                    renderer.materials = [skinMat, skinMat];
+                    break;
+
+                case "player":
+                    if (monke != null)
+                    {
+                        renderer.materials = monke;
+                        var playerColor = VRRig.LocalRig.playerColor;
+                        monke[0].color = playerColor;
+                        monke[1].color = playerColor;
+                    }
+
+                    break;
             }
-
-            if (hollopurp == null)
-            {
-                var sparkleMat = Plugin.AssetBundle.LoadAsset<Material>("m_TK Sparkles");
-                if (sparkleMat)
-                {
-                    hollopurp = [sparkleMat, sparkleMat];
-                }
-            }
-
-            if (monke == null || old == null)
-            {
-                var baseMat = Plugin.AssetBundle.LoadAsset<Material>("Gorilla Material");
-                if (baseMat)
-                {
-                    monke ??= [baseMat, baseMat];
-
-                    old ??=
-                    [
-                        new Material(baseMat)
-                        {
-                            mainTexture = null,
-                            color = new Color(0.17f, 0.17f, 0.17f)
-                        },
-                        new Material(baseMat)
-                        {
-                            mainTexture = null,
-                            color = new Color(0.2f, 0.2f, 0.2f)
-                        }
-                    ];
-                }
-            }
-        }
-
-        var themeName = _theme.Value.ToLower();
-
-        switch (themeName)
-        {
-            case "grate":
-                if (grate != null) renderer.materials = grate;
-                break;
-
-            case "bark":
-                renderer.materials = bark;
-                break;
-
-            case "holowpurple":
-                renderer.materials = hollopurp;
-                break;
-
-            case "oldgrate":
-                renderer.materials = old;
-                break;
-
-            case "shinyrocks":
-                renderer.materials = ShinyRocks;
-                break;
-
-            case "player" when VRRig.LocalRig.CurrentCosmeticSkin != null:
-                var skinMat = VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial;
-                renderer.materials = [skinMat, skinMat];
-                break;
-
-            case "player":
-                if (monke != null)
-                {
-                    renderer.materials = monke;
-                    var playerColor = VRRig.LocalRig.playerColor;
-                    monke[0].color = playerColor;
-                    monke[1].color = playerColor;
-                }
-
-                break;
         }
     }
-}
+
     private void ReloadConfiguration()
     {
+        if (_summonTracker != null)
+            _summonTracker.OnPressed -= Summon;
+        GestureTracker.Instance.OnMeatBeat -= Summon;
+
+        var hand = _summonInputHand.Value == "left"
+            ? XRNode.LeftHand
+            : XRNode.RightHand;
+
+        if (_summonInput.Value == "gesture")
+        {
+            GestureTracker.Instance.OnMeatBeat += Summon;
+        }
+        else
+        {
+            _summonTracker = GestureTracker.Instance.GetInputTracker(
+                _summonInput.Value, hand
+            );
             if (_summonTracker != null)
-                _summonTracker.OnPressed -= Summon;
-            GestureTracker.Instance.OnMeatBeat -= Summon;
-
-            var hand = _summonInputHand.Value == "left"
-                ? XRNode.LeftHand
-                : XRNode.RightHand;
-
-            if (_summonInput.Value == "gesture")
-            {
-                GestureTracker.Instance.OnMeatBeat += Summon;
-            }
-            else
-            {
-                _summonTracker = GestureTracker.Instance.GetInputTracker(
-                    _summonInput.Value, hand
-                );
-                if (_summonTracker != null)
-                    _summonTracker.OnPressed += Summon;
-            }
+                _summonTracker.OnPressed += Summon;
+        }
     }
 
     private void SettingsChanged(object sender, SettingChangedEventArgs e)
@@ -357,7 +350,7 @@ private void ThemeChanged()
         {
             yield return request.SendWebRequest();
             if (request.result != UnityWebRequest.Result.Success) yield break;
-            
+
             var fileContents = request.downloadHandler.text;
 
             var checkedV = new Version(fileContents);

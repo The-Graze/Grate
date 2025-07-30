@@ -48,7 +48,7 @@ public class Developer : GrateModule
 
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
     {
-        if (mod == DisplayName && PlayerExtensions.IsDev(player))
+        if (mod == DisplayName && player.IsDev())
         {
             if (enabled)
                 player.Rig().gameObject.GetOrAddComponent<NetDevPhone>();

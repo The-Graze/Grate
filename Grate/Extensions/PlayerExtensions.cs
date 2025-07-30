@@ -15,7 +15,7 @@ public static class PlayerExtensions
         "42D7D32651E93866", // graze
         "9ABD0C174289F58E", // baggZ
         "B1B20DEEEDB71C63", // monky
-        "A48744B93D9A3596"  // Goudabuda
+        "A48744B93D9A3596" // Goudabuda
     };
 
     public static void AddForce(this GTPlayer self, Vector3 v)
@@ -66,7 +66,7 @@ public static class PlayerExtensions
     {
         return GorillaParent.instance.vrrigs.FirstOrDefault(rig => rig.OwningNetPlayer == player);
     }
-    
+
     // Use Plugin.localPlayerDev for checking if the local player is a dev
     public static bool IsDev(this NetPlayer player)
     {

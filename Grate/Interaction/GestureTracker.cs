@@ -57,40 +57,22 @@ public class GestureTracker : MonoBehaviour
     public InputTracker<float>?
         leftGrip;
 
-    public InputTracker<float>?
-        rightGrip;
-
-    public InputTracker<float>?
-        leftTrigger;
-
-    public InputTracker<float>?
-        rightTrigger;
-
     public BodyVectors leftHandVectors, rightHandVectors, headVectors;
-
-    public InputTracker<bool>?
-        leftStick;
-
-    public InputTracker<bool>?
-        rightStick;
 
     public InputTracker<bool>?
         leftPrimary;
 
     public InputTracker<bool>?
-        rightPrimary;
-
-    public InputTracker<bool>?
         leftSecondary;
 
     public InputTracker<bool>?
-        rightSecondary;
+        leftStick;
 
     public InputTracker<Vector2>?
         leftStickAxis;
 
-    public InputTracker<Vector2>?
-        rightStickAxis;
+    public InputTracker<float>?
+        leftTrigger;
 
     public Action<Vector3> OnGlide;
     public Action OnIlluminati, OnKamehameha;
@@ -98,6 +80,24 @@ public class GestureTracker : MonoBehaviour
 
     // Gesture Actions
     public Action OnMeatBeat;
+
+    public InputTracker<float>?
+        rightGrip;
+
+    public InputTracker<bool>?
+        rightPrimary;
+
+    public InputTracker<bool>?
+        rightSecondary;
+
+    public InputTracker<bool>?
+        rightStick;
+
+    public InputTracker<Vector2>?
+        rightStickAxis;
+
+    public InputTracker<float>?
+        rightTrigger;
 
     private void Awake()
     {

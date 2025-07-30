@@ -21,6 +21,8 @@ internal class CatMeow : GrateModule
     private static readonly List<AudioClip> meowSounds = new();
     private static GameObject meowerPrefab;
     private static readonly Random rnd = new();
+
+    public static string DisplayName = "Meow";
     private readonly InputTracker? inputL = GestureTracker.Instance.GetInputTracker("grip", XRNode.LeftHand);
     private readonly InputTracker? inputR = GestureTracker.Instance.GetInputTracker("grip", XRNode.RightHand);
     private AudioSource meowAudio;
@@ -67,8 +69,6 @@ internal class CatMeow : GrateModule
     {
         GripOff();
     }
-
-    public static string DisplayName = "Meow";
 
     public override string GetDisplayName()
     {
