@@ -30,24 +30,11 @@ namespace Grate.Modules.Misc
             localHat.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
             localHat.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
             localHat.transform.localRotation = Quaternion.Euler(9f, 0f, 0f);
-            localHat.SetActive(false);
-            
-            try
-            {
-                GestureTracker.Instance.rightGrip.OnPressed += ToggleHatOn;
-                GestureTracker.Instance.rightGrip.OnReleased += ToggleHatOff;
-            }
-            catch (Exception e)
-            {
-                Logging.Exception(e);
-            }
+            localHat.SetActive(true);
 
             NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
             VRRigCachePatches.OnRigCached += OnRigCached;
         }
-
-        private void ToggleHatOn(InputTracker tracker) => localHat?.SetActive(true);
-        private void ToggleHatOff(InputTracker tracker) => localHat?.SetActive(false);
 
         private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
         {
@@ -70,12 +57,6 @@ namespace Grate.Modules.Misc
             localHat?.Obliterate();
             localHat = null;
 
-            if (GestureTracker.Instance != null)
-            {
-                GestureTracker.Instance.rightGrip.OnPressed -= ToggleHatOn;
-                GestureTracker.Instance.rightGrip.OnReleased -= ToggleHatOff;
-            }
-
             if (NetworkPropertyHandler.Instance != null)
                 NetworkPropertyHandler.Instance.OnPlayerModStatusChanged -= OnPlayerModStatusChanged;
 
@@ -97,37 +78,17 @@ namespace Grate.Modules.Misc
                 networkedPlayer = GetComponent<NetworkedPlayer>();
                 var rightHand = networkedPlayer.rig?.rightHandTransform;
 
-                hatInstance = Instantiate(localHat);
-                hatInstance.transform.SetParent(rightHand);
+                hatInstance = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>(HatAssetName), rightHand);
                 hatInstance.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
                 hatInstance.transform.localRotation = Quaternion.Euler(78.4409f, 0f, 0f);
-                hatInstance.transform.localScale = Vector3.one;
-
-                networkedPlayer.OnGripPressed += HandleGripPressed;
-                networkedPlayer.OnGripReleased += HandleGripReleased;
+                hatInstance.SetActive(true);
 
                 if (networkedPlayer.owner.UserId != HanSolo1000FalconsUserIdHeIsSoCool)
                     hatInstance.Obliterate();
             }
-
-            private void OnDestroy()
-            {
-                networkedPlayer.OnGripPressed -= HandleGripPressed;
-                networkedPlayer.OnGripReleased -= HandleGripReleased;
-                hatInstance?.Obliterate();
-            }
-
-            private void HandleGripPressed(NetworkedPlayer player, bool isLeft)
-            {
-                if (!isLeft)
-                    hatInstance?.SetActive(true);
-            }
-
-            private void HandleGripReleased(NetworkedPlayer player, bool isLeft)
-            {
-                if (!isLeft)
-                    hatInstance?.SetActive(false);
-            }
+            
+            private void OnDisable() => hatInstance?.Obliterate();
+            private void OnDestroy() => hatInstance?.Obliterate();
         }
     }
 }
