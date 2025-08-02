@@ -92,7 +92,6 @@ public class Developer : GrateModule
             phone.transform.SetParent(rightHand);
             phone.transform.localPosition = new Vector3(0.0992f, 0.06f, 0.02f);
             phone.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
-            phone.transform.localScale = new Vector3(2, 2, 2);
 
             phone.SetActive(true);
         }
