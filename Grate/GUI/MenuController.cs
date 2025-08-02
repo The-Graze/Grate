@@ -123,7 +123,7 @@ public class MenuController : GrateGrabbable
             if (NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(g);
             var ch = gameObject.AddComponent<Cheese>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
-            var goudabudaHat = gameObject.AddComponent<GoudabudaHat>();
+            var goudabudaHat = gameObject.AddComponent<HanSolo1000FalconCoolHat>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(goudabudaHat);
             var shdfly = gameObject.AddComponent<ShadowFly>(); //get rid of this on release
             if (NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7" ||
