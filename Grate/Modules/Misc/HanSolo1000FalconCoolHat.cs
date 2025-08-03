@@ -64,6 +64,7 @@ namespace Grate.Modules.Misc
                 netHat = Instantiate(Hat, rightHand);
                 netHat.transform.localPosition = new Vector3(0.0992f, 0.06f, 0.02f);
                 netHat.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
+                netHat.transform.localScale /= 20f;
 
                 netHat.SetActive(true);
             }
