@@ -19,6 +19,8 @@ namespace Grate.Modules.Misc
             if (Hat == null)
             {
                 Hat = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("goudabuda"), GTPlayer.Instance.headCollider.transform);
+                Hat.name = "HanSolo1000Falcons Cool Hat";
+                
                 Hat.transform.localPosition = new Vector3(0f, 1f, 0f);
                 Hat.transform.localRotation = Quaternion.Euler(300f, 180f, 180f);
             }
@@ -62,6 +64,8 @@ namespace Grate.Modules.Misc
                 Transform head = networkedPlayer.rig.headMesh.transform;
 
                 netHat = Instantiate(Hat, head);
+                netHat.name = "HanSolo1000Falcons Cool Networked Hat";
+                
                 netHat.transform.localPosition = new Vector3(0f, 1f, 0f);
                 netHat.transform.localRotation = Quaternion.Euler(300f, 180f, 180f);
 
