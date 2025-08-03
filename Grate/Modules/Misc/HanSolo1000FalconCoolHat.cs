@@ -1,4 +1,5 @@
-﻿using Grate.Extensions;
+﻿using GorillaLocomotion;
+using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Networking;
@@ -17,10 +18,9 @@ namespace Grate.Modules.Misc
             
             if (Hat == null)
             {
-                Hat = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("goudabuda"), GestureTracker.Instance.rightHand.transform);
-                Hat.transform.localPosition = new Vector3(0.0992f, 0.06f, 0.02f);
-                Hat.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
-                Hat.transform.localScale *= 20f;
+                Hat = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("goudabuda"), GTPlayer.Instance.headCollider.transform);
+                Hat.transform.localPosition = new Vector3(0f, 1f, 0f);
+                Hat.transform.localRotation = Quaternion.Euler(300f, 180f, 180f);
             }
             
             Hat.SetActive(false);
@@ -59,11 +59,11 @@ namespace Grate.Modules.Misc
             private void OnEnable()
             {
                 networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
-                Transform rightHand = networkedPlayer.rig.rightHandTransform;
+                Transform head = networkedPlayer.rig.head.headTransform;
 
-                netHat = Instantiate(Hat, rightHand);
-                netHat.transform.localPosition = new Vector3(0.0992f, 0.06f, 0.02f);
-                netHat.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
+                netHat = Instantiate(Hat, head);
+                netHat.transform.localPosition = new Vector3(0f, 1f, 0f);
+                netHat.transform.localRotation = Quaternion.Euler(300f, 180f, 180f);
                 netHat.transform.localScale /= 20f;
 
                 netHat.SetActive(true);
