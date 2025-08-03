@@ -59,12 +59,11 @@ namespace Grate.Modules.Misc
             private void OnEnable()
             {
                 networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
-                Transform head = networkedPlayer.rig.head.headTransform;
+                Transform head = networkedPlayer.rig.headMesh.transform;
 
                 netHat = Instantiate(Hat, head);
                 netHat.transform.localPosition = new Vector3(0f, 1f, 0f);
                 netHat.transform.localRotation = Quaternion.Euler(300f, 180f, 180f);
-                netHat.transform.localScale /= 20f;
 
                 netHat.SetActive(true);
             }
