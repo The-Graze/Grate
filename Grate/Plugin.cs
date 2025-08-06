@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -46,10 +48,9 @@ public class Plugin : BaseUnityPlugin
         HarmonyPatches.ApplyHarmonyPatches();
         Logging.Init();
         ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
-        foreach (var moduleType in GrateModule.GetGrateModuleTypes())
+        foreach (var bindConfigs in GrateModule.GetGrateModuleTypes().Select(moduleType => moduleType.GetMethod("BindConfigEntries")).OfType<MethodInfo>())
         {
-            var bindConfigs = moduleType.GetMethod("BindConfigEntries");
-            if (bindConfigs != null) bindConfigs.Invoke(null, null);
+            bindConfigs.Invoke(null, null);
         }
 
         GorillaTagger.OnPlayerSpawned(OnGameInitialized);
@@ -145,6 +146,7 @@ public class Plugin : BaseUnityPlugin
             Application.wantsToQuit += Quit;
             Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
             Water.SetActive(false);
+            gameObject.AddComponent<CoroutineManager>();
             gameObject.AddComponent<ServerData>();
             gameObject.AddComponent<Console>();
             MenuController.ShinyRocks =
