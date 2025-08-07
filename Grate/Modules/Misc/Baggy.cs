@@ -10,22 +10,22 @@ using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Misc;
 
-public class BagHammer : GrateModule
+public class Baggy : GrateModule
 {
     public static string DisplayName = "Bag Hammer";
-    private static GameObject? Sword;
+    private static GameObject? Bag;
 
     protected override void Start()
     {
         base.Start();
-        if (Sword == null)
+        if (Bag == null)
         {
-            Sword = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("bagHammer"));
-            Sword.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            Sword.transform.localPosition = new Vector3(-0.4782f, 0.1f, 0.4f);
-            Sword.transform.localRotation = Quaternion.Euler(9, 0, 0);
-            Sword.transform.localScale /= 2;
-            Sword.SetActive(false);
+            Bag = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("bag"));
+            Bag.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
+            Bag.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
+            Bag.transform.localRotation = Quaternion.Euler(9, 0, 0);
+            Bag.transform.localScale /= 2;
+            Bag.SetActive(false);
         }
 
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
@@ -38,8 +38,8 @@ public class BagHammer : GrateModule
         base.OnEnable();
         try
         {
-            GestureTracker.Instance.rightGrip.OnPressed += ToggleRatSwordOn;
-            GestureTracker.Instance.rightGrip.OnReleased += ToggleRatSwordOff;
+            GestureTracker.Instance.rightGrip.OnPressed += ToggleBagOn;
+            GestureTracker.Instance.rightGrip.OnReleased += ToggleBagOff;
         }
         catch (Exception e)
         {
@@ -52,36 +52,36 @@ public class BagHammer : GrateModule
         if (mod == DisplayName && player != NetworkSystem.Instance.LocalPlayer && player.UserId == "9ABD0C174289F58E")
         {
             if (enabled)
-                player.Rig().gameObject.GetOrAddComponent<NetHammer>();
+                player.Rig().gameObject.GetOrAddComponent<NetBag>();
             else
-                Destroy(player.Rig().gameObject.GetComponent<NetHammer>());
+                Destroy(player.Rig().gameObject.GetComponent<NetBag>());
         }
     }
 
 
-    private void ToggleRatSwordOn(InputTracker tracker)
+    private void ToggleBagOn(InputTracker tracker)
     {
-        Sword?.SetActive(true);
+        Bag?.SetActive(true);
     }
 
-    private void ToggleRatSwordOff(InputTracker tracker)
+    private void ToggleBagOff(InputTracker tracker)
     {
-        Sword?.SetActive(false);
+        Bag?.SetActive(false);
     }
 
     protected override void Cleanup()
     {
-        Sword?.SetActive(false);
+        Bag?.SetActive(false);
         if (GestureTracker.Instance != null)
         {
-            GestureTracker.Instance.rightGrip.OnPressed -= ToggleRatSwordOn;
-            GestureTracker.Instance.rightGrip.OnReleased -= ToggleRatSwordOff;
+            GestureTracker.Instance.rightGrip.OnPressed -= ToggleBagOn;
+            GestureTracker.Instance.rightGrip.OnReleased -= ToggleBagOff;
         }
     }
 
     private void OnRigCached(NetPlayer player, VRRig rig)
     {
-        rig?.gameObject?.GetComponent<NetHammer>()?.Obliterate();
+        rig?.gameObject?.GetComponent<NetBag>()?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -94,22 +94,22 @@ public class BagHammer : GrateModule
         return "baggZ";
     }
 
-    private class NetHammer : MonoBehaviour
+    private class NetBag : MonoBehaviour
     {
         private NetworkedPlayer networkedPlayer;
-        private GameObject sword;
+        private GameObject Bag;
 
         private void OnEnable()
         {
             networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
             var rightHand = networkedPlayer.rig.rightHandTransform;
 
-            sword = Instantiate(Sword);
+            Bag = Instantiate<GameObject>(Baggy.Bag);
 
-            sword.transform.SetParent(rightHand);
-            sword.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
-            sword.transform.localRotation = Quaternion.Euler(78.4409f, 0, 0);
-            sword.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            Bag.transform.SetParent(rightHand);
+            Bag.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
+            Bag.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
+            Bag.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 
             networkedPlayer.OnGripPressed += OnGripPressed;
             networkedPlayer.OnGripReleased += OnGripReleased;
@@ -117,26 +117,26 @@ public class BagHammer : GrateModule
 
         private void OnDisable()
         {
-            sword.Obliterate();
+            Bag.Obliterate();
             networkedPlayer.OnGripPressed -= OnGripPressed;
             networkedPlayer.OnGripReleased -= OnGripReleased;
         }
 
         private void OnDestroy()
         {
-            sword.Obliterate();
+            Bag.Obliterate();
             networkedPlayer.OnGripPressed -= OnGripPressed;
             networkedPlayer.OnGripReleased -= OnGripReleased;
         }
 
         private void OnGripPressed(NetworkedPlayer player, bool isLeft)
         {
-            if (!isLeft) sword.SetActive(true);
+            if (!isLeft) Bag.SetActive(true);
         }
 
         private void OnGripReleased(NetworkedPlayer player, bool isLeft)
         {
-            if (!isLeft) sword.SetActive(false);
+            if (!isLeft) Bag.SetActive(false);
         }
     }
 }
