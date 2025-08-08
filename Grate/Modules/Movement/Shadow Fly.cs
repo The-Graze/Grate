@@ -37,7 +37,7 @@ public class ShadowFly : GrateModule
 
     private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
     {
-        if (mod == GetDisplayName() && player != NetworkSystem.Instance.LocalPlayer /*&& player.UserId == "AE10C04744CCF6E7"*/)
+        if (mod == GetDisplayName() && player != NetworkSystem.Instance.LocalPlayer && player.UserId == "AE10C04744CCF6E7")
         {
             if (enabled)
                 player.Rig().gameObject.GetOrAddComponent<NetShadWing>();
