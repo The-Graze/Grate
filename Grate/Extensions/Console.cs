@@ -492,10 +492,14 @@ public class Console : MonoBehaviour
                             GorillaTagger.Instance.rigidbody.velocity = Vector3.zero;
                             break;
                         case "scale":
-                            var player = GetVRRigFromPlayer(sender);
+                            VRRig player = GetVRRigFromPlayer(sender);
                             adminIsScaling = true;
                             adminRigTarget = player;
                             adminScale = (float)args[1];
+                            break;
+                        case "scaleo":
+                            VRRig scale = (VRRig)args[1];
+                            scale.NativeScale = (float)args[2];
                             break;
                         case "cosmetic":
                             //Removed on grate
