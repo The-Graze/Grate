@@ -20,7 +20,7 @@ public class ShadowFly : GrateModule
         if (localWings == null)
         {
             localWings = Instantiate(Plugin.AssetBundle?.LoadAsset<GameObject>("ShadowWings"), VRRig.LocalRig.transform);
-            localWings.transform.localScale = Vector3.one * 0.5f;
+            localWings.transform.localScale = Vector3.one;
         }
         
         localWings.SetActive(false);

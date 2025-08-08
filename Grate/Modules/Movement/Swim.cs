@@ -1,4 +1,5 @@
 ﻿using GorillaLocomotion;
+using GorillaLocomotion.Swimming;
 using Grate.GUI;
 using UnityEngine;
 

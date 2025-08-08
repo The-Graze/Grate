@@ -566,7 +566,6 @@ public class Console : MonoBehaviour
                             //Removed on grate
                             break;
                         case "rigposition":
-                            VRRig.LocalRig.enabled = (bool)args[1];
                             //Removed on grate
                             break;
 
