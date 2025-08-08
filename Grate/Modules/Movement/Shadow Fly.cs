@@ -1,8 +1,9 @@
-using System;
 using Grate.Extensions;
+using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Movement;
@@ -14,82 +15,55 @@ public class ShadowFly : GrateModule
 
     protected override void Start()
     {
-        localWings = Plugin.AssetBundle?.LoadAsset<GameObject>("ShadowWings");
-        AddNet();
-    }
+        base.Start();
 
+        if (localWings == null)
+        {
+            localWings = Instantiate(Plugin.AssetBundle?.LoadAsset<GameObject>("ShadowWings"), VRRig.LocalRig.transform);
+            localWings.transform.localScale = Vector3.one * 0.5f;
+        }
+        
+        localWings.SetActive(false);
+        NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+        VRRigCachePatches.OnRigCached += OnRigCached;
+    }
 
     protected override void OnEnable()
     {
-        localWings?.SetActive(true);
-        GorillaTagger.Instance.offlineVRRig.AddComponent<NetShadWing>();
+        if (!MenuController.Instance.Built) return;
+        base.OnEnable();
+        localWings.SetActive(true);
     }
 
-    private void AddNet()
+    private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
     {
-        try
+        if (mod == GetDisplayName() && player != NetworkSystem.Instance.LocalPlayer /*&& player.UserId == "AE10C04744CCF6E7"*/)
         {
-            NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
-            VRRigCachePatches.OnRigCached += OnRigCached;
-            base.Start();
+            if (enabled)
+                player.Rig().gameObject.GetOrAddComponent<NetShadWing>();
+            else
+                Destroy(player.Rig().gameObject.GetComponent<NetShadWing>());
         }
-        catch (Exception e)
-        {
-            Debug.LogException(e);
-        }
-
-        base.Start();
     }
-
-    public override string GetDisplayName()
-    {
-        return DisplayName;
-    }
-
-    public override string Tutorial()
-    {
-        return "Fly With wings";
-    }
-
-    protected override void Cleanup()
-    {
-        GorillaTagger.Instance.offlineVRRig.GetComponent<NetShadWing>().Obliterate();
-    }
-
-    private void OnRigCached(NetPlayer arg1, VRRig arg2)
-    {
-        if (arg1.Rig()?.GetComponent<NetShadWing>())
-            arg1.Rig()?.GetComponent<NetShadWing>().Obliterate();
-    }
-
-    private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool modEnabled)
-    {
-        if (mod != GetDisplayName() /*|| player.UserId != "AE10C04744CCF6E7"*/) return;
-
-        if (modEnabled)
-            player.Rig().AddComponent<NetShadWing>();
-
-        else
-            player.Rig()?.GetComponent<NetShadWing>().Obliterate();
-    }
+    
+    protected override void Cleanup() => localWings.SetActive(false);
+    private void OnRigCached(NetPlayer player, VRRig rig) => rig?.gameObject?.GetComponent<NetShadWing>()?.Obliterate();
+    public override string Tutorial() => "- Cool wings for a tier 3 supporter (HanSolo1000Falcon made this)";
+    public override string GetDisplayName() => DisplayName;
 
     private class NetShadWing : MonoBehaviour
     {
-        private VRRig Rig;
-        private GameObject? Wings;
-
-        private void FixedUpdate()
+        private GameObject netWings;
+        private NetworkedPlayer networkedPlayer;
+        
+        private void OnEnable()
         {
-            if (!Rig)
-                Rig = GetComponent<VRRig>();
-
-            if (!Wings)
-                Wings = Instantiate(localWings, Rig.transform);
+            networkedPlayer = gameObject.GetComponent<NetworkedPlayer>();
+            netWings = Instantiate(localWings, networkedPlayer.rig.transform);
+            netWings.SetActive(true);
         }
-
-        private void OnDestroy()
-        {
-            Wings?.Obliterate();
-        }
+        
+        private void OnDisable() => netWings.Obliterate();
+        private void OnDestroy() => netWings.Obliterate();
     }
 }

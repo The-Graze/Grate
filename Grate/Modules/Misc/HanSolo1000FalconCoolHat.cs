@@ -1,6 +1,5 @@
 ﻿using GorillaLocomotion;
 using Grate.Extensions;
-using Grate.Gestures;
 using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
