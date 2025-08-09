@@ -278,6 +278,9 @@ public class GestureTracker : MonoBehaviour
 
     private void OnChestBeat(GameObject obj, Collider collider)
     {
+        if (!XRSettings.isDeviceActive)
+            return;
+        
         if (collider.gameObject != leftHand &&
             collider.gameObject != rightHand) return;
 

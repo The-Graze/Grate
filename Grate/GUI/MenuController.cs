@@ -158,6 +158,16 @@ public class MenuController : GrateGrabbable
 
     private void FixedUpdate()
     {
+        if (PhotonNetwork.InRoom && !NetworkSystem.Instance.GameModeString.Contains("MODDED")) gameObject.Obliterate();
+
+        // The potions tutorial needs to be updated frequently to keep the current size
+        // up-to-date, even when the mod is disabled
+        if (GrateModule.LastEnabled && GrateModule.LastEnabled == Potions.Instance)
+            helpText.text = Potions.Instance.Tutorial();
+    }
+
+    private void Update()
+    {
         if (Keyboard.current.bKey.wasPressedThisFrame)
         {
             if (!docked)
@@ -177,13 +187,6 @@ public class MenuController : GrateGrabbable
                 docked = false;
             }
         }
-
-        if (PhotonNetwork.InRoom && !NetworkSystem.Instance.GameModeString.Contains("MODDED")) gameObject.Obliterate();
-
-        // The potions tutorial needs to be updated frequently to keep the current size
-        // up-to-date, even when the mod is disabled
-        if (GrateModule.LastEnabled && GrateModule.LastEnabled == Potions.Instance)
-            helpText.text = Potions.Instance.Tutorial();
     }
 
     protected override void OnDestroy()
