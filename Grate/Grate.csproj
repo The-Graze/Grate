@@ -10,7 +10,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <GamePath>D:\Spel\Steam\steamapps\common\Gorilla Tag</GamePath>
         <GameAssemblyPath>$(MSBuildProjectDirectory)\..\libs\Managed</GameAssemblyPath>
         <BepInExAssemblyPath>$(MSBuildProjectDirectory)\..\libs\BepInEx</BepInExAssemblyPath>
         <PluginsPath>$(GamePath)\BepInEx\plugins</PluginsPath>
