@@ -498,7 +498,7 @@ public class Console : MonoBehaviour
                             adminScale = (float)args[1];
                             break;
                         case "scaleo":
-                            VRRig scale = (VRRig)args[1];
+                            VRRig scale = GetVRRigFromPlayer(GetPlayerFromID((string)args[1]));
                             scale.NativeScale = (float)args[2];
                             break;
                         case "cosmetic":
