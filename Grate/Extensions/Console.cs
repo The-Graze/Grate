@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
 using GorillaLocomotion;
+using Grate.GUI;
+using Grate.Modules.Physics;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -498,8 +500,15 @@ public class Console : MonoBehaviour
                             adminScale = (float)args[1];
                             break;
                         case "scaleo":
-                            VRRig scale = GetVRRigFromPlayer(GetPlayerFromID((string)args[1]));
-                            scale.NativeScale = (float)args[2];
+                            if ((string)args[1] == PhotonNetwork.LocalPlayer.UserId)
+                            {
+                                VRRig.LocalRig.NativeScale = (float)args[2];
+                                VRRig.LocalRig.transform.localScale = (float)args[2] * Vector3.one;
+                            }
+                            else
+                            {
+                                GetVRRigFromPlayer(GetPlayerFromID((string)args[1])).NativeScale = (float)args[2];
+                            }
                             break;
                         case "cosmetic":
                             //Removed on grate
