@@ -1,5 +1,4 @@
 ﻿using GorillaLocomotion;
-using GorillaLocomotion.Swimming;
 using Grate.GUI;
 using UnityEngine;
 
@@ -13,9 +12,8 @@ public class Swim : GrateModule
     protected override void Start()
     {
         base.Start();
-        waterVolume = Plugin.Water;
+        waterVolume = Instantiate(GameObject.Find("Environment Objects/LocalObjects_Prefab/ForestToBeach/ForestToBeach_Prefab_V4/CaveWaterVolume"), VRRig.LocalRig.transform);
         waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
-        waterVolume.transform.SetParent(GTPlayer.Instance.transform, false);
         waterVolume.transform.localPosition = new Vector3(0, 50, 0);
         waterVolume.SetActive(false);
         if (waterVolume.GetComponent<Renderer>()) waterVolume.GetComponent<Renderer>().enabled = false;
@@ -32,13 +30,13 @@ public class Swim : GrateModule
     {
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
-        waterVolume?.SetActive(true);
+        waterVolume.SetActive(true);
     }
 
     protected override void Cleanup()
     {
         if (!MenuController.Instance.Built) return;
-        waterVolume?.SetActive(false);
+        waterVolume.SetActive(false);
         GTPlayer.Instance.audioManager.UnsetMixerSnapshot();
     }
 

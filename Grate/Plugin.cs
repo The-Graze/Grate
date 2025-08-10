@@ -145,11 +145,12 @@ public class Plugin : BaseUnityPlugin
             NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
-            Water = Instantiate(FindObjectOfType<WaterVolume>().gameObject);
+            Water = FindObjectOfType<WaterVolume>().gameObject;
             Water.SetActive(false);
             gameObject.AddComponent<CoroutineManager>();
             gameObject.AddComponent<ServerData>();
             gameObject.AddComponent<Console>();
+            
             MenuController.ShinyRocks =
             [
                 GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0],
