@@ -33,7 +33,6 @@ public class Plugin : BaseUnityPlugin
     public static bool LocalPlayerSupporter;
     public static bool LocalPlayerDev;
     public static bool LocalPlayerAdmin;
-    public static GameObject? Water;
 
     public static Text? DebugText;
     private GestureTracker? gt;
@@ -145,8 +144,6 @@ public class Plugin : BaseUnityPlugin
             NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
-            Water = FindObjectOfType<WaterVolume>().gameObject;
-            Water.SetActive(false);
             gameObject.AddComponent<CoroutineManager>();
             gameObject.AddComponent<ServerData>();
             gameObject.AddComponent<Console>();
