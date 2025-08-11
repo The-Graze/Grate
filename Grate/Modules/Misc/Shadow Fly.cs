@@ -48,7 +48,7 @@ public class ShadowFly : GrateModule
     
     protected override void Cleanup() => localWings.SetActive(false);
     private void OnRigCached(NetPlayer player, VRRig rig) => rig?.gameObject?.GetComponent<NetShadWing>()?.Obliterate();
-    public override string Tutorial() => "- Cool wings for a tier 3 supporter (HanSolo1000Falcon made this)";
+    public override string Tutorial() => "- Cool wings for a tier 3 supporter";
     public override string GetDisplayName() => DisplayName;
 
     private class NetShadWing : MonoBehaviour
