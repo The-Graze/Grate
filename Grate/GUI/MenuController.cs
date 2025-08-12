@@ -126,7 +126,7 @@ public class MenuController : GrateGrabbable
             var hanSolo1000FalconCoolHat = gameObject.AddComponent<HanSolo1000FalconCoolHat>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(hanSolo1000FalconCoolHat);
             var shdfly = gameObject.AddComponent<ShadowFly>();
-            if (NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7") modules.Add(shdfly);
+            /*if (NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7")*/ modules.Add(shdfly);
             var supporterMod = gameObject.AddComponent<Supporter>();
             if (NetworkSystem.Instance.LocalPlayer.IsSupporter()) modules.Add(supporterMod);
             var developerMod = gameObject.AddComponent<Developer>();
