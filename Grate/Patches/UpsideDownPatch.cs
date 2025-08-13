@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GorillaLocomotion;
 using HarmonyLib;
 using UnityEngine;
 
@@ -14,12 +15,28 @@ public class UpsideDownPatch
         if (!AffectedRigs.Contains(__instance))
             return;
         
-        Quaternion oldRotation = __instance.transform.rotation;
-        oldRotation.x *= 180f;
-        __instance.transform.rotation = oldRotation;
+        __instance.transform.Rotate(180f, 180f, 0f);
         
-        __instance.head.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
-        __instance.rightHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
         __instance.leftHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
+        __instance.rightHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
+        __instance.head.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
+
+        if (__instance == VRRig.LocalRig)
+        {
+            __instance.head.headTransform.rotation = GTPlayer.Instance.headCollider.transform.rotation;
+        }
+    }
+}
+
+[HarmonyPatch(typeof(GTPlayer), "LateUpdate")]
+public class UpsideDownPatchGTPlayer
+{
+    private static void Postfix(GTPlayer __instance)
+    {
+        if (!UpsideDownPatch.AffectedRigs.Contains(VRRig.LocalRig))
+            return;
+        
+        __instance.bodyCollider.transform.Rotate(0f, 0f, 180f);
+        __instance.bodyCollider.transform.localPosition = new Vector3(0f, -0.3f, 0f);
     }
 }

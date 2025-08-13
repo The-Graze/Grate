@@ -1,3 +1,4 @@
+using GorillaLocomotion;
 using Grate.Extensions;
 using Grate.GUI;
 using Grate.Networking;
@@ -9,18 +10,24 @@ namespace Grate.Modules.Physics;
 public class UpsideDown : GrateModule
 {
     private Vector3 baseGravity;
+
+    private Transform turnParent;
     
     protected override void Cleanup()
     {
         UpsideDownPatch.AffectedRigs.Remove(VRRig.LocalRig);
         UnityEngine.Physics.gravity = baseGravity;
+        
+        Quaternion oldRot = turnParent.rotation;
+        oldRot.x = 0f;
+        turnParent.rotation = oldRot;
+        
         Plugin.MenuController?.GetComponent<LowGravity>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
 
     protected override void Start()
     {
         base.Start();
-        baseGravity = UnityEngine.Physics.gravity;
         
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
@@ -53,9 +60,19 @@ public class UpsideDown : GrateModule
         UpsideDownPatch.AffectedRigs.Add(VRRig.LocalRig);
         UnityEngine.Physics.gravity = -baseGravity;
         
+        Quaternion oldRot = turnParent.rotation;
+        oldRot.x = 180f;
+        turnParent.rotation = oldRot;
+        
         Plugin.MenuController?.GetComponent<LowGravity>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+    }
+    
+    private void Awake()
+    {
+        baseGravity = UnityEngine.Physics.gravity;
+        turnParent = GTPlayer.Instance.turnParent.transform;
     }
 
     public override string GetDisplayName() => "Upside Down";
-    public override string Tutorial() => " - Puts you upside down.";
+    public override string Tutorial() => " - Puts you upside down.\n - There is no safeguard! If you fall out of the map, you are done for!";
 }
