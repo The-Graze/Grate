@@ -1,4 +1,6 @@
+using Grate.Extensions;
 using Grate.GUI;
+using Grate.Networking;
 using Grate.Patches;
 using UnityEngine;
 
@@ -10,7 +12,7 @@ public class UpsideDown : GrateModule
     
     protected override void Cleanup()
     {
-        UpsideDownPatch.Enabled = false;
+        UpsideDownPatch.AffectedRigs.Remove(VRRig.LocalRig);
         UnityEngine.Physics.gravity = baseGravity;
         Plugin.MenuController?.GetComponent<LowGravity>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
     }
@@ -19,6 +21,26 @@ public class UpsideDown : GrateModule
     {
         base.Start();
         baseGravity = UnityEngine.Physics.gravity;
+        
+        NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
+        VRRigCachePatches.OnRigCached += OnRigCached;
+    }
+    
+    private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
+    {
+        if (mod == GetDisplayName() && player != NetworkSystem.Instance.LocalPlayer)
+        {
+            if (enabled)
+                UpsideDownPatch.AffectedRigs.Add(player.Rig());
+            else if (UpsideDownPatch.AffectedRigs.Contains(player.Rig()))
+                UpsideDownPatch.AffectedRigs.Remove(player.Rig());
+        }
+    }
+
+    private void OnRigCached(NetPlayer player, VRRig rig)
+    {
+        if (UpsideDownPatch.AffectedRigs.Contains(rig))
+            UpsideDownPatch.AffectedRigs.Remove(rig);
     }
 
     protected override void OnEnable()
@@ -28,7 +50,7 @@ public class UpsideDown : GrateModule
         
         base.OnEnable();
 
-        UpsideDownPatch.Enabled = true;
+        UpsideDownPatch.AffectedRigs.Add(VRRig.LocalRig);
         UnityEngine.Physics.gravity = -baseGravity;
         
         Plugin.MenuController?.GetComponent<LowGravity>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);

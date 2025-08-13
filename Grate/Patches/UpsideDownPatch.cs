@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
@@ -6,11 +7,11 @@ namespace Grate.Patches;
 [HarmonyPatch(typeof(VRRig), "LateUpdate")]
 public class UpsideDownPatch
 {
-    public static bool Enabled;
+    public static List<VRRig> AffectedRigs = new();
     
     private static void Postfix(VRRig __instance)
     {
-        if (!Enabled || __instance.isLocal)
+        if (!AffectedRigs.Contains(__instance))
             return;
         
         Quaternion oldRotation = __instance.transform.rotation;
