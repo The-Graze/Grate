@@ -17,7 +17,6 @@ using Grate.Tools;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
-using Console = Grate.Extensions.Console;
 
 namespace Grate;
 
@@ -144,9 +143,6 @@ public class Plugin : BaseUnityPlugin
             NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
-            gameObject.AddComponent<CoroutineManager>();
-            gameObject.AddComponent<ServerData>();
-            gameObject.AddComponent<Console>();
             
             MenuController.ShinyRocks =
             [

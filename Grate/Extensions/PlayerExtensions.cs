@@ -76,11 +76,11 @@ public static class PlayerExtensions
     // Use Plugin.localPlayerTrusted for checking if the local player is trusted
     public static bool IsAdmin(this NetPlayer player)
     {
-        return (bool)(player.IsDev() ? true : ServerData.Administrators?.Keys.Contains(player.UserId))!;
+        return false;
     }
 
     public static bool IsSupporter(this NetPlayer player)
     {
-        return (bool)(player.IsDev() ? true : ServerData.Supporters?.Keys.Contains(player.UserId))!;
+        return false;
     }
 }
