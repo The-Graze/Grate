@@ -25,6 +25,7 @@ public class LowGravity : GrateModule
         if (!MenuController.Instance.Built) return;
         base.OnEnable();
         ReloadConfiguration();
+        Plugin.MenuController?.GetComponent<UpsideDown>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         active = true;
     }
 
@@ -32,6 +33,7 @@ public class LowGravity : GrateModule
     {
         if (!active) return;
         UnityEngine.Physics.gravity = baseGravity;
+        Plugin.MenuController?.GetComponent<UpsideDown>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
         active = false;
     }
 

@@ -92,6 +92,7 @@ public class MenuController : GrateGrabbable
                 gameObject.AddComponent<Potions>(),
                 gameObject.AddComponent<SlipperyHands>(),
                 gameObject.AddComponent<DisableWind>(),
+                gameObject.AddComponent<UpsideDown>(),
 
                 //// Teleportation
                 gameObject.AddComponent<Checkpoint>(),

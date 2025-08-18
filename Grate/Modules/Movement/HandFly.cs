@@ -68,7 +68,7 @@ public class HandFly : GrateModule
 
     public override string Tutorial()
     {
-        return "-To fly, press Grip to Throw yourself,\n" +
+        return "-To fly, press 'Trigger' to Throw yourself,\n" +
                "both hands for more speed";
     }
 
