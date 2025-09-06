@@ -86,6 +86,7 @@ safe to use online.</h1>
 * `Settings` - At the top of the *Grate* menu on any page, allows you to change settings for most modules.
 * `Kamehameha` - Face your palms together with a small gap to charge, wait a few seconds and then push your hands out to
   execute it.
+* `Upside Down` - Enabling this module turns you upside down, but be careful because there isn't any safeguards!
 
 These modules can be useful for exploring the game world, experimenting with gameplay mechanics, or just having fun with
 friends. They are **not** meant to be used to harass others, which can result in a ban from the game.
@@ -135,6 +136,6 @@ Special thanks to Kyle's little brother Asher for helping him test the OG :)
 
 * Original Bark Mod by [KyleTheScientist](https://github.com/KyleTheScientist), please show them love!
 
-* Thanks to all contributers and any mini devs who help make Grate better.
+* Thanks to all contributers and any mini devs who help make *Grate* better.
 
 * Thanks to [Rylan](https://github.com/RylanFoxins) for helping with the README!
