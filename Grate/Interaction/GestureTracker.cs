@@ -18,7 +18,7 @@ public class GestureTracker : MonoBehaviour
         "Player Objects/Local VRRig/Local Gorilla Player";
 
     public const string palmPath =
-        "/RigAnchor/rig/body/shoulder.{0}/upper_arm.{0}/forearm.{0}/hand.{0}/palm.01.{0}";
+        "/GorillaPlayerNetworkedRigAnchor/rig/body/shoulder.{0}/upper_arm.{0}/forearm.{0}/hand.{0}/palm.01.{0}";
 
     public const string pointerFingerPath =
         palmPath + "/f_index.01.{0}/f_index.02.{0}/f_index.03.{0}";

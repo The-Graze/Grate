@@ -12,17 +12,23 @@ public class UpsideDown : GrateModule
     private Vector3 baseGravity;
 
     private Transform turnParent;
+    private Quaternion baseRotation;
+    
     
     protected override void Cleanup()
     {
         UpsideDownPatch.AffectedRigs.Remove(VRRig.LocalRig);
         UnityEngine.Physics.gravity = baseGravity;
         
-        Quaternion oldRot = turnParent.rotation;
-        oldRot.x = 0f;
-        turnParent.rotation = oldRot;
+        turnParent.rotation = baseRotation;
         
         Plugin.MenuController?.GetComponent<LowGravity>().button.RemoveBlocker(ButtonController.Blocker.MOD_INCOMPAT);
+    }
+
+    private void Awake()
+    {
+        baseGravity = UnityEngine.Physics.gravity;
+        turnParent = GTPlayer.Instance.turnParent.transform;
     }
 
     protected override void Start()
@@ -31,6 +37,7 @@ public class UpsideDown : GrateModule
         
         NetworkPropertyHandler.Instance.OnPlayerModStatusChanged += OnPlayerModStatusChanged;
         VRRigCachePatches.OnRigCached += OnRigCached;
+        
     }
     
     private void OnPlayerModStatusChanged(NetPlayer player, string mod, bool enabled)
@@ -60,17 +67,13 @@ public class UpsideDown : GrateModule
         UpsideDownPatch.AffectedRigs.Add(VRRig.LocalRig);
         UnityEngine.Physics.gravity = -baseGravity;
         
+        baseRotation = turnParent.rotation;
+            
         Quaternion oldRot = turnParent.rotation;
         oldRot.x = 180f;
         turnParent.rotation = oldRot;
         
         Plugin.MenuController?.GetComponent<LowGravity>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
-    }
-    
-    private void Awake()
-    {
-        baseGravity = UnityEngine.Physics.gravity;
-        turnParent = GTPlayer.Instance.turnParent.transform;
     }
 
     public override string GetDisplayName() => "Upside Down";

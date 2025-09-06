@@ -39,7 +39,7 @@ public class HandFly : GrateModule
     private static ConfigEntry<int>? Speed;
     private LocalGorillaVelocityTracker? left;
     private LocalGorillaVelocityTracker? right;
-    private float SpeedScale => 10 + Speed!.Value * -2.5f;
+    private float SpeedScale => 10 + Speed!.Value -2.5f;
 
     private void FixedUpdate()
     {

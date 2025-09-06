@@ -382,6 +382,8 @@ public class MenuController : GrateGrabbable
         try
         {
             helpText = gameObject.transform.Find("Help Canvas").GetComponentInChildren<Text>();
+            helpText.transform.parent.localPosition = new Vector3(0, -0.0731f, -0.1f);
+            helpText.transform.parent.localRotation = Quaternion.Euler(0, 180f, 0);
             helpText.text = "Enable a module to see its tutorial.";
             StartCoroutine(VerCheck());
             var collider = gameObject.GetOrAddComponent<BoxCollider>();

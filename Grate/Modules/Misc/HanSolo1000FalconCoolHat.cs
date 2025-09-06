@@ -47,7 +47,12 @@ namespace Grate.Modules.Misc
             Hat.SetActive(true);
         }
 
-        protected override void Cleanup() => Hat.SetActive(false);
+        protected override void Cleanup()
+        {
+            if (Hat)
+                Hat.SetActive(false);
+        }
+
         private void OnRigCached(NetPlayer player, VRRig rig) => rig?.gameObject?.GetComponent<NetHanSolo1000FalconCoolHat>()?.Obliterate();
         public override string GetDisplayName() => "HanSolo1000Falcons Cool Hat";
         public override string Tutorial() => " -HanSolo1000Falcon gets a hella cool hat";

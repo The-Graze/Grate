@@ -23,7 +23,7 @@ public class UpsideDownPatch
 
         if (__instance == VRRig.LocalRig)
         {
-            __instance.head.headTransform.rotation = GTPlayer.Instance.headCollider.transform.rotation;
+            __instance.head.rigTarget.rotation = GTPlayer.Instance.headCollider.transform.rotation;
         }
     }
 }

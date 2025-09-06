@@ -45,8 +45,13 @@ public class ShadowFly : GrateModule
                 Destroy(player.Rig().gameObject.GetComponent<NetShadWing>());
         }
     }
-    
-    protected override void Cleanup() => localWings.SetActive(false);
+
+    protected override void Cleanup()
+    {
+        if (localWings)
+            localWings.SetActive(false);
+    }
+
     private void OnRigCached(NetPlayer player, VRRig rig) => rig?.gameObject?.GetComponent<NetShadWing>()?.Obliterate();
     public override string Tutorial() => "- Cool wings for a tier 3 supporter";
     public override string GetDisplayName() => DisplayName;
