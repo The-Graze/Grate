@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(GameObject))]
-[HarmonyPatch("CreatePrimitive", MethodType.Normal)]
+[HarmonyPatch(nameof(GameObject.CreatePrimitive), MethodType.Normal)]
 internal class GameObjectPatch
 {
     private static void Postfix(GameObject __result)

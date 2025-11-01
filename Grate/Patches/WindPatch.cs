@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(ForceVolume))]
-[HarmonyPatch("SliceUpdate", MethodType.Normal)]
+[HarmonyPatch(nameof(ForceVolume.SliceUpdate), MethodType.Normal)]
 internal class WindPatch
 {
     private static bool Prefix(ForceVolume __instance)

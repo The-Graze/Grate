@@ -42,9 +42,9 @@ public class Plugin : BaseUnityPlugin
 
     private void Awake()
     {
+        Logging.Init();
         Instance = this;
         HarmonyPatches.ApplyHarmonyPatches();
-        Logging.Init();
         ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
         var list = GrateModule.GetGrateModuleTypes();
         foreach (var bindConfigs in list.Select(moduleType => moduleType.GetMethod("BindConfigEntries")).Select(info => info).OfType<MethodInfo>())

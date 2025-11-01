@@ -11,7 +11,7 @@ using Player = GorillaLocomotion.GTPlayer;
 
 namespace Grate.Patches;
 
-[HarmonyPatch(typeof(Player), "AntiTeleportTechnology")]
+[HarmonyPatch(typeof(Player), nameof(Player.AntiTeleportTechnology))]
 internal class PlayerAntiAntiTeleport
 {
     private static bool Prefix()
@@ -21,7 +21,7 @@ internal class PlayerAntiAntiTeleport
 }
 
 [HarmonyPatch(typeof(Player))]
-[HarmonyPatch("LateUpdate", MethodType.Normal)]
+[HarmonyPatch(nameof(Player.LateUpdate), MethodType.Normal)]
 internal class TeleportPatch
 {
     private static bool _isTeleporting,
@@ -55,9 +55,9 @@ internal class TeleportPatch
 
 
                     Traverse.Create(__instance).Field("lastLeftHandPosition")
-                        .SetValue(__instance.leftHandFollower.transform.position);
+                        .SetValue(__instance.leftHand.handFollower.transform.position);
                     Traverse.Create(__instance).Field("lastRightHandPosition")
-                        .SetValue(__instance.rightHandFollower.transform.position);
+                        .SetValue(__instance.rightHand.handFollower.transform.position);
 
                     Traverse.Create(__instance).Field("lastPosition").SetValue(correctedPosition);
                     Traverse.Create(__instance).Field("lastOpenHeadPosition")

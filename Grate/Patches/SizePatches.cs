@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(SizeManager))]
-[HarmonyPatch("ControllingChanger", MethodType.Normal)]
+[HarmonyPatch(nameof(SizeManager.ControllingChanger), MethodType.Normal)]
 public class SizeChangePatch
 {
     private static void Postfix(ref SizeChanger __result, Transform t)

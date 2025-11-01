@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(GorillaTagManager))]
-[HarmonyPatch("LocalPlayerSpeed", MethodType.Normal)]
+[HarmonyPatch(nameof(GorillaTagManager.LocalPlayerSpeed), MethodType.Normal)]
 internal class TagSpeedPatch
 {
     private static void Postfix(GorillaTagManager __instance, ref float[] __result)
@@ -28,7 +28,7 @@ internal class TagSpeedPatch
 }
 
 [HarmonyPatch(typeof(GorillaGameManager))]
-[HarmonyPatch("LocalPlayerSpeed", MethodType.Normal)]
+[HarmonyPatch(nameof(GorillaGameManager.LocalPlayerSpeed), MethodType.Normal)]
 internal class GenericSpeedPatch
 {
     private static void Postfix(GorillaGameManager __instance, ref float[] __result)
@@ -48,7 +48,7 @@ internal class GenericSpeedPatch
 }
 
 [HarmonyPatch(typeof(GorillaPaintbrawlManager))]
-[HarmonyPatch("LocalPlayerSpeed", MethodType.Normal)]
+[HarmonyPatch(nameof(GorillaPaintbrawlManager.LocalPlayerSpeed), MethodType.Normal)]
 internal class BattleSpeedPatch
 {
     private static void Postfix(GorillaPaintbrawlManager __instance, ref float[] __result)
@@ -68,7 +68,7 @@ internal class BattleSpeedPatch
 }
 
 [HarmonyPatch(typeof(GorillaHuntManager))]
-[HarmonyPatch("LocalPlayerSpeed", MethodType.Normal)]
+[HarmonyPatch(nameof(GorillaHuntManager.LocalPlayerSpeed), MethodType.Normal)]
 internal class HuntSpeedPatch
 {
     private static void Postfix(GorillaHuntManager __instance, ref float[] __result)
@@ -88,7 +88,7 @@ internal class HuntSpeedPatch
 }
 
 [HarmonyPatch(typeof(GTPlayer))]
-[HarmonyPatch("GetSwimmingVelocityForHand", MethodType.Normal)]
+[HarmonyPatch(nameof(GTPlayer.GetSwimmingVelocityForHand), MethodType.Normal)]
 internal class SwimmingVelocityPatch
 {
     private static void Postfix(ref Vector3 swimmingVelocityChange)

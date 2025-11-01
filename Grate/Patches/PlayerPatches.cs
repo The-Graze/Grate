@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(GTPlayer))]
-[HarmonyPatch("LateUpdate", MethodType.Normal)]
+[HarmonyPatch(nameof(GTPlayer.LateUpdate), MethodType.Normal)]
 public class LateUpdatePatch
 {
     public static Action<GTPlayer> OnLateUpdate;
@@ -29,7 +29,7 @@ public class LateUpdatePatch
 }
 
 [HarmonyPatch(typeof(GTPlayer))]
-[HarmonyPatch("GetSlidePercentage", MethodType.Normal)]
+[HarmonyPatch(nameof(GTPlayer.GetSlidePercentage), MethodType.Normal)]
 public class SlidePatch
 {
     private static void Postfix(GTPlayer __instance, ref float __result)
@@ -49,7 +49,7 @@ public class SlidePatch
 }
 
 [HarmonyPatch(typeof(VRRig))]
-[HarmonyPatch("LateUpdate", MethodType.Normal)]
+[HarmonyPatch(nameof(VRRig.PostTick), MethodType.Normal)]
 public class VRRigLateUpdatePatch
 {
     private static void Postfix(VRRig __instance, ref AudioSource ___voiceAudio)

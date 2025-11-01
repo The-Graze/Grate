@@ -88,8 +88,8 @@ public class Platform : MonoBehaviour
             }
 
             var handObj = isLeft
-                ? GTPlayer.Instance.leftControllerTransform
-                : GTPlayer.Instance.rightControllerTransform;
+                ? GTPlayer.Instance.leftHand.controllerTransform
+                : GTPlayer.Instance.rightHand.controllerTransform;
             hand = handObj.transform;
             Climbable = CreateClimbable();
             Climbable.transform.SetParent(transform);

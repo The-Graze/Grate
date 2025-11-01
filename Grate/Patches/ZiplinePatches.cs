@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(GorillaZipline))]
-[HarmonyPatch("Update", MethodType.Normal)]
+[HarmonyPatch(nameof(GorillaZipline.Update), MethodType.Normal)]
 public class ZiplineUpdatePatch
 {
     private static void Postfix(GorillaZipline __instance, BezierSpline ___spline, float ___currentT,

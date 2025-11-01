@@ -54,8 +54,8 @@ public class HandFly : GrateModule
     {
         if (!MenuController.Instance.Built || !enabled) return;
         Plugin.MenuController?.GetComponent<Fly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
-        right = GTPlayer.Instance.leftControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
-        left = GTPlayer.Instance.rightControllerTransform.AddComponent<LocalGorillaVelocityTracker>();
+        right = GTPlayer.Instance.leftHand.controllerTransform.AddComponent<LocalGorillaVelocityTracker>();
+        left = GTPlayer.Instance.rightHand.controllerTransform.AddComponent<LocalGorillaVelocityTracker>();
         ReloadConfiguration();
         base.OnEnable();
     }

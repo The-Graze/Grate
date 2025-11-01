@@ -34,7 +34,7 @@ public class Helicopter : GrateModule
 
         var player = GTPlayer.Instance;
         var up = player.headCollider.transform.forward.y;
-        if (player.wasLeftHandColliding || player.wasLeftHandColliding) return;
+        if (player.LeftHand.wasColliding || player.rightHand.wasColliding) return;
 
         if (Threshold(15f, up))
         {

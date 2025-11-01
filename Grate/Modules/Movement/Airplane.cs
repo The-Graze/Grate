@@ -35,7 +35,7 @@ public class Airplane : GrateModule
             tracker.rightGrip.pressed) return;
 
         var player = GTPlayer.Instance;
-        if (player.wasLeftHandColliding || player.wasLeftHandColliding) return;
+        if (player.rightHand.wasColliding || player.leftHand.wasColliding) return;
 
         if (SteerWith.Value == "head")
             direction = player.headCollider.transform.forward;

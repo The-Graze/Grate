@@ -148,7 +148,7 @@ public class Checkpoint : GrateModule
         Vector3 startPos, endPos;
         while (GestureTracker.Instance.rightTrigger.pressed && pointSet)
         {
-            startPos = GTPlayer.Instance.rightControllerTransform.position;
+            startPos = GTPlayer.Instance.rightHand.controllerTransform.position;
             bananaLine.SetPosition(1, startPos);
             var chargeScale = MathExtensions.Map(ChargeTime.Value, 0, 10, 0f, 1f);
             endPos = Vector3.Lerp(startPos, checkpointMarker.transform.position, (Time.time - startTime) / chargeScale);

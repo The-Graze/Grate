@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Grate.Patches;
 
 [HarmonyPatch(typeof(GorillaQuitBox))]
-[HarmonyPatch("OnBoxTriggered", MethodType.Normal)]
+[HarmonyPatch(nameof(GorillaQuitBox.OnBoxTriggered), MethodType.Normal)]
 internal class QuitBoxPatch
 {
     private static bool Prefix()

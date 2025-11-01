@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace Grate.Patches;
 
-[HarmonyPatch(typeof(VRRig), "LateUpdate")]
+[HarmonyPatch(typeof(VRRig), nameof(VRRig.PostTick))]
 public class UpsideDownPatch
 {
-    public static List<VRRig> AffectedRigs = new();
+    public static List<VRRig> AffectedRigs = [];
     
     private static void Postfix(VRRig __instance)
     {
@@ -16,19 +16,19 @@ public class UpsideDownPatch
             return;
         
         __instance.transform.Rotate(180f, 180f, 0f);
-        
-        __instance.leftHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
-        __instance.rightHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
-        __instance.head.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
 
-        if (__instance == VRRig.LocalRig)
+        if (__instance.isLocal)
         {
+            __instance.leftHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
+            __instance.rightHand.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
+            __instance.head.MapMine(__instance.scaleFactor, __instance.playerOffsetTransform);
+            
             __instance.head.rigTarget.rotation = GTPlayer.Instance.headCollider.transform.rotation;
         }
     }
 }
 
-[HarmonyPatch(typeof(GTPlayer), "LateUpdate")]
+[HarmonyPatch(typeof(GTPlayer), nameof(GTPlayer.LateUpdate))]
 public class UpsideDownPatchGTPlayer
 {
     private static void Postfix(GTPlayer __instance)

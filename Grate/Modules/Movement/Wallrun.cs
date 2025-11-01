@@ -23,7 +23,7 @@ public class Wallrun : GrateModule
     protected void FixedUpdate()
     {
         var player = GTPlayer.Instance;
-        if (player.wasLeftHandColliding || player.wasRightHandColliding)
+        if (player.leftHand.wasColliding || player.rightHand.wasColliding)
         {
             var fieldInfo =
                 typeof(GTPlayer).GetField("lastHitInfoHand", BindingFlags.NonPublic | BindingFlags.Instance);
