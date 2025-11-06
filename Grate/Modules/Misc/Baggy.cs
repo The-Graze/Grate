@@ -12,7 +12,7 @@ namespace Grate.Modules.Misc;
 
 public class Baggy : GrateModule
 {
-    public static string DisplayName = "Bag Hammer";
+    public static string DisplayName = "Bag";
     private static GameObject? Bag;
 
     protected override void Start()
@@ -20,11 +20,10 @@ public class Baggy : GrateModule
         base.Start();
         if (Bag == null)
         {
-            Bag = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("bag"));
+            Bag = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("BagPrefab"));
             Bag.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            Bag.transform.localPosition = new Vector3(-1.5f, 0.2f, 0.1f);
-            Bag.transform.localRotation = Quaternion.Euler(9, 0, 0);
-            Bag.transform.localScale /= 2;
+            Bag.transform.localRotation = Quaternion.Euler(90, 0, 0);
+            Bag.transform.localScale /= 4;
             Bag.SetActive(false);
         }
 
@@ -109,7 +108,7 @@ public class Baggy : GrateModule
             Bag.transform.SetParent(rightHand);
             Bag.transform.localPosition = new Vector3(0.04f, 0.05f, -0.02f);
             Bag.transform.localRotation = Quaternion.Euler(270, 163.12f, 0);
-            Bag.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            Bag.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
 
             networkedPlayer.OnGripPressed += OnGripPressed;
             networkedPlayer.OnGripReleased += OnGripReleased;

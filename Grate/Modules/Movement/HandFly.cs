@@ -39,7 +39,9 @@ public class HandFly : GrateModule
     private static ConfigEntry<int>? Speed;
     private LocalGorillaVelocityTracker? left;
     private LocalGorillaVelocityTracker? right;
-    private float SpeedScale => 10 + Speed!.Value -2.5f;
+
+    //used desmos for ts
+    private float SpeedScale => Speed!.Value * 2.5f + 10;
 
     private void FixedUpdate()
     {
@@ -54,8 +56,8 @@ public class HandFly : GrateModule
     {
         if (!MenuController.Instance.Built || !enabled) return;
         Plugin.MenuController?.GetComponent<Fly>().button.AddBlocker(ButtonController.Blocker.MOD_INCOMPAT);
-        right = GTPlayer.Instance.leftHand.controllerTransform.AddComponent<LocalGorillaVelocityTracker>();
-        left = GTPlayer.Instance.rightHand.controllerTransform.AddComponent<LocalGorillaVelocityTracker>();
+        right = GTPlayer.Instance.LeftHand.controllerTransform.AddComponent<LocalGorillaVelocityTracker>();
+        left = GTPlayer.Instance.RightHand.controllerTransform.AddComponent<LocalGorillaVelocityTracker>();
         ReloadConfiguration();
         base.OnEnable();
     }

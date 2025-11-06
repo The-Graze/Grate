@@ -97,10 +97,10 @@ public class Kamehameha : GrateModule
         var hapticDuration = .1f;
         while (GestureTracker.Instance.PalmsFacingEachOther())
         {
-            var scale = GTPlayer.Instance.scale;
+            var scale = GTPlayer.Instance.scale / 2;
             if (Time.time - lastHaptic > hapticDuration)
             {
-                var strength = Mathf.SmoothStep(0, 1, diameter / maxOrbSize * (float)Math.Sqrt(scale));
+                var strength = Mathf.SmoothStep(0, 1, diameter / maxOrbSize * scale);
                 GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 48), false, strength / 10f);
                 GestureTracker.Instance.leftController.SendHapticImpulse(0u, strength, hapticDuration);
                 GestureTracker.Instance.rightController.SendHapticImpulse(0u, strength, hapticDuration);
@@ -108,9 +108,9 @@ public class Kamehameha : GrateModule
             }
 
             diameter = Vector3.Distance(leftHand.position, rightHand.position);
-            diameter = Mathf.Clamp(diameter, 0, maxOrbSize * (float)Math.Sqrt(scale));
+            diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale);
             orb.transform.position = (leftHand.position + rightHand.position) / 2;
-            orb.transform.localScale = Vector3.one * diameter * (float)Math.Sqrt(scale);
+            orb.transform.localScale = Vector3.one * diameter * scale;
             yield return new WaitForEndOfFrame();
         }
 
@@ -137,7 +137,7 @@ public class Kamehameha : GrateModule
                 lastHaptic = Time.time;
             }
 
-            var scale = (float)Math.Sqrt(GTPlayer.Instance.scale);
+            var scale = GTPlayer.Instance.scale/2;
             diameter = Vector3.Distance(leftHand.position, rightHand.position);
             diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale * 2);
             bananaLine.startWidth = diameter * scale;

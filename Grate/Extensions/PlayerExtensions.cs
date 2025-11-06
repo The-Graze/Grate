@@ -76,11 +76,11 @@ public static class PlayerExtensions
     // Use Plugin.localPlayerTrusted for checking if the local player is trusted
     public static bool IsAdmin(this NetPlayer player)
     {
-        return false;
+        return IsDev(player);
     }
 
     public static bool IsSupporter(this NetPlayer player)
     {
-        return false;
+        return IsDev(player);
     }
 }
