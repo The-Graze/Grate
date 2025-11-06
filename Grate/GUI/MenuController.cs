@@ -268,10 +268,6 @@ public class MenuController : GrateGrabbable
                     renderer.materials = old;
                     break;
 
-                case "shinyrocks":
-                    renderer.materials = ShinyRocks;
-                    break;
-
                 case "player" when VRRig.LocalRig.CurrentCosmeticSkin != null:
                     var skinMat = VRRig.LocalRig.CurrentCosmeticSkin.scoreboardMaterial;
                     renderer.materials = [skinMat, skinMat];
@@ -609,7 +605,7 @@ public class MenuController : GrateGrabbable
 
             var ThemeDesc = new ConfigDescription(
                 "Which Theme Should Grate Use?",
-                new AcceptableValueList<string>("grate", "OldGrate", "bark", "holowpurple", "shinyrocks", "Player")
+                new AcceptableValueList<string>("grate", "OldGrate", "bark", "holowpurple", "Player")
             );
             _theme = Plugin.ConfigFile.Bind("General",
                 "theme",

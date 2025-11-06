@@ -20,9 +20,9 @@ public class Baggy : GrateModule
         base.Start();
         if (Bag == null)
         {
-            Bag = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("BagPrefab"));
+            Bag = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("Bag"));
             Bag.transform.SetParent(GestureTracker.Instance.rightHand.transform, true);
-            Bag.transform.localRotation = Quaternion.Euler(90, 0, 0);
+            Bag.transform.localRotation = Quaternion.Euler(9, 0, 0);
             Bag.transform.localScale /= 4;
             Bag.SetActive(false);
         }

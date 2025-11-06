@@ -17,6 +17,7 @@ using Grate.Tools;
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilla.Behaviours;
 
 namespace Grate;
 
@@ -134,6 +135,7 @@ public class Plugin : BaseUnityPlugin
     {
         try
         {
+            FindFirstObjectByType<ConductBoardManager>().boardContent.Add(new("Grate", PluginInfo.Description));
             Logging.Debug("OnGameInitialized");
             Initialized = true;
             var platform = (PlatformTagJoin)Traverse.Create(PlayFabAuthenticator.instance).Field("platform").GetValue();
@@ -143,12 +145,7 @@ public class Plugin : BaseUnityPlugin
             NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
-            
-            MenuController.ShinyRocks =
-            [
-                GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0],
-                GameObject.Find("ShinyRock_Level4_Rocks").GetComponent<MeshRenderer>().materials[0]
-            ];
+
             if (DebugMode)
                 CreateDebugGUI();
         }

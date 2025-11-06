@@ -12,6 +12,7 @@
     <PropertyGroup>
         <GameAssemblyPath>$(MSBuildProjectDirectory)\..\libs\Managed</GameAssemblyPath>
         <BepInExAssemblyPath>$(MSBuildProjectDirectory)\..\libs\BepInEx</BepInExAssemblyPath>
+		<PluginsAssemblyPath>$(MSBuildProjectDirectory)\..\libs\Plugins</PluginsAssemblyPath>
         <PluginsPath>$(GamePath)\BepInEx\plugins</PluginsPath>
     </PropertyGroup>
 
@@ -678,6 +679,9 @@
         <Reference Include="UnityEngine.XRModule">
             <HintPath>$(GameAssemblyPath)\UnityEngine.XRModule.dll</HintPath>
         </Reference>
+		<Reference Include="Utilla" Publicize="true">
+			<HintPath>$(PluginsAssemblyPath)\Utilla.dll</HintPath>
+		</Reference>
         <Reference Include="Valve.Newtonsoft.Json">
             <HintPath>$(GameAssemblyPath)\Valve.Newtonsoft.Json.dll</HintPath>
         </Reference>
