@@ -18,7 +18,7 @@ public class GenesisMarker : MonoBehaviour
 
     private void Start()
     {
-        Genesis = Instantiate(NullGenesis.GenesisPrefab);
+        Genesis = Instantiate(Plugin.AssetBundle.LoadAsset<GameObject>("NULLG Prefab"));
         Genesis.transform.SetParent(transform, false);
         Genesis.transform.localPosition = new Vector3(0, -.1f, 0);
     }
@@ -33,18 +33,8 @@ public class NullGenesis : GrateModule
 {
     public static readonly string DisplayName = "Null Genesis";
     public static GameObject GenesisPrefab;
-    public GameObject Genesis;
     public Vector3 targetPosition;
     public Vector3 GenesisOffset;
-
-    private void LateUpdate()
-    {
-        if (Genesis != null)
-        {
-            Genesis.transform.position = GTPlayer.Instance.headCollider.transform.position;
-            Genesis.transform.position -= GenesisOffset * GTPlayer.Instance.scale;
-        }
-    }
 
     protected override void OnEnable()
     {
@@ -77,7 +67,6 @@ public class NullGenesis : GrateModule
 
     protected override void Cleanup()
     {
-        Genesis?.Obliterate();
     }
 
     public override string GetDisplayName()
