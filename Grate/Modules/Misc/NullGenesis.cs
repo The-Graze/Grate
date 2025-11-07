@@ -14,19 +14,18 @@ namespace Grate.Modules.Movement;
 
 public class GenesisMarker : MonoBehaviour
 {
-    private GameObject bubble;
+    private GameObject Genesis;
 
     private void Start()
     {
-        bubble = Instantiate(Bubble.bubblePrefab);
-        bubble.transform.SetParent(transform, false);
-        bubble.transform.localPosition = new Vector3(0, -.1f, 0);
-        bubble.gameObject.layer = GrateInteractor.InteractionLayer;
+        Genesis = Instantiate(NullGenesis.GenesisPrefab);
+        Genesis.transform.SetParent(transform, false);
+        Genesis.transform.localPosition = new Vector3(0, -.1f, 0);
     }
 
     private void OnDestroy()
     {
-        Destroy(bubble);
+        Destroy(Genesis);
     }
 }
 
@@ -44,9 +43,6 @@ public class NullGenesis : GrateModule
         {
             Genesis.transform.position = GTPlayer.Instance.headCollider.transform.position;
             Genesis.transform.position -= GenesisOffset * GTPlayer.Instance.scale;
-
-            Vector3 leftPos = GestureTracker.Instance.leftHand.transform.position,
-                rightPos = GestureTracker.Instance.rightHand.transform.position;
         }
     }
 
@@ -73,26 +69,15 @@ public class NullGenesis : GrateModule
     private void OnPlayerModStatusChanged(NetworkPlayer player, string mod, bool enabled)
     {
         if (mod != DisplayName) return;
-        if (enabled)
+        if (enabled && player.IsDev())
             player.Rig().gameObject.GetOrAddComponent<GenesisMarker>();
         else
             Destroy(player.Rig().gameObject.GetComponent<GenesisMarker>());
     }
 
-    public static void BindConfigEntries()
+    protected override void Cleanup()
     {
-        BubbleSize = Plugin.ConfigFile.Bind(
-            DisplayName,
-            "Genesis size",
-            5,
-            "How far you have to reach to hit the Genesis"
-        );
-        BubbleSpeed = Plugin.ConfigFile.Bind(
-            DisplayName,
-            "Genesis speed",
-            5,
-            "How fast the Genesis moves when you push it"
-        );
+        Genesis?.Obliterate();
     }
 
     public override string GetDisplayName()
@@ -102,7 +87,6 @@ public class NullGenesis : GrateModule
 
     public override string Tutorial()
     {
-        return "Creates a Genesis around you so you can float. " +
-               "Tap the side that you want to move towards to move.";
+        return "The birth of nothing";
     }
 }
