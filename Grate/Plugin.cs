@@ -21,6 +21,7 @@ using Utilla.Behaviours;
 
 namespace Grate;
 
+[BepInDependency("org.legoandmars.gorillatag.utilla")]
 [BepInPlugin(PluginInfo.Guid, PluginInfo.Name, PluginInfo.Version)]
 public class Plugin : BaseUnityPlugin
 {
@@ -135,7 +136,7 @@ public class Plugin : BaseUnityPlugin
     {
         try
         {
-            FindFirstObjectByType<ConductBoardManager>().boardContent.Add(new("Grate", PluginInfo.Description));
+            FindFirstObjectByType<ConductBoardManager>().boardContent.Add(new("GRATE", PluginInfo.Description));
             Logging.Debug("OnGameInitialized");
             Initialized = true;
             var platform = (PlatformTagJoin)Traverse.Create(PlayFabAuthenticator.instance).Field("platform").GetValue();
@@ -145,7 +146,7 @@ public class Plugin : BaseUnityPlugin
             NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
-
+            
             if (DebugMode)
                 CreateDebugGUI();
         }

@@ -5,6 +5,7 @@ internal static class PluginInfo
     public const string Guid = "com.kylethescientist.graze.gorillatag.Grate";
     public const string Name = "Grate";
     public const string Version = "1.8.7";
+
     public const string Description =
         "Rules\n" +
         "- No modifications that make Grate a cheat.\n" +
@@ -21,9 +22,11 @@ internal static class PluginInfo
         "- Monky made mods.\n" +
         "\n" +
         "Custom Mods\n" +
-        "- Graze has a TV" +
+        "- Graze has a TV\n" +
         "- baggZ has a giant paper bag.\n" +
         "- HanSolo1000Falcon/Gadabuda has a purple hat.\n" +
         "- Monky has a piece of cheese.\n" +
+        "BrokenStone has particles of their ID.\n" +
+        "Gizo has cat stuff (old sona)\n" +
         "- Everyone who helped made grate get a phone reading 'DEV MONKE'.";
 }
