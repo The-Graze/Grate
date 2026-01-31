@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +10,17 @@ namespace Grate.Interaction;
 
 public class GrateInteractable : MonoBehaviour
 {
-    public GrateInteractor[] validSelectors;
-    public List<GrateInteractor> selectors = new();
-    public List<GrateInteractor> hoverers = new();
-    public int priority;
     public bool Activated;
-    public bool Primary;
     private GestureTracker gt;
+    public List<GrateInteractor> hoverers = new();
     public Action<GrateInteractable, GrateInteractor> OnActivateEnter, OnActivateExit;
     public Action<GrateInteractable, GrateInteractor> OnHoverEnter, OnHoverExit;
     public Action<GrateInteractable, GrateInteractor> OnPrimaryEnter, OnPrimaryExit;
     public Action<GrateInteractable, GrateInteractor> OnSelectEnter, OnSelectExit;
+    public bool Primary;
+    public int priority;
+    public List<GrateInteractor> selectors = new();
+    public GrateInteractor[] validSelectors;
     public bool Selected => selectors.Count > 0;
 
     protected virtual void Awake()

@@ -1,7 +1,10 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Diagnostics;
 using BepInEx.Logging;
 using Grate.GUI;
+using Logger = BepInEx.Logging.Logger;
 
 namespace Grate.Tools;
 

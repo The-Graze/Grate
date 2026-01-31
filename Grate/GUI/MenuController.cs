@@ -1,8 +1,11 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BepInEx.Configuration;
+using GorillaLocomotion;
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.Interaction;
@@ -14,12 +17,10 @@ using Grate.Modules.Physics;
 using Grate.Modules.Teleportation;
 using Grate.Tools;
 using Photon.Pun;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.XR;
-using Player = GorillaLocomotion.GTPlayer;
 
 namespace Grate.GUI;
 
@@ -33,26 +34,27 @@ public class MenuController : GrateGrabbable
     public static Material[]? ShinyRocks;
 
     public static bool Debugger = true;
+    public List<ButtonController>? buttons;
+
+    private int debugButtons;
+
+    private bool docked;
+    public Material[]? grate, bark, hollopurp, monke, old;
+    public Text? helpText;
 
     public Vector3
         initialMenuOffset = new(0, .035f, .65f),
         btnDimensions = new(.3f, .05f, .05f);
 
-    public Rigidbody? rigidbody;
-    public List<Transform>? modPages;
-    public List<ButtonController>? buttons;
-    public List<GrateModule> modules = [];
     public GameObject? modPage, settingsPage;
-    public Text? helpText;
-
-    public Renderer? renderer;
-    public Material[]? grate, bark, hollopurp, monke, old;
-
-    private int debugButtons;
-
-    private bool docked;
+    public List<Transform>? modPages;
+    public List<GrateModule> modules = [];
 
     private int pageIndex;
+
+    public Renderer? renderer;
+
+    public Rigidbody? rigidbody;
     public bool Built { get; private set; }
 
     protected override void Awake()
@@ -124,8 +126,6 @@ public class MenuController : GrateGrabbable
             if (NetworkSystem.Instance.LocalPlayer.UserId == "42D7D32651E93866") modules.Add(g);
             var ch = gameObject.AddComponent<Cheese>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "B1B20DEEEDB71C63") modules.Add(ch);
-            var hanSolo1000FalconCoolHat = gameObject.AddComponent<HanSolo1000FalconCoolHat>();
-            if (NetworkSystem.Instance.LocalPlayer.UserId == "A48744B93D9A3596") modules.Add(hanSolo1000FalconCoolHat);
             var shdfly = gameObject.AddComponent<ShadowFly>();
             if (NetworkSystem.Instance.LocalPlayer.UserId == "AE10C04744CCF6E7") modules.Add(shdfly);
             var supporterMod = gameObject.AddComponent<Supporter>();
@@ -137,6 +137,7 @@ public class MenuController : GrateGrabbable
                 modules.Add(developerMod);
                 modules.Add(GenesisMod);
             }
+
             modules.AddRange(tooAddmodules);
             ReloadConfiguration();
         }
@@ -339,7 +340,7 @@ public class MenuController : GrateGrabbable
     {
         rigidbody.isKinematic = true;
         rigidbody.velocity = Vector3.zero;
-        transform.SetParent(Player.Instance.bodyCollider.transform);
+        transform.SetParent(GTPlayer.Instance.bodyCollider.transform);
         transform.localPosition = initialMenuOffset;
         transform.localRotation = Quaternion.identity;
         transform.localScale = Vector3.one;
@@ -396,7 +397,7 @@ public class MenuController : GrateGrabbable
             SetupModPages();
             SetupSettingsPage();
 
-            transform.SetParent(Player.Instance.bodyCollider.transform);
+            transform.SetParent(GTPlayer.Instance.bodyCollider.transform);
             ResetPosition();
             Logging.Debug("Build successful.");
             ReloadConfiguration();

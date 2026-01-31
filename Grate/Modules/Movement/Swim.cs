@@ -1,6 +1,7 @@
-﻿using GorillaLocomotion;
-using Grate.GUI;
+using GorillaLocomotion;
 using UnityEngine;
+using UnityEngine;
+﻿using Grate.GUI;
 
 namespace Grate.Modules;
 
@@ -12,7 +13,11 @@ public class Swim : GrateModule
     protected override void Start()
     {
         base.Start();
-        waterVolume = Instantiate(GameObject.Find("Environment Objects/LocalObjects_Prefab/ForestToBeach/ForestToBeach_Prefab_V4/CaveWaterVolume"), VRRig.LocalRig.transform);
+        waterVolume =
+            Instantiate(
+                GameObject.Find(
+                    "Environment Objects/LocalObjects_Prefab/ForestToBeach/ForestToBeach_Prefab_V4/CaveWaterVolume"),
+                VRRig.LocalRig.transform);
         waterVolume.transform.localScale = new Vector3(5f, 1000f, 5f);
         waterVolume.transform.localPosition = new Vector3(0, 50, 0);
         waterVolume.SetActive(false);

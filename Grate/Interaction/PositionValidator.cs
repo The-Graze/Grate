@@ -1,9 +1,10 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using GorillaLocomotion;
 using Grate.Modules.Multiplayer;
 using Grate.Modules.Physics;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Gestures;
 
@@ -11,9 +12,9 @@ namespace Grate.Gestures;
 public class PositionValidator : MonoBehaviour
 {
     public static PositionValidator Instance;
+    private readonly float stabilityPeriod = 1f;
     public bool isValid, isValidAndStable, hasValidPosition;
     public Vector3 lastValidPosition;
-    private readonly float stabilityPeriod = 1f;
     private float stabilityPeriodStart;
 
     private void Awake()

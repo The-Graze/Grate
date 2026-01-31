@@ -1,10 +1,11 @@
-﻿using Grate.Extensions;
-using Grate.Gestures;
+using Grate.Extensions;
+using UnityEngine;
+using UnityEngine;
+﻿using Grate.Gestures;
 using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
 using Photon.Pun;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Misc;

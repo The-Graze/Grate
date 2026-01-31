@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using Grate.Extensions;
 using Grate.Gestures;
@@ -6,7 +8,6 @@ using Grate.Modules.Movement;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Misc;

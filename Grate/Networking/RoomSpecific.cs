@@ -1,7 +1,7 @@
-﻿using System.Linq;
+using System.Linq;
 using UnityEngine;
-
-namespace Grate.Networking;
+using UnityEngine;
+﻿namespace Grate.Networking;
 
 internal class RoomSpecific : MonoBehaviour
 {

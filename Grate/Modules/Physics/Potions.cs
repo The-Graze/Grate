@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
@@ -11,7 +13,6 @@ using Grate.Patches;
 using Grate.Tools;
 using HarmonyLib;
 using Photon.Pun;
-using UnityEngine;
 
 namespace Grate.Modules.Physics;
 
@@ -181,6 +182,7 @@ public class Potions : GrateModule
 
             var sizePotion = potion.AddComponent<SizePotion>();
             sizePotion.name = isLeft ? "Grate Shrink Potion" : "Grate Grow Potion";
+            sizePotion.isLeft = isLeft;
             sizePotion.Holster(holster);
             sizePotion.OnDrink += DrinkPotion;
             sizePotion.GetComponent<Renderer>().material = isLeft ? shrinkMaterial : growMaterial;
@@ -306,13 +308,14 @@ public class Potions : GrateModule
 
 public class SizePotion : GrateGrabbable
 {
-    public Transform holster;
-    public AudioSource gulp;
     private Cork cork;
     private Vector3 corkOffset, corkScale;
     private ParticleSystem drip;
+    public AudioSource gulp;
+    public Transform holster;
 
     private bool isFlipped, wasFlipped, inRange;
+    public bool isLeft;
     private Vector3 mouthPosition, bottlePosition;
     public Action<SizePotion> OnDrink;
 
@@ -369,9 +372,20 @@ public class SizePotion : GrateGrabbable
             mouthPosition = GTPlayer.Instance.headCollider.transform.TransformPoint(new Vector3(0, -.05f, .1f));
             bottlePosition = transform.position;
 
-            var range = .15f;
+            const float range = .15f;
             var delta = bottlePosition - mouthPosition;
             inRange = Vector3.Dot(delta, Vector3.up) > 0f && delta.magnitude < range * GTPlayer.Instance.scale;
+
+            switch (isLeft)
+            {
+                case true:
+                    if (GestureTracker.Instance.leftTrigger!.pressed) OnDrink.Invoke(this);
+                    break;
+                case false:
+                    if (GestureTracker.Instance.rightTrigger!.pressed) OnDrink.Invoke(this);
+                    break;
+            }
+
             if (isFlipped && inRange)
             {
                 if (!gulp.isPlaying)
@@ -417,11 +431,9 @@ public class SizePotion : GrateGrabbable
     public override void OnPrimaryReleased(GrateInteractor interactor)
     {
         base.OnPrimaryReleased(interactor);
-        if (IsCorked())
-        {
-            cork.Pop();
-            cork.enabled = false;
-        }
+        if (!IsCorked()) return;
+        cork.Pop();
+        cork.enabled = false;
     }
 
     public override void OnActivate(GrateInteractor interactor)
@@ -451,9 +463,9 @@ public class SizePotion : GrateGrabbable
 
 public class Cork : GrateGrabbable
 {
+    private AudioSource popSource;
     public Rigidbody rb;
     public bool shouldPlayPopSound = true;
-    private AudioSource popSource;
 
     protected override void Awake()
     {

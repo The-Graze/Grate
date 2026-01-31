@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
@@ -7,7 +9,6 @@ using Grate.Gestures;
 using Grate.GUI;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Teleportation;
@@ -19,10 +20,10 @@ public class Portal : GrateModule
 
     public static ConfigEntry<string> LauncherHand;
     public static ConfigEntry<string> PortalSize;
-    public GameObject launcher;
     private readonly Dictionary<int, GameObject> portals = new();
     private AudioSource blueAudio;
     private XRNode hand;
+    public GameObject launcher;
     private AudioSource orangeAudio;
     private ParticleSystem[] smokeSystems;
 

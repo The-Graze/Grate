@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +7,6 @@ using GorillaLocomotion;
 using Grate.Extensions;
 using Grate.Tools;
 using HarmonyLib;
-using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 using Valve.VR;
@@ -28,6 +29,11 @@ public class GestureTracker : MonoBehaviour
 
     public static GestureTracker Instance;
 
+    private readonly float illProximityThreshold = .1f;
+    private readonly Queue<int> meatBeatCollisions = new();
+
+    public float camOffset = -45f;
+
     public GameObject
         chest,
         leftPointerObj,
@@ -35,21 +41,8 @@ public class GestureTracker : MonoBehaviour
         leftHand,
         rightHand;
 
-    public GrateInteractor
-        leftPalmInteractor,
-        rightPalmInteractor,
-        leftPointerInteractor,
-        rightPointerInteractor;
-
-    public Transform leftPointerTransform, rightPointerTransform, leftThumbTransform, rightThumbTransform;
-    public bool isIlluminatiing, isChargingKamehameha;
-
-    public float camOffset = -45f;
-
-    private readonly float illProximityThreshold = .1f;
-    private readonly Queue<int> meatBeatCollisions = new();
-
     public List<InputTracker?> inputs;
+    public bool isIlluminatiing, isChargingKamehameha;
     private float lastBeat;
 
     public InputDevice leftController, rightController;
@@ -58,6 +51,14 @@ public class GestureTracker : MonoBehaviour
         leftGrip;
 
     public BodyVectors leftHandVectors, rightHandVectors, headVectors;
+
+    public GrateInteractor
+        leftPalmInteractor,
+        rightPalmInteractor,
+        leftPointerInteractor,
+        rightPointerInteractor;
+
+    public Transform leftPointerTransform, rightPointerTransform, leftThumbTransform, rightThumbTransform;
 
     public InputTracker<bool>?
         leftPrimary;
@@ -280,7 +281,7 @@ public class GestureTracker : MonoBehaviour
     {
         if (!XRSettings.isDeviceActive)
             return;
-        
+
         if (collider.gameObject != leftHand &&
             collider.gameObject != rightHand) return;
 

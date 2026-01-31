@@ -1,4 +1,6 @@
-﻿using GorillaLocomotion;
+using GorillaLocomotion;
+using UnityEngine;
+using UnityEngine;
 using Grate.Gestures;
 using UnityEngine;
 
@@ -6,13 +8,13 @@ namespace Grate.Interaction;
 
 public class GrateGrabbable : GrateInteractable
 {
-    public float throwForceMultiplier = 1f;
-
-    public Vector3 LocalRotation = Vector3.zero;
-    public bool throwOnDetach;
     private readonly Vector3 mirrorScale = new(-1, 1, 1);
     private Vector3 _localPos;
     private bool kinematicCache;
+
+    public Vector3 LocalRotation = Vector3.zero;
+    public float throwForceMultiplier = 1f;
+    public bool throwOnDetach;
     private GorillaVelocityEstimator velEstimator;
 
     public Vector3 LocalPosition

@@ -1,5 +1,6 @@
-﻿using Grate.Tools;
 using UnityEngine;
+using UnityEngine;
+﻿using Grate.Tools;
 
 namespace Grate.Extensions;
 

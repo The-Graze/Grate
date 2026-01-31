@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using BepInEx.Configuration;
@@ -8,8 +10,7 @@ using Grate.GUI;
 using Grate.Modules.Physics;
 using Grate.Networking;
 using Grate.Tools;
-using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = Unity.Mathematics.Random;
 
 namespace Grate.Modules.Multiplayer;
 
@@ -28,8 +29,8 @@ public class Kamehameha : GrateModule
     public static ConfigEntry<string> c_khameColor;
     public static ConfigEntry<bool> c_Networked;
     public static ConfigEntry<bool> networked;
-    public bool isCharging, isFiring;
     private ParticleSystem Effects;
+    public bool isCharging, isFiring;
     private Color khameColor;
     private Rigidbody orbBody;
     private string state;
@@ -88,7 +89,7 @@ public class Kamehameha : GrateModule
         orb.gameObject.SetActive(true);
         orbBody.isKinematic = true;
         orbBody.velocity = Vector3.zero;
-        GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 56), false, 0.1f);
+        GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
         Transform
             leftHand = GestureTracker.Instance.leftPalmInteractor.transform,
             rightHand = GestureTracker.Instance.rightPalmInteractor.transform;
@@ -101,7 +102,7 @@ public class Kamehameha : GrateModule
             if (Time.time - lastHaptic > hapticDuration)
             {
                 var strength = Mathf.SmoothStep(0, 1, diameter / maxOrbSize * scale);
-                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 48), false, strength / 10f);
+                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 48), false, strength / 10f);
                 GestureTracker.Instance.leftController.SendHapticImpulse(0u, strength, hapticDuration);
                 GestureTracker.Instance.rightController.SendHapticImpulse(0u, strength, hapticDuration);
                 lastHaptic = Time.time;
@@ -131,13 +132,13 @@ public class Kamehameha : GrateModule
             if (Time.time - lastHaptic > hapticDuration)
             {
                 float strength = 1;
-                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 56), false, strength / 10f);
+                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, strength / 10f);
                 GestureTracker.Instance.leftController.SendHapticImpulse(0u, strength, hapticDuration);
                 GestureTracker.Instance.rightController.SendHapticImpulse(0u, strength, hapticDuration);
                 lastHaptic = Time.time;
             }
 
-            var scale = GTPlayer.Instance.scale/2;
+            var scale = GTPlayer.Instance.scale / 2;
             diameter = Vector3.Distance(leftHand.position, rightHand.position);
             diameter = Mathf.Clamp(diameter, 0, maxOrbSize * scale * 2);
             bananaLine.startWidth = diameter * scale;
@@ -203,7 +204,7 @@ public class Kamehameha : GrateModule
         orb.GetComponent<Renderer>().material.color = khameColor;
         bananaLine.SetColors(khameColor, khameColor);
         Effects.GetComponent<Renderer>().material.color = khameColor;
-        if (c_Networked.Value == false)
+        if (!c_Networked.Value)
             foreach (var manager in Resources.FindObjectsOfTypeAll<NetworkedKaemeManager>())
                 Destroy(manager);
 
@@ -238,10 +239,10 @@ public class Kamehameha : GrateModule
 
 internal class NetworkedKaemeManager : MonoBehaviour
 {
-    public NetworkedPlayer? networkedPlayer;
     private LineRenderer? bananaLine;
     private ParticleSystem? Effects;
     private Color khameColor;
+    public NetworkedPlayer? networkedPlayer;
     private Transform? orb;
     private string state = "";
     public ConfigEntry<bool>? IsNetworked { get; }

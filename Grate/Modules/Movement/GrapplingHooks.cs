@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -6,7 +8,6 @@ using Grate.Gestures;
 using Grate.GUI;
 using Grate.Interaction;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Movement;
 
@@ -178,21 +179,22 @@ public class BananaGun : GrateGrabbable
         STATIC
     }
 
+    private float baseLaserWidth, baseRopeWidth;
+    private Vector3 hitPosition;
+
     public Transform holster;
-    public RopeType ropeType;
+    private bool isGrappling;
+
+    private SpringJoint joint;
+    private GameObject openModel, closedModel;
 
     public float
         pullForce = 10f,
         steerForce = 5f,
         maxLength = 30f;
 
-    private float baseLaserWidth, baseRopeWidth;
-    private Vector3 hitPosition;
-    private bool isGrappling;
-
-    private SpringJoint joint;
-    private GameObject openModel, closedModel;
     private LineRenderer rope, laser;
+    public RopeType ropeType;
 
     protected override void Awake()
     {

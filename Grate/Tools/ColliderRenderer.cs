@@ -1,15 +1,16 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System.Collections.Generic;
 using Grate;
 using Grate.Extensions;
-using UnityEngine;
 
 public class ColliderRenderer : MonoBehaviour
 {
-    public float refreshRate = 10;
     private Dictionary<Transform, BoxCollider> boxColliders;
     private Dictionary<Transform, MeshCollider> meshColliders;
     private Transform obj;
     private int refreshOffset;
+    public float refreshRate = 10;
     private Dictionary<Transform, SphereCollider> sphereColliders;
 
     private void Start()

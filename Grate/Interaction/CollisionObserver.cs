@@ -1,5 +1,6 @@
-using System;
 using UnityEngine;
+using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Collider))]
 public class CollisionObserver : MonoBehaviour

@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 // TODO: Rewrite this cursed ass fucking stupid ass fuck ass bum ass poop ass fuckin ass fuckin module
 // If either me or Graze touches this code AT ALL the networking just completely breaks and none of us know why
 //////////// DON'T TOUCH IT UNLESS YOU'RE REWRITING THE WHOLE THING ////////////
@@ -10,7 +12,6 @@ using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
 using Photon.Pun;
-using UnityEngine;
 using UnityEngine.XR;
 using Random = System.Random;
 

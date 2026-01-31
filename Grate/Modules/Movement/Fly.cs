@@ -1,9 +1,11 @@
-﻿using BepInEx.Configuration;
+using UnityEngine;
+using UnityEngine;
+using BepInEx.Configuration;
+using GorillaLocomotion;
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
-using UnityEngine;
-using Player = GorillaLocomotion.GTPlayer;
+using Photon.Realtime;
 
 namespace Grate.Modules.Movement;
 
@@ -20,10 +22,10 @@ public class Fly : GrateModule
     private void FixedUpdate()
     {
         // nullify gravity by adding it's negative value to the player's velocity
-        var rb = Player.Instance.bodyCollider.attachedRigidbody;
+        var rb = GTPlayer.Instance.bodyCollider.attachedRigidbody;
         if (enabledModules.ContainsKey(Bubble.DisplayName)
             && !enabledModules[Bubble.DisplayName])
-            rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * Player.Instance.scale);
+            rb.AddForce(-UnityEngine.Physics.gravity * rb.mass * GTPlayer.Instance.scale);
 
         xz = GestureTracker.Instance.leftStickAxis.GetValue();
         y = GestureTracker.Instance.rightStickAxis.GetValue().y;
@@ -31,18 +33,18 @@ public class Fly : GrateModule
         var inputDirection = new Vector3(xz.x, y, xz.y);
 
         // Get the direction the player is facing but nullify the y axis component
-        var playerForward = Player.Instance.bodyCollider.transform.forward;
+        var playerForward = GTPlayer.Instance.bodyCollider.transform.forward;
         playerForward.y = 0;
 
         // Get the right vector of the player but nullify the y axis component
-        var playerRight = Player.Instance.bodyCollider.transform.right;
+        var playerRight = GTPlayer.Instance.bodyCollider.transform.right;
         playerRight.y = 0;
 
         var velocity =
             inputDirection.x * playerRight +
             y * Vector3.up +
             inputDirection.z * playerForward;
-        velocity *= Player.Instance.scale * speedScale;
+        velocity *= GTPlayer.Instance.scale * speedScale;
         rb.velocity = Vector3.Lerp(rb.velocity, velocity, acceleration);
     }
 

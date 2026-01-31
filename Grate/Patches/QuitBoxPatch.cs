@@ -1,6 +1,7 @@
-﻿using GorillaNetworking;
-using HarmonyLib;
+using GorillaNetworking;
 using UnityEngine;
+using UnityEngine;
+﻿using HarmonyLib;
 
 namespace Grate.Patches;
 

@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using System.IO;
@@ -6,7 +8,6 @@ using System.Reflection;
 using BepInEx;
 using BepInEx.Configuration;
 using GorillaLocomotion;
-using GorillaLocomotion.Swimming;
 using GorillaNetworking;
 using Grate.Extensions;
 using Grate.Gestures;
@@ -15,7 +16,6 @@ using Grate.Modules;
 using Grate.Networking;
 using Grate.Tools;
 using HarmonyLib;
-using UnityEngine;
 using UnityEngine.UI;
 using Utilla.Behaviours;
 
@@ -49,10 +49,8 @@ public class Plugin : BaseUnityPlugin
         HarmonyPatches.ApplyHarmonyPatches();
         ConfigFile = new ConfigFile(Path.Combine(Paths.ConfigPath, "Grate.cfg"), true);
         var list = GrateModule.GetGrateModuleTypes();
-        foreach (var bindConfigs in list.Select(moduleType => moduleType.GetMethod("BindConfigEntries")).Select(info => info).OfType<MethodInfo>())
-        {
-            bindConfigs.Invoke(null, null);
-        }
+        foreach (var bindConfigs in list.Select(moduleType => moduleType.GetMethod("BindConfigEntries"))
+                     .Select(info => info).OfType<MethodInfo>()) bindConfigs.Invoke(null, null);
 
         GorillaTagger.OnPlayerSpawned(OnGameInitialized);
         AssetBundle = AssetUtils.LoadAssetBundle("Grate/Resources/gratebundle");
@@ -146,7 +144,7 @@ public class Plugin : BaseUnityPlugin
             NetworkSystem.Instance.OnJoinedRoomEvent += Аaа;
             NetworkSystem.Instance.OnReturnedToSinglePlayer += Аaа;
             Application.wantsToQuit += Quit;
-            
+
             if (DebugMode)
                 CreateDebugGUI();
         }

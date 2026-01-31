@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using GorillaLocomotion;
@@ -5,7 +7,6 @@ using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Multiplayer;
 
@@ -13,13 +14,13 @@ public class Telekinesis : GrateModule
 {
     public static readonly string DisplayName = "Telekinesis";
     public static Telekinesis Instance;
-    public SphereCollider tkCollider;
     private readonly List<TKMarker> markers = new();
 
     private Joint joint;
     private ParticleSystem playerParticles, sithlordHandParticles;
     private AudioSource sfx;
     private TKMarker sithLord;
+    public SphereCollider tkCollider;
 
     private void Awake()
     {
@@ -156,11 +157,11 @@ public class Telekinesis : GrateModule
     public class TKMarker : MonoBehaviour
     {
         public static int count;
-        public VRRig rig;
-        public Transform leftHand, rightHand, controllingHand;
         public Rigidbody controllingBody;
         private DebugRay dr;
         private bool grippingRight, grippingLeft;
+        public Transform leftHand, rightHand, controllingHand;
+        public VRRig rig;
         private int uuid;
 
         private void Awake()

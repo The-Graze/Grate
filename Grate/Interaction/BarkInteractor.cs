@@ -1,8 +1,9 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using Grate.Interaction;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Gestures;
@@ -12,13 +13,13 @@ public class GrateInteractor : MonoBehaviour
     public static string InteractionLayerName = "TransparentFX";
     public static int InteractionLayer = LayerMask.NameToLayer(InteractionLayerName);
     public static int InteractionLayerMask = LayerMask.GetMask(InteractionLayerName);
+    public InputDevice device;
 
     public List<GrateInteractable>
         hovered = new(),
         selected = new();
 
     public XRNode node;
-    public InputDevice device;
     public bool IsLeft { get; protected set; }
     public bool Selecting { get; protected set; }
     public bool Activating { get; protected set; }

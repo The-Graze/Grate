@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
 using GorillaLocomotion.Climbing;
@@ -5,7 +7,6 @@ using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Movement;
@@ -18,12 +19,12 @@ public class NailGun : GrateModule
     public static ConfigEntry<int> MaxNailGuns;
     public static ConfigEntry<string> LauncherHand;
     public static ConfigEntry<int> GravityMultiplier;
-    public GameObject launcher;
-    public GameObject[] nails = new GameObject[0];
 
     private AudioSource audioFire;
     private GameObject barrel;
     private XRNode hand;
+    public GameObject launcher;
+    public GameObject[] nails = new GameObject[0];
 
     private int nextNail;
 

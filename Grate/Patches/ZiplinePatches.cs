@@ -1,10 +1,11 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using GorillaLocomotion.Climbing;
 using GorillaLocomotion.Gameplay;
 using Grate.Modules.Movement;
 using Grate.Tools;
 using HarmonyLib;
-using UnityEngine;
 
 namespace Grate.Patches;
 

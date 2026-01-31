@@ -1,8 +1,9 @@
-﻿using Grate.Extensions;
-using Grate.GUI;
+using Grate.Extensions;
+using UnityEngine;
+using UnityEngine;
+﻿using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
-using UnityEngine;
 using UnityEngine.Video;
 
 namespace Grate.Modules.Misc;
@@ -73,15 +74,15 @@ public class Grazing : GrateModule
 
     public class GrazeHandler : MonoBehaviour
     {
-        public VideoPlayer? vp;
         private NetworkedPlayer? np;
         private GameObject? tv;
+        public VideoPlayer? vp;
 
         private void Start()
         {
             np = GetComponent<NetworkedPlayer>();
             tv = Instantiate(_tv);
-            tv.transform.position = np.rig.headConstraint.position + Vector3.up *1.5f;
+            tv.transform.position = np.rig.headConstraint.position + Vector3.up * 1.5f;
             tv.transform.rotation = Quaternion.Euler(new Vector3(0, np.rig.headConstraint.rotation.y, 0));
             vp = tv?.GetComponentInChildren<VideoPlayer>()
                 .GetComponentInChildren<VideoPlayer>();

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using UnityEngine;
+using System.Collections.Generic;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Networking;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Movement;

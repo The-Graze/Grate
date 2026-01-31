@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -7,7 +9,6 @@ using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Movement;
@@ -38,21 +39,21 @@ public class Bubble : GrateModule
 
     public static ConfigEntry<int> BubbleSize;
     public static ConfigEntry<int> BubbleSpeed;
-    public GameObject bubble;
-    public GameObject colliderObject;
-    public Vector3 targetPosition;
     private readonly float cooldown = .1f;
 
     private readonly float margin = .1f;
 
 
     private float baseDrag;
+    public GameObject bubble;
+    public GameObject colliderObject;
     private float colliderScale = 1;
     private float lastTouchLeft, lastTouchRight;
 
     private bool leftWasTouching, rightWasTouching;
 
     private Rigidbody rb;
+    public Vector3 targetPosition;
 
     private void Awake()
     {

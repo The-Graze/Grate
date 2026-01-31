@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,23 +9,22 @@ using Grate.Extensions;
 using Grate.Gestures;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Multiplayer;
 
 public class Firefly : MonoBehaviour
 {
     public static float duration = 1.5f;
-    public VRRig rig;
     public GameObject fly;
-    public ParticleSystem particles, trail;
-    public Transform leftWing, rightWing;
-    public float startTime;
-    public ParticleSystemRenderer particleRenderer, trailRenderer;
-    public bool seek;
     public Transform hand;
+    public Transform leftWing, rightWing;
     private Renderer modelRenderer;
+    public ParticleSystemRenderer particleRenderer, trailRenderer;
+    public ParticleSystem particles, trail;
+    public VRRig rig;
+    public bool seek;
     private Vector3 startPos;
+    public float startTime;
 
     private void Awake()
     {

@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 using GorillaLocomotion;
@@ -5,7 +7,6 @@ using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Multiplayer;
 
@@ -13,8 +14,8 @@ public class Grab : GrateModule
 {
     public static readonly string DisplayName = "Grab";
     public static Grab Instance;
-    public SphereCollider gbCollider;
     private readonly List<GBMarker> markers = new();
+    public SphereCollider gbCollider;
     private GBMarker grabber;
 
     private Joint joint;
@@ -126,11 +127,11 @@ public class Grab : GrateModule
     public class GBMarker : MonoBehaviour
     {
         public static int count;
-        public VRRig rig;
-        public Transform leftHand, rightHand, controllingHand;
         public Rigidbody controllingBody;
         private DebugRay dr;
         private bool grippingRight, grippingLeft;
+        public Transform leftHand, rightHand, controllingHand;
+        public VRRig rig;
         private int uuid;
 
         private void Awake()

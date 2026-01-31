@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-
-namespace Grate.Extensions;
+using UnityEngine;
+using UnityEngine;
+﻿namespace Grate.Extensions;
 
 public static class TextureExtensions
 {

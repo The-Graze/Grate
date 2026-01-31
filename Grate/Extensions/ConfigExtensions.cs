@@ -1,6 +1,7 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
-using UnityEngine;
 
 namespace Grate.Extensions;
 

@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿// Stolen from https://github.com/Graicc/PracticeMod/blob/617a9f758077ea06cf0407a776580d6b021bcc35/PracticeMod/Patches/PlayerTeleportPatch.cs#L61
 // Used without permission, but what are you gonna do, sue me?
 
@@ -6,7 +8,6 @@ using System.Threading.Tasks;
 using Grate.Modules.Physics;
 using Grate.Tools;
 using HarmonyLib;
-using UnityEngine;
 using Player = GorillaLocomotion.GTPlayer;
 
 namespace Grate.Patches;

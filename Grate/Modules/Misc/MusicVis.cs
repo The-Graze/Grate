@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using Grate.Extensions;
@@ -5,7 +7,6 @@ using Grate.GUI;
 using Grate.Networking;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Misc;
 

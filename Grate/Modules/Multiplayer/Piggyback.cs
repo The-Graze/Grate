@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using GorillaLocomotion;
 using Grate.Extensions;
@@ -7,7 +9,6 @@ using Grate.Modules.Physics;
 using Grate.Networking;
 using Grate.Tools;
 using Photon.Pun;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Multiplayer;

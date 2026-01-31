@@ -1,13 +1,9 @@
-﻿using System;
-using BepInEx.Configuration;
-using GorillaLocomotion;
-using Grate.Extensions;
-using Grate.Gestures;
-using Grate.GUI;
-using Grate.Networking;
-using Grate.Patches;
-using Grate.Tools;
 using UnityEngine;
+using UnityEngine;
+﻿using System;
+using Grate.Extensions;
+using Grate.GUI;
+using Grate.Tools;
 using NetworkPlayer = NetPlayer;
 
 namespace Grate.Modules.Movement;
@@ -33,8 +29,8 @@ public class NullGenesis : GrateModule
 {
     public static readonly string DisplayName = "Null Genesis";
     public static GameObject GenesisPrefab;
-    public Vector3 targetPosition;
     public Vector3 GenesisOffset;
+    public Vector3 targetPosition;
 
     protected override void OnEnable()
     {
@@ -43,7 +39,6 @@ public class NullGenesis : GrateModule
         try
         {
             ReloadConfiguration();
-
         }
         catch (Exception e)
         {

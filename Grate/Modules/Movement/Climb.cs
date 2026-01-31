@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using GorillaLocomotion;
 using GorillaLocomotion.Climbing;
@@ -5,7 +7,6 @@ using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Movement;
 

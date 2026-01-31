@@ -1,6 +1,7 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using BepInEx.Configuration;
 using Grate.GUI;
-using UnityEngine;
 
 namespace Grate.Modules.Physics;
 
@@ -10,8 +11,8 @@ public class LowGravity : GrateModule
     public static LowGravity Instance;
 
     public static ConfigEntry<int> Multiplier;
-    public float gravityScale = .25f;
     private Vector3 baseGravity;
+    public float gravityScale = .25f;
     public bool active { get; private set; }
 
     private void Awake()

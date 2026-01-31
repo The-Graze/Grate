@@ -1,24 +1,25 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using BepInEx.Configuration;
+using GorillaLocomotion;
 using Grate.Extensions;
 using Grate.Gestures;
 using Grate.GUI;
 using Grate.Networking;
 using Grate.Tools;
-using UnityEngine;
 using NetworkPlayer = NetPlayer;
-using Player = GorillaLocomotion.GTPlayer;
-using Random = UnityEngine.Random;
+using Random = Unity.Mathematics.Random;
 
 namespace Grate.Modules.Multiplayer;
 
 public class BoxingGlove : MonoBehaviour
 {
     public static int uuid;
-    public VRRig rig;
     public AudioSource punchSound;
+    public VRRig rig;
     public GorillaVelocityEstimator velocity;
 
     private void Start()
@@ -34,9 +35,9 @@ public class Boxing : GrateModule
 
     public static ConfigEntry<int> PunchForce;
     public static ConfigEntry<bool> BuffMonke;
-    public float forceMultiplier = 5000;
     private readonly List<VRRig> glovedRigs = new();
     private readonly List<BoxingGlove> gloves = new();
+    public float forceMultiplier = 5000;
 
     private float lastPunch;
     private Collider punchCollider;
@@ -55,7 +56,7 @@ public class Boxing : GrateModule
             ReloadConfiguration();
             var capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
             capsule.name = "GratePunchDetector";
-            capsule.transform.SetParent(Player.Instance.bodyCollider.transform, false);
+            capsule.transform.SetParent(GTPlayer.Instance.bodyCollider.transform, false);
             capsule.layer = GrateInteractor.InteractionLayer;
             capsule.GetComponent<MeshRenderer>().enabled = false;
 
@@ -158,14 +159,14 @@ public class Boxing : GrateModule
     {
         if (Time.time - lastPunch < 1) return;
         var force = glove.velocity.linearVelocity;
-        if (force.magnitude < .5f * Player.Instance.scale) return;
+        if (force.magnitude < .5f * GTPlayer.Instance.scale) return;
         force.Normalize();
         force *= forceMultiplier * Buffness();
-        Player.Instance.bodyCollider.attachedRigidbody.velocity += force;
+        GTPlayer.Instance.bodyCollider.attachedRigidbody.velocity += force;
         lastPunch = Time.time;
         GestureTracker.Instance.HapticPulse(false);
         GestureTracker.Instance.HapticPulse(true);
-        glove.punchSound.pitch = Random.Range(.8f, 1.2f);
+        glove.punchSound.pitch = UnityEngine.Random.Range(.8f, 1.2f);
         glove.punchSound.Play();
     }
 

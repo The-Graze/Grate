@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -6,8 +8,7 @@ using Grate.Gestures;
 using Grate.GUI;
 using Grate.Interaction;
 using Grate.Tools;
-using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = Unity.Mathematics.Random;
 
 namespace Grate.Modules.Movement;
 
@@ -140,10 +141,10 @@ public class Rockets : GrateModule
 
 public class Rocket : GrateGrabbable
 {
-    public float power = 5f, volume = .2f;
     public AudioSource exhaustSound;
     private GestureTracker gt;
     private bool isLeft;
+    public float power = 5f, volume = .2f;
     private Rigidbody rb;
     public Vector3 force { get; private set; }
 
@@ -167,7 +168,7 @@ public class Rocket : GrateGrabbable
         {
             rb.velocity += force * 10;
             force = Vector3.zero;
-            transform.Rotate(Random.insideUnitSphere);
+            transform.Rotate(UnityEngine.Random.insideUnitSphere);
         }
 
         exhaustSound.volume = Mathf.Lerp(.5f, 0, Vector3.Distance(
@@ -204,7 +205,7 @@ public class Rocket : GrateGrabbable
         transform.localScale = Vector3.one * GTPlayer.Instance.scale;
         parent.Select(this);
         exhaustSound.Stop();
-        exhaustSound.time = Random.Range(0, exhaustSound.clip.length);
+        exhaustSound.time = UnityEngine.Random.Range(0, exhaustSound.clip.length);
         exhaustSound.Play();
     }
 

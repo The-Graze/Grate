@@ -1,24 +1,25 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using Grate.Extensions;
 using Grate.Modules.Movement;
 using Grate.Modules.Multiplayer;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Networking;
 
 public class NetworkedPlayer : MonoBehaviour
 {
-    public VRRig? rig;
-    public bool hasGrate;
     private readonly List<MonoBehaviour> modManagers = new();
+    public bool hasGrate;
     private bool leftGripWasPressed, rightGripWasPressed;
     private bool leftThumbWasPressed, rightThumbWasPressed;
     private bool leftTriggerWasPressed, rightTriggerWasPressed;
 
     public Action<NetworkedPlayer, bool> OnGripPressed, OnGripReleased;
     public NetPlayer? owner;
+    public VRRig? rig;
     public float LeftGripAmount { get; protected set; }
     public float RightGripAmount { get; protected set; }
     public float LeftTriggerAmount { get; protected set; }

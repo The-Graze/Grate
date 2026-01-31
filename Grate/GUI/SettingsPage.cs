@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
@@ -8,7 +10,6 @@ using Grate.GUI;
 using Grate.Interaction;
 using Grate.Modules;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingsPage : MonoBehaviour

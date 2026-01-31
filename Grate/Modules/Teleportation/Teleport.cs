@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using BepInEx.Configuration;
@@ -7,8 +9,7 @@ using Grate.Gestures;
 using Grate.GUI;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
-using Random = UnityEngine.Random;
+using Random = Unity.Mathematics.Random;
 
 namespace Grate.Modules;
 
@@ -98,7 +99,7 @@ public class Teleport : GrateModule
 
             if (!playedSound)
             {
-                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 56), false, 0.1f);
+                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                 playedSound = true;
             }
 

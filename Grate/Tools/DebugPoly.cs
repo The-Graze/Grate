@@ -1,13 +1,14 @@
-﻿using System;
 using UnityEngine;
+using UnityEngine;
+﻿using System;
 
 namespace Grate.Tools;
 
 public class DebugPoly : MonoBehaviour
 {
-    public Vector3[] vertices = new Vector3[0];
     public Mesh mesh;
     public Renderer renderer;
+    public Vector3[] vertices = new Vector3[0];
 
     private void Awake()
     {

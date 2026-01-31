@@ -1,15 +1,16 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections.Generic;
 using Grate.Extensions;
-using UnityEngine;
 
 namespace Grate.Tools;
 
 public class DebugRay : MonoBehaviour
 {
     public static Dictionary<string, DebugRay> rays = new();
-    public LineRenderer lineRenderer;
     public Color color = Color.red;
+    public LineRenderer lineRenderer;
 
     public void Awake()
     {

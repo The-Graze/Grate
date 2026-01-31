@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using GorillaLocomotion;
@@ -6,7 +8,6 @@ using Grate.Modules.Movement;
 using Grate.Modules.Multiplayer;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Physics;
 
@@ -16,8 +17,8 @@ public class NoClip : GrateModule
     public static NoClip Instance;
     public static int layer = 29, layerMask = 1 << layer;
     public static bool active;
-    public LayerMask baseMask;
     public bool baseHeadIsTrigger, baseBodyIsTrigger;
+    public LayerMask baseMask;
     private Vector3 enablePos;
     private bool FirstTimeworkaround;
     private bool flyWasEnabled;

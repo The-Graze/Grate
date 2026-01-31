@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 using System;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -8,18 +10,17 @@ using Grate.GUI;
 using Grate.Modules.Physics;
 using Grate.Networking;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Movement;
 
 public class Platform : MonoBehaviour
 {
-    public bool isSticky, isActive, isLeft;
     public GorillaClimbable Climbable;
     private Material cloudMaterial;
     private Collider collider;
     private Transform hand;
+    public bool isSticky, isActive, isLeft;
     private GameObject model;
     private string modelName;
     private ParticleSystem rain;
@@ -153,9 +154,9 @@ public class Platforms : GrateModule
     public static ConfigEntry<int> Scale;
     public static ConfigEntry<string> Input;
     public static ConfigEntry<string> Model;
-    public Platform left, right, main;
     private InputTracker? inputL;
     private InputTracker? inputR;
+    public Platform left, right, main;
 
     private void Awake()
     {
@@ -404,8 +405,8 @@ public class Platforms : GrateModule
 
 public class NetworkedPlatformsHandler : MonoBehaviour
 {
-    public GameObject? platformLeft, platformRight;
     public NetworkedPlayer? networkedPlayer;
+    public GameObject? platformLeft, platformRight;
 
     private void Start()
     {

@@ -1,5 +1,6 @@
-using HarmonyLib;
 using UnityEngine;
+using UnityEngine;
+using HarmonyLib;
 
 namespace Grate.Patches;
 

@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -7,7 +9,6 @@ using Grate.GUI;
 using Grate.Interaction;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 
 namespace Grate.Modules.Teleportation;
 

@@ -1,9 +1,10 @@
-﻿using System;
+using UnityEngine;
+using UnityEngine;
+using System;
 using System.Collections.Generic;
 using Grate;
 using Grate.Gestures;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.UI;
 
 public class ButtonController : MonoBehaviour
@@ -18,9 +19,6 @@ public class ButtonController : MonoBehaviour
         MOD_CONTROLL
     }
 
-    public float buttonPushDistance = 0.03f; // Distance the button travels when pushed
-    public Canvas canvas;
-    public Text text;
     private readonly List<Blocker> blockers = new();
 
     private readonly Dictionary<Blocker, string> blockerText = new()
@@ -36,9 +34,13 @@ public class ButtonController : MonoBehaviour
     private readonly float cooldown = .1f;
     private bool _isPressed;
     private Transform buttonModel;
+
+    public float buttonPushDistance = 0.03f; // Distance the button travels when pushed
+    public Canvas canvas;
     private float lastPressed;
     private Material material;
     public Action<ButtonController, bool> OnPressed;
+    public Text text;
 
     public bool IsPressed
     {

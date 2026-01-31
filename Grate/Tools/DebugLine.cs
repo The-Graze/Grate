@@ -1,12 +1,13 @@
-﻿using System;
 using UnityEngine;
+using UnityEngine;
+﻿using System;
 
 namespace Grate.Tools;
 
 public class DebugLine : MonoBehaviour
 {
-    public LineRenderer lineRenderer;
     public Transform a, b;
+    public LineRenderer lineRenderer;
 
     private void Start()
     {

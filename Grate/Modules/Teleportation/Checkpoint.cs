@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,9 +11,8 @@ using Grate.GUI;
 using Grate.Modules.Physics;
 using Grate.Patches;
 using Grate.Tools;
-using UnityEngine;
 using UnityEngine.XR;
-using Random = UnityEngine.Random;
+using Random = Unity.Mathematics.Random;
 
 namespace Grate.Modules.Teleportation;
 
@@ -114,7 +115,7 @@ public class Checkpoint : GrateModule
             checkpointMarker.localScale = Vector3.one * scale;
             if (Mathf.Abs(scale - GTPlayer.Instance.scale) < .01f)
             {
-                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(Random.Range(40, 56), false, 0.1f);
+                GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(UnityEngine.Random.Range(40, 56), false, 0.1f);
                 GestureTracker.Instance.HapticPulse(true);
                 checkpointPosition = VRRig.LocalRig.leftHand.rigTarget.position +
                                      Vector3.up * .15f * GTPlayer.Instance.scale;

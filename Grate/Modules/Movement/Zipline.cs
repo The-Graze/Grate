@@ -1,3 +1,5 @@
+using UnityEngine;
+using UnityEngine;
 ﻿using System;
 using BepInEx.Configuration;
 using GorillaLocomotion;
@@ -8,7 +10,6 @@ using Grate.Gestures;
 using Grate.GUI;
 using Grate.Tools;
 using HarmonyLib;
-using UnityEngine;
 using UnityEngine.XR;
 
 namespace Grate.Modules.Movement;
@@ -23,18 +24,18 @@ public class Zipline : GrateModule
     public static ConfigEntry<int> MaxZiplines;
     public static ConfigEntry<string> LauncherHand;
     public static ConfigEntry<int> GravityMultiplier;
-    public GameObject launcher;
-    public GameObject[] ziplines = new GameObject[0];
     private AudioSource audioSlide, audioFire;
     private GorillaClimbable climbable;
     private Transform climbOffsetHelper;
     private GameObject gunStartHook, gunEndHook;
     private XRNode hand;
+    public GameObject launcher;
 
 
     private int nextZipline;
     private GorillaZiplineSettings settings;
     private ParticleSystem[] smokeSystems;
+    public GameObject[] ziplines = new GameObject[0];
 
     private void Awake()
     {
