@@ -16,11 +16,20 @@ public class Fly : GrateModule
     public static ConfigEntry<int> Speed;
     public static ConfigEntry<int> Acceleration;
     private float speedScale = 10, acceleration = .01f;
+    private bool _toggle;
     private Vector2 xz;
     private float y;
 
     private void FixedUpdate()
     {
+        if (GestureTracker.Instance.leftPrimary!.pressed || GestureTracker.Instance.rightPrimary!.pressed)
+        {
+            _toggle = !_toggle;
+        }
+        
+        if(!_toggle)
+            return;
+        
         // nullify gravity by adding it's negative value to the player's velocity
         var rb = GTPlayer.Instance.bodyCollider.attachedRigidbody;
         if (enabledModules.ContainsKey(Bubble.DisplayName)
