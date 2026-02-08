@@ -131,11 +131,9 @@ public class MenuController : GrateGrabbable
             var supporterMod = gameObject.AddComponent<Supporter>();
             if (NetworkSystem.Instance.LocalPlayer.IsSupporter()) modules.Add(supporterMod);
             var developerMod = gameObject.AddComponent<Developer>();
-            var GenesisMod = gameObject.AddComponent<NullGenesis>();
             if (NetworkSystem.Instance.LocalPlayer.IsDev())
             {
                 modules.Add(developerMod);
-                modules.Add(GenesisMod);
             }
 
             modules.AddRange(tooAddmodules);

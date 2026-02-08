@@ -82,8 +82,8 @@ public class Grazing : GrateModule
         {
             np = GetComponent<NetworkedPlayer>();
             tv = Instantiate(_tv);
-            tv.transform.position = np.rig.headConstraint.position + Vector3.up * 1.5f;
-            tv.transform.rotation = Quaternion.Euler(new Vector3(0, np.rig.headConstraint.rotation.y, 0));
+            tv.transform.position = np.rig.headConstraint.position + Vector3.up * .25f + Vector3.forward * .25f;
+            tv.transform.rotation = np.rig.syncRotation;
             vp = tv?.GetComponentInChildren<VideoPlayer>()
                 .GetComponentInChildren<VideoPlayer>();
             vp.loopPointReached += delegate { vp.Play(); };

@@ -16,17 +16,22 @@ public class Fly : GrateModule
     public static ConfigEntry<int> Speed;
     public static ConfigEntry<int> Acceleration;
     private float speedScale = 10, acceleration = .01f;
-    private bool _toggle;
+    private bool _toggle = true;
     private Vector2 xz;
     private float y;
+    private bool pressed;
 
     private void FixedUpdate()
     {
-        if (GestureTracker.Instance.leftPrimary!.pressed || GestureTracker.Instance.rightPrimary!.pressed)
+        var currentPressed =
+            GestureTracker.Instance.leftPrimary!.pressed ||
+            GestureTracker.Instance.rightPrimary!.pressed;
+        if (currentPressed && !pressed)
         {
             _toggle = !_toggle;
         }
-        
+        pressed = currentPressed;
+
         if(!_toggle)
             return;
         
@@ -72,7 +77,7 @@ public class Fly : GrateModule
 
     public override string Tutorial()
     {
-        return "Use left stick to fly horizontally, and right stick to fly vertically.";
+        return "Use left stick to fly horizontally, and right stick to fly vertically.\nPrees Either Primary Buttons to Toggle while mod is enabled";
     }
 
     protected override void ReloadConfiguration()

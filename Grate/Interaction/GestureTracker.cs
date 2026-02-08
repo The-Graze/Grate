@@ -19,7 +19,7 @@ public class GestureTracker : MonoBehaviour
         "Player Objects/Local VRRig/Local Gorilla Player";
 
     public const string palmPath =
-        "/GorillaPlayerNetworkedRigAnchor/rig/body/shoulder.{0}/upper_arm.{0}/forearm.{0}/hand.{0}/palm.01.{0}";
+        "/rig/hand.{0}/palm.01.{0}";
 
     public const string pointerFingerPath =
         palmPath + "/f_index.01.{0}/f_index.02.{0}/f_index.03.{0}";
@@ -462,21 +462,28 @@ public class ControllerInputPollerExt
 
     public void Update()
     {
-        if (Plugin.IsSteam)
+        try
         {
-            leftControllerStickButton = SteamVR_Actions.gorillaTag_LeftJoystickClick.state;
-            rightControllerStickButton = SteamVR_Actions.gorillaTag_RightJoystickClick.state;
-            leftControllerStickAxis = SteamVR_Actions.gorillaTag_LeftJoystick2DAxis.axis;
-            rightControllerStickAxis = SteamVR_Actions.gorillaTag_RightJoystick2DAxis.axis;
+            if (Plugin.IsSteam)
+            {
+                leftControllerStickButton = SteamVR_Actions.gorillaTag_LeftJoystickClick.state;
+                rightControllerStickButton = SteamVR_Actions.gorillaTag_RightJoystickClick.state;
+                leftControllerStickAxis = SteamVR_Actions.gorillaTag_LeftJoystick2DAxis.axis;
+                rightControllerStickAxis = SteamVR_Actions.gorillaTag_RightJoystick2DAxis.axis;
+            }
+            else
+            {
+                var left = GestureTracker.Instance.leftController;
+                var right = GestureTracker.Instance.rightController;
+                left.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out leftControllerStickButton);
+                right.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out rightControllerStickButton);
+                left.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftControllerStickAxis);
+                right.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightControllerStickAxis);
+            }
         }
-        else
+        catch (Exception e)
         {
-            var left = GestureTracker.Instance.leftController;
-            var right = GestureTracker.Instance.rightController;
-            left.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out leftControllerStickButton);
-            right.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out rightControllerStickButton);
-            left.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftControllerStickAxis);
-            right.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightControllerStickAxis);
+            Debug.LogError($"Error in Inputs, Should resolve itself: {e.Message + e.StackTrace}");
         }
     }
 }

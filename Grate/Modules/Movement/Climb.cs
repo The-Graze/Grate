@@ -13,14 +13,14 @@ namespace Grate.Modules.Movement;
 public class Climb : GrateModule
 {
     public static readonly string DisplayName = "Climb";
-    public GameObject climbableLeft, climbableRight;
+    public GameObject? climbableLeft, climbableRight;
     private InputTracker<float>? leftGrip;
-    private Transform leftHand, rightHand;
+    private Transform? leftHand, rightHand;
     private InputTracker<float>? rightGrip;
 
     protected override void OnEnable()
     {
-        if (!MenuController.Instance.Built) return;
+        if (!MenuController.Instance!.Built) return;
         base.OnEnable();
         try
         {
@@ -29,8 +29,12 @@ public class Climb : GrateModule
 
             leftHand = GestureTracker.Instance.leftHand.transform;
             rightHand = GestureTracker.Instance.rightHand.transform;
-            climbableLeft = CreateClimbable(leftGrip);
-            climbableRight = CreateClimbable(rightGrip);
+            if(!climbableLeft)
+                climbableLeft = CreateClimbable(leftGrip);
+            climbableLeft.SetActive(true);
+            if(!climbableRight)
+                climbableRight = CreateClimbable(rightGrip);
+            climbableRight?.SetActive(true);
             ReloadConfiguration();
         }
         catch (Exception e)
@@ -39,7 +43,7 @@ public class Climb : GrateModule
         }
     }
 
-    public GameObject CreateClimbable(InputTracker<float>? grip)
+    private GameObject CreateClimbable(InputTracker<float>? grip)
     {
         var climbable = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         climbable.name = "Grate Climb Obj";
@@ -48,70 +52,71 @@ public class Climb : GrateModule
         climbable.GetComponent<Renderer>().enabled = false;
         climbable.transform.localScale = Vector3.one * .15f;
         climbable.SetActive(false);
-        grip.OnPressed += OnGrip;
-        grip.OnReleased += OnRelease;
+        grip?.OnPressed += OnGrip;
+        grip?.OnReleased += OnRelease;
         return climbable;
     }
 
     public void OnGrip(InputTracker tracker)
     {
-        if (enabled)
+        if (!enabled) return;
+        GameObject? climbable;
+        Transform? hand;
+        if (tracker == leftGrip)
         {
-            GameObject climbable;
-            Transform hand;
-            if (tracker == leftGrip)
-            {
-                climbable = climbableLeft;
-                hand = leftHand;
-            }
-            else
-            {
-                climbable = climbableRight;
-                hand = rightHand;
-            }
-
-            Collider[] colliders = UnityEngine.Physics.OverlapSphere(
-                hand.position,
-                0.15f,
-                GTPlayer.Instance.locomotionEnabledLayers
-            );
-
-            if (colliders.Length > 0)
-            {
-                // foreach(var collider in colliders)
-                // {
-                //     Logging.Debug("Hit", collider.gameObject.name);
-                // }
-                climbable.transform.position = hand.position;
-                climbable.SetActive(true);
-                // Sounds.Play(Sound.DragonSqueeze, 1f);
-            }
+            climbable = climbableLeft;
+            hand = leftHand;
         }
+        else
+        {
+            climbable = climbableRight;
+            hand = rightHand;
+        }
+
+        // ReSharper disable once Unity.PreferNonAllocApi
+        Collider[] colliders = UnityEngine.Physics.OverlapSphere(
+            hand!.position,
+            0.15f,
+            GTPlayer.Instance.locomotionEnabledLayers
+        );
+        if (colliders.Length <= 0) return;
+        // foreach(var collider in colliders)
+        // {
+        //     Logging.Debug("Hit", collider.gameObject.name);
+        // }
+        climbable?.transform.position = hand.position;
+        
+        if (tracker == leftGrip)
+            climbableRight?.SetActive(false);
+        else
+            climbableLeft?.SetActive(false);
+        
+        climbable?.SetActive(true);
+        // Sounds.Play(Sound.DragonSqueeze, 1f);
     }
 
     public void OnRelease(InputTracker tracker)
     {
-        if (tracker == GestureTracker.Instance.leftGrip)
-            climbableLeft.SetActive(false);
+        if (tracker == leftGrip)
+            climbableLeft?.SetActive(false);
         else
-            climbableRight.SetActive(false);
+            climbableRight?.SetActive(false);
     }
 
     protected override void Cleanup()
     {
-        climbableLeft?.Obliterate();
-        climbableRight?.Obliterate();
         if (leftGrip != null)
         {
             leftGrip.OnPressed -= OnGrip;
             leftGrip.OnReleased -= OnRelease;
         }
-
         if (rightGrip != null)
         {
             rightGrip.OnPressed -= OnGrip;
             rightGrip.OnReleased -= OnRelease;
         }
+        climbableLeft?.Obliterate();
+        climbableRight?.Obliterate();
     }
 
     public override string GetDisplayName()
